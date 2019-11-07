@@ -1,6 +1,6 @@
 window.onload = function () {
 
-  const paper = Snap('#svg-logo');
+  const paper = Snap('#animated-svg');
 
   paper.attr({
     viewBox:"0,0,338,60"
