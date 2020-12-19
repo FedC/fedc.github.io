@@ -39,7 +39,7 @@ window.onload = function () {
         Snap.animate(0, 
           Snap.path.getTotalLength(next.path), 
           next.stepAnimation, 
-          288, 
+          100, 
           mina.easeinout, 
           next.animationCallback);
 
@@ -47,7 +47,7 @@ window.onload = function () {
         // default callback action
         setTimeout(()=>{
           $('#tagline').addClass('show');
-        }, 300);
+        }, 100);
       }
     }
   });

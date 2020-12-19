@@ -1,8 +1,8 @@
 :root {
   --foreground-color: #408BA6;
   --background-color: #413F47;
-  --accent-one-color: #B8C3C3;
-  --accent-two-color: #EBF1ED;
+  --accent-one-color: rgb(93, 153, 153);
+  --accent-two-color: #f9fafa;
   --accent-three-color: #263B4B;
 }
 
@@ -108,6 +108,7 @@ body {
 }
 
 .main-container {
+  text-align: center;
 }
 
 .footer-container {
@@ -154,13 +155,114 @@ nav a:hover {
 /* ==============
   MOBILE: Main
    ============== */
+.main-container {
+  border-top: 1px solid #eceff2;
+  background-color: white;
+}
 
 .main {
   padding: 30px 0;
 }
 
 .main article h1 {
-  font-size: 2em;
+  font-size: 40px;
+  letter-spacing: .01em;
+  line-height: 45px;
+  font-weight: 300;
+  margin-bottom: 40px;
+}
+@media screen and (min-width: 640px) {
+  .main article h1 {
+    margin-bottom: 150px;
+  }
+}
+
+.main article img {
+  width: 100%;
+  max-width: 420px;
+  margin: 10px auto;
+}
+
+.main article img#conversions {
+  margin: 56px auto;
+  width: 90%;
+}
+
+.main article p {
+  font-size: 20px;
+  letter-spacing: -.46px;
+  line-height: 26px;
+  font-weight: 100;
+}
+
+.main article p.last {
+  margin-bottom: 200px;
+}
+@media screen and (min-width: 640px) {
+  .main article p.last {
+    margin-bottom: 100px;
+  }
+}
+
+.main article p span {
+  color: var(--foreground-color);
+  border-bottom: 1px solid var(--foreground-color);
+  padding-bottom: 2px;
+}
+
+.btn {
+  border: none;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background: none;
+    cursor: pointer;
+    display: inline-block;
+    margin: 16px auto;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    outline: none;
+    position: relative;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+    border-radius: 10px;
+
+    border: 3px solid var(--foreground-color);
+    color: var(--foreground-color);
+
+    width: 100%;
+    max-width: 300px;
+    background: white;
+
+    padding: 16px;
+}
+
+@media screen and (min-width: 1024px) {
+  .btn {
+     padding: 18px 40px;
+  }
+}
+
+.cta {
+  position: fixed;
+  background-color: white;
+  bottom: 68px; left: 0;
+  width: 100%;
+}
+
+@media screen and (min-width: 640px) {
+  .cta {
+    position: relative;
+    top: 0; bottom: 0; left: 0;
+  }
+}
+
+
+.btn:hover {
+  background-color: var(--foreground-color);
+  color: white;
 }
 
 .main aside {
@@ -171,6 +273,20 @@ nav a:hover {
 
 .footer-container footer {
   padding: 20px 0;
+}
+
+.footer-container {
+  position: fixed;
+  bottom: 0;left: 0;
+  width: 100%;
+  background-color: white;
+}
+
+@media screen and (min-width: 640px) {
+  .footer-container {
+    position: relative;
+    top: 0; bottom: 0; left: 0;
+  }
 }
 
 /* ===============
@@ -220,7 +336,6 @@ a:active {
 }
 
 .header-container {
-
 }
 
 .header-inner {
@@ -237,13 +352,13 @@ a:active {
       transform-origin: center;
   -webkit-transition: .3s cubic-bezier(0.190, 1.000, 0.220, 1.000);
   transition: .3s cubic-bezier(0.190, 1.000, 0.220, 1.000);
-  -webkit-animation: rotate 3.5s cubic-bezier(0.190, 1.000, 0.220, 1.000);
-      animation: rotate 3.5s cubic-bezier(0.190, 1.000, 0.220, 1.000);
+  /* -webkit-animation: rotate 3.5s cubic-bezier(0.190, 1.000, 0.220, 1.000);
+      animation: rotate 3.5s cubic-bezier(0.190, 1.000, 0.220, 1.000); */
 }
 
 #okcoded-icon:hover {
   -webkit-transform: translate3d(0, 0, 0) scale(0.9) rotate(-180deg);
-  transform: translate3d(0, 0, 0) scale(0.9) rotate(-180deg);
+  transform: translate3d(0, 0, 0) scale(0.9) rotate(90deg);
 }
 
 @-webkit-keyframes rotate {
@@ -269,16 +384,23 @@ a:active {
 }
 
 .hero-container {
-  color: var(--foreground-color);
+  /* color: var(--foreground-color); */
   /*background-color: var(--background-color);*/
-  background-color: #174B55;
-  height: 45vh;
-  min-height: 360px;
+  /* background-color: #174B55; */
+  height: 100vh;
+  /* height: 80px; */
+  max-width: 980px;
+  margin: auto;
   position: relative;
   overflow: hidden;
+  /* opacity: 0; */
+  -webkit-animation-fill-mode: forwards;
+      animation-fill-mode: forwards;
+  -webkit-animation: fadeIn 3s;
+      animation: fadeIn 3s;
 }
 
-.hero-container #videoBG {
+/* .hero-container #videoBG {
   position: absolute;
   left: 0;
   top: 0;
@@ -286,6 +408,14 @@ a:active {
       animation-fill-mode: forwards;
   -webkit-animation: fadeIn 10s ease-out;
       animation: fadeIn 10s ease-out;
+} */
+
+.hero-container .layer {
+  opacity: .6;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @-webkit-keyframes fadeIn {
@@ -306,7 +436,25 @@ a:active {
   }
 }
 
-@media (min-width: 794px) {
+@-webkit-keyframes slideIn {
+  0% {
+  transform: translate3d(100%, 0, 0);
+  }
+  100% {
+  transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+  transform: translate3d(100%, 0, 0);
+  }
+  100% {
+  transform: translate3d(0, 0, 0);
+  }
+}
+
+/* @media (min-width: 794px) {
   #videoBG {
   width:100%;
   height: auto;
@@ -318,7 +466,7 @@ a:active {
   width:auto;
   height: 100%;
   }
-}
+} */
 
 .hero-content {
   display: -webkit-box;
@@ -327,33 +475,67 @@ a:active {
       justify-content: center;
   -webkit-box-align: center;
       align-items: center;
-  height: 100%;
-  width: 100%;
-  position: absolute;
+  /* height: 100%;
+  width: 100%; */
+  /* position: absolute;
   top: 0;
-  left: 0;
+  left: 0; */
 }
+
+
 
 .hero-wrapper {
   text-align: center;
   width: 100%;
+  padding-top: 80px;
+}
+
+#phone-app {
+  width: 50%;
+    -webkit-animation-fill-mode: forwards;
+      animation-fill-mode: forwards;
+  -webkit-animation: slideIn 800ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+      animation: slideIn 800ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
+      
+}
+
+@media screen and (min-width: 1025px) {
+  #phone-app {
+    max-width: 420px;
+  }
 }
 
 #animated-svg {
   width: 80%;
-  max-width: 420px;
+  margin-top: 16vh;
+  margin-bottom: 60px;
+}
+
+@media screen and (min-width: 1025px) {
+  #animated-svg {
+    width: 100%;
+    margin-top: 40px;
+    margin-bottom: 100px;
+  }
 }
 
 #animated-svg path {
   -webkit-transition: .3s ease-out;
   transition: .3s ease-out;
-  fill: var(--accent-one-color);
+  /* fill: var(--accent-one-color); */
+  /* fill: var(--foreground-color); */
+  fill: var(--background-color);
+}
+
+#animated-svg path#icon,
+#animated-svg path#k {
+  transition-delay: 2s;
 }
 
 #animated-svg path#icon.kaboom,
 #animated-svg path#k.kaboom {
-  fill: var(--accent-two-color);
-  /*fill: var(--foreground-color);*/
+  /* fill: var(--accent-three-color); */
+  fill: var(--foreground-color);
 }
 
 #animated-svg path#c.kaboom,
@@ -361,13 +543,62 @@ a:active {
 #animated-svg path#d.kaboom,
 #animated-svg path#e.kaboom,
 #animated-svg path#d2.kaboom {
-  fill: var(--foreground-color);
+  /* fill: var(--foreground-color); */
   /*fill: var(--accent-one-color);*/
+  fill: var(--background-color);
 }
 
+
+/* @media screen and (min-width: 680px) { */
+  .hero-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .hero-flex img {
+    margin-right: -50px;
+  }
+/* } */
+
+
 #tagline {
-  color: var(--accent-one-color);
+  /* color: var(--accent-one-color); */
+  /* color: var(--foreground-color); */
+  /* color: var(--accent-one-color); */
+  font-size: 5vw;
+  line-height: 20px;
+  letter-spacing: .45px;
   opacity: 0;
+}
+
+#tagline p {
+  margin-top: 0;
+}
+
+@media screen and (min-width: 750px) {
+  #tagline {
+    font-size: 40px;
+    line-height: 40px;
+    letter-spacing: .45px;
+    margin-left: -50px;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  #tagline {
+    font-size: 56px;
+    line-height: 70px;
+    letter-spacing: .45px;
+    margin-left: 0;
+  }
+}
+
+
+#tagline.show {
+  opacity: 1;
+}
+
+#tagline p {
   -webkit-transform: translate3d(0,25%,0);
       transform: translate3d(0,25%,0);
   -webkit-transition: opacity 600ms linear 100ms, -webkit-transform 1000ms ease-out;
@@ -376,11 +607,25 @@ a:active {
   transition: opacity 600ms linear 100ms, transform 1000ms ease-out, -webkit-transform 1000ms ease-out;
 }
 
-#tagline.show {
+#tagline p:last-child {
+  opacity: 0;
+  transition-delay: 300ms;
+}
+
+#tagline.show p {
   opacity: 1;
   -webkit-transform: translate3d(0,0,0);
       transform: translate3d(0,0,0);
 }
+
+#tagline p span {
+  color: var(--foreground-color);
+  border-bottom: 3px solid var(--foreground-color);
+  padding-bottom: 3px;
+  font-size: 120%;
+  font-weight: bold;
+}
+
 
 #footer-icon {
   width: 3em;
@@ -454,7 +699,7 @@ a:active {
 
   .main article {
     float: left;
-    width: 57%;
+    width: 100%;
   }
 
   .main aside {
