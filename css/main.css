@@ -556,7 +556,7 @@ a:active {
     align-items: center;
   }
   .hero-flex img {
-    margin-right: -50px;
+    /* margin-right: -50px; */
   }
 /* } */
 
