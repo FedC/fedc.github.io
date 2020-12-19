@@ -582,6 +582,7 @@ a:active {
   line-height: 20px;
   letter-spacing: .45px;
   opacity: 0;
+  margin-left: -50px;
 }
 
 #tagline p {
