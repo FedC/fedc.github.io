@@ -164,16 +164,22 @@ nav a:hover {
   padding: 30px 0;
 }
 
+.main .article {
+  max-width: 980px;
+  margin: auto;
+  overflow: hidden;
+}
+
 .main article h1 {
-  font-size: 40px;
+  font-size: 28px;
   letter-spacing: .01em;
-  line-height: 45px;
+  line-height: 32px;
   font-weight: 300;
-  margin-bottom: 40px;
 }
 @media screen and (min-width: 640px) {
   .main article h1 {
-    margin-bottom: 60px;
+    font-size: 40px;
+    line-height: 45px;
   }
 }
 
@@ -184,21 +190,25 @@ nav a:hover {
 }
 
 .main article img#conversions {
-  margin: 56px auto;
-  width: 90%;
+  margin: 40px auto 20px;
+  width: 200%;
+}
+
+@media screen and (min-width: 640px) {
+  .main article img#conversions {
+    width: 100%;
+    margin: 56px auto;
+  }
 }
 
 .main article p {
   font-size: 20px;
-  letter-spacing: -.46px;
+  letter-spacing: 1px;
   line-height: 32px;
   font-weight: 100;
-  max-width: 500px;
+  max-width: 550px;
   margin-left: auto;
   margin-right: auto;
-}
-.main article p.first {
-  max-width: 360px;
 }
 
 .main article p.last {
@@ -318,8 +328,8 @@ a {
   text-decoration: none;
   font-weight: 400;
   color: var(--foreground-color);
-  border-bottom: 1px solid var(--foreground-color);
-  padding-bottom: 2px;
+  /* border-bottom: 1px solid var(--foreground-color);
+  padding-bottom: 2px; */
 }
 
 a:visited {
