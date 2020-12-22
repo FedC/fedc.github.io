@@ -205,9 +205,15 @@ nav a:hover {
   letter-spacing: 1px;
   line-height: 32px;
   font-weight: 100;
-  max-width: 420px;
+  max-width: 350px;
   margin-left: auto;
   margin-right: auto;
+}
+
+@media screen and (max-width: 281px) {
+  .main article p {
+    font-size: 16px;
+  }
 }
 
 .main article p.last {
@@ -275,17 +281,58 @@ nav a:hover {
   }
 }
 
+@-webkit-keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 200px, 0);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 200px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 .cta {
   position: fixed;
   background-color: white;
-  bottom: 68px; left: 0;
+  bottom: 88px;
+  left: 0;
   width: 100%;
+  padding: 16px 0;
+
+  opacity: 0;
+  transform: translate3d(0, 100%, 0);
+  animation-fill-mode: forwards;
+  animation-name: fadeSlideUp;
+  animation-delay: 3.5s;
+  animation-duration: .2s;
+  animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.cta a {
+  display: block;
+  margin: auto;
 }
 
 @media screen and (min-width: 640px) {
   .cta {
+    background-color: transparent;
     position: relative;
-    top: 0; bottom: 0; left: 0;
+    bottom: 0;
+    left: 0;
+    max-width: 350px;
+    margin: auto;
   }
 }
 
@@ -329,8 +376,6 @@ a {
   text-decoration: none;
   font-weight: 400;
   color: var(--foreground-color);
-  /* border-bottom: 1px solid var(--foreground-color);
-  padding-bottom: 2px; */
 }
 
 a:visited {
@@ -410,20 +455,39 @@ a:active {
 }
 
 .hero-container {
-  /* color: var(--foreground-color); */
-  /*background-color: var(--background-color);*/
-  /* background-color: #174B55; */
   height: 100vh;
-  /* height: 80px; */
   max-width: 980px;
   margin: auto;
   position: relative;
   overflow: hidden;
-  /* opacity: 0; */
   -webkit-animation-fill-mode: forwards;
       animation-fill-mode: forwards;
   -webkit-animation: fadeIn 3s;
       animation: fadeIn 3s;
+}
+
+@media screen and (max-width: 281px) {
+  .hero-container {
+    max-height: 420px;
+  }
+}
+
+@media screen and (min-width: 580px) {
+  .hero-container {
+    min-height: 616px;
+  }
+}
+
+@media screen and (min-width: 680px) {
+  .hero-container {
+    min-height: 716px;
+  }
+}
+
+@media screen and (min-width: 780px) {
+  .hero-container {
+    min-height: 816px;
+  }
 }
 
 /* .hero-container #videoBG {
@@ -501,14 +565,7 @@ a:active {
       justify-content: center;
   -webkit-box-align: center;
       align-items: center;
-  /* height: 100%;
-  width: 100%; */
-  /* position: absolute;
-  top: 0;
-  left: 0; */
 }
-
-
 
 .hero-wrapper {
   text-align: center;
@@ -548,8 +605,6 @@ a:active {
 #animated-svg path {
   -webkit-transition: .3s ease-out;
   transition: .22s ease-out;
-  /* fill: var(--accent-one-color); */
-  /* fill: var(--foreground-color); */
   fill: var(--background-color);
 }
 
@@ -560,7 +615,6 @@ a:active {
 
 #animated-svg path#icon.kaboom,
 #animated-svg path#k.kaboom {
-  /* fill: var(--accent-three-color); */
   fill: var(--foreground-color);
 }
 
@@ -569,25 +623,16 @@ a:active {
 #animated-svg path#d.kaboom,
 #animated-svg path#e.kaboom,
 #animated-svg path#d2.kaboom {
-  /* fill: var(--foreground-color); */
-  /*fill: var(--accent-one-color);*/
   fill: var(--background-color);
 }
 
-
-/* @media screen and (min-width: 680px) { */
-  .hero-flex {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-/* } */
-
+.hero-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 #tagline {
-  /* color: var(--accent-one-color); */
-  /* color: var(--foreground-color); */
-  /* color: var(--accent-one-color); */
   font-size: 5vw;
   line-height: 20px;
   letter-spacing: .45px;
@@ -599,7 +644,7 @@ a:active {
   margin-top: 0;
 }
 
-@media screen and (min-width: 780px) {
+@media screen and (min-width: 500px) {
   #tagline {
     font-size: 22px;
     line-height: 22px;
@@ -639,7 +684,6 @@ a:active {
   font-size: 120%;
   font-weight: bold;
 }
-
 
 #footer-icon {
   width: 3em;
