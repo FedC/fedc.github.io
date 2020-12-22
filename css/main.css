@@ -189,15 +189,14 @@ nav a:hover {
   margin: 10px auto;
 }
 
-.main article img#conversions {
-  margin: 40px auto 20px;
-  width: 200%;
+.main article img#federico {
+  margin: 20px auto 20px;
+  width: 60%;
 }
 
 @media screen and (min-width: 640px) {
-  .main article img#conversions {
-    width: 100%;
-    margin: 56px auto;
+  .main article img#federico {
+    width: 250px;
   }
 }
 
@@ -206,13 +205,13 @@ nav a:hover {
   letter-spacing: 1px;
   line-height: 32px;
   font-weight: 100;
-  max-width: 550px;
+  max-width: 420px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .main article p.last {
-  margin-top: 100px;
+  margin-top: 30px;
   margin-bottom: 200px;
 }
 @media screen and (min-width: 640px) {
@@ -264,8 +263,10 @@ nav a:hover {
     border: 3px solid var(--foreground-color);
     color: var(--foreground-color);
     background-color: white;
-     padding: 18px 40px;
+     padding: 12px 22px;
      margin: 16px auto;
+    max-width: 200px;
+    font-size: 18px;
   }
 
   .btn:hover {
@@ -521,7 +522,6 @@ a:active {
       animation-fill-mode: forwards;
   -webkit-animation: slideIn 800ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
       animation: slideIn 800ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
-      
 }
 
 @media screen and (min-width: 1025px) {
@@ -601,9 +601,9 @@ a:active {
 
 @media screen and (min-width: 780px) {
   #tagline {
-    font-size: 40px;
-    line-height: 40px;
-    letter-spacing: .45px;
+    font-size: 22px;
+    line-height: 22px;
+    letter-spacing: .67px;
     margin-left: -50px;
   }
 }
@@ -635,7 +635,7 @@ a:active {
 #tagline p span {
   color: var(--foreground-color);
   border-bottom: 3px solid var(--foreground-color);
-  padding-bottom: 3px;
+  padding-bottom: 1px;
   font-size: 120%;
   font-weight: bold;
 }
