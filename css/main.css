@@ -3,7 +3,7 @@
   --background-color: #3F3D56;
   --accent-one-color: #D0CDE1;
   --accent-two-color: #f9fafa;
-  --accent-three-color: #263B4B;
+  --accent-three-color: rgb(38, 59, 75);
 }
 
 /*! HTML5 Boilerplate v5.0 | MIT License | http://h5bp.com/ */
@@ -107,6 +107,7 @@ body {
 } */
 
 #okcoded-icon {
+  display: block;
   width: 4em;
   margin:auto;
   -webkit-transform: translate3d(0, 0, 0) rotate(0deg);
@@ -118,8 +119,21 @@ body {
 }
 
 #okcoded-icon:hover {
-  -webkit-transform: translate3d(0, 0, 0) scale(0.9) rotate(-180deg);
-  transform: translate3d(0, 0, 0) scale(0.9) rotate(90deg);
+  -webkit-transform: translate3d(0, 0, 0) scale(1.05) rotate(-900deg);
+  transform: translate3d(0, 0, 0) scale(1.05) rotate(-900deg);
+  
+}
+
+#okcoded-icon #path1 {
+  -webkit-transition: .3s cubic-bezier(0.190, 1.000, 0.220, 1.000);
+  transition: .3s cubic-bezier(0.190, 1.000, 0.220, 1.000);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+#okcoded-icon:hover #path1 {
+  -webkit-transform: rotate(900deg);
+  transform: rotate(900deg);
 }
 
 /* ==============

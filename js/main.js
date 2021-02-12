@@ -47,9 +47,13 @@ window.onload = function () {
 
       } catch(e) {
         // default callback action
-        setTimeout(()=>{
-          $('#tagline').addClass('show');
-        }, 100);
+        anime({
+          targets: '#tagline',
+          translateY: [10, 0],
+          opacity: [0,1],
+          duration: 700,
+          delay: 200,
+        });
       }
     }
   });
@@ -72,6 +76,30 @@ window.onload = function () {
       first.animationCallback);
 
   }, INITIAL_DELAY);
-  
+
+
+  const tl = anime.timeline({
+    // easing: 'easeOutExpo',
+    // duration: 750
+  });
+
+  tl.add({
+    targets: '#header',
+    translateY: [-50, 0],
+    opacity: [0, 1],
+    delay: 2310,
+    duration: 500,
+  }).add({
+    targets: '#arrow',
+    translateY: [50, 0],
+    opacity: [0, 1],
+    duration: 500,
+    // easing: 'easeOutExpo',
+  }, '-=100').add({
+    targets: '#recent-work',
+    opacity: [0, 1],
+    translateY: [10, 0],
+    duration: 700,
+  }, '-=250')
 
 }
