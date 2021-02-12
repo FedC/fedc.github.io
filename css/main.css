@@ -86,7 +86,7 @@ body {
   HEADER
    ============== */
 .header-container {
-  background-color: var(--background-color);
+  /* background-color: var(--background-color); */
   color: var(--accent-two-color);
   position: fixed;
   width: 100%;
@@ -127,7 +127,8 @@ body {
    ============== */
 
 .footer-container {
-  border-top: 1px solid var(--accent-two-color);
+  border-top: 1px solid white;
+  border-bottom: 4px solid var(--accent-one-color);
 }
 
 .footer-container footer {
@@ -138,7 +139,8 @@ body {
   position: fixed;
   bottom: 0;left: 0;
   width: 100%;
-  background-color: white;
+  background-color: var(--accent-two-color);
+  color: var(--background-color);
 }
 
 #footer-icon {

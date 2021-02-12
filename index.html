@@ -21,6 +21,22 @@
 
         <!-- <div class='skewed-bg'></div> -->
 
+        <style>
+          @keyframes slideDown {
+            from {
+              transform: translate3d(0,-200%,0);
+            } to {
+              transform: translate3d(0,0,0);
+            }
+          }
+          
+          #okcoded-icon {
+            transform: translate3d(0,-200%,0);
+            animation: slideDown 300ms ease-out 1100ms 1 normal forwards;
+            animation-delay: 3000ms;
+          }
+        </style>
+
         <header class='header-container'>
           <div class='header-inner'>
             <a href='/' style="border: 0; padding: 0;">
@@ -36,15 +52,15 @@
         </header>
         
         <style>
-          @keyframes hero {
+          /* @keyframes hero {
             from {
               height: 100vh;
             } to {
               height: 0vh;
             }
-          }
+          } */
 
-          .hero-layover {
+          /* .hero-layover {
             z-index: 9;
             position: fixed;
             top: 0;
@@ -53,7 +69,7 @@
             height: 100vh;
             background-color: var(--background-color);
             animation: hero 1100ms ease-out 200ms 1 normal forwards;
-          }
+          } */
 
           .hero-container {
             background-color: #f8f7fd;
@@ -247,7 +263,7 @@
 
         <style>
           .featured-work {
-            text-align: left;
+            text-align: center;
             margin: auto;
             padding: 100px 16px;
             border-top: 1px solid #f1f1f1;
@@ -270,8 +286,33 @@
           .featured-work:nth-child(odd) {
           }
 
+          .featured-work .featured-img {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 24px;
+          }
+
+          .featured-work .featured-img img {
+            width: 90%;
+            max-width: 225px;
+            padding: 16px;
+          }
+
+           .featured-work .featured-img img:hover {
+           }
+
+          .featured-text h2 {
+            display: none;
+          }
+
+          .featured-text > a {
+            font-size: 24px;
+          }
+
           @media screen and (min-width: 640px) {
             .featured-work {
+              text-align: left;
               display: flex;
               align-items: flex-start;
             }
@@ -289,42 +330,53 @@
 
             .featured-work .featured-img img {
               width: 90%;
+              max-width: 250px;
             }
 
             .featured-work .featured-text {
               max-width: 530px;
               padding-left: 16px;
+              width: 100%;
             }
 
             .featured-text p {
               color: #4e697d;
             }
           }
+
+          .uppercase {
+            text-transform: uppercase;
+          }
+
+          h1.uppercase {
+            color: var(--foreground-color);
+            opacity: .9;
+          }
         </style>
 
         <section class='main-container breathing-room'>
           <main class='main wrapper'>
 
-            <h1>Featured Work</h1>
+            <h1 class='uppercase'>Featured Work</h1>
 
 
             <article class='article featured-work'>
               <div class='featured-img'>
                 <a href="http://squeeze.com/?utm_source=fed" target="_blank" nofollow>
-                  <img width="100%" src="./img/work/squeeze.com.png" loading="lazy" alt="http://squeeze.com" />
+                  <img width="100%" src="./img/work/squeeze-logo-blue.png" loading="lazy" alt="http://squeeze.com" />
                 </a>
               </div>
             
               <div class='featured-text'>
                 <h2>
-                  Squeeze.com Web Application
+                  Squeeze
                 </h2>
             
-                <a href="http://squeeze.com/?utm_source=fed" target="_blank">http://squeeze.com/</a>
+                <a href="http://squeeze.com/?utm_source=fed" target="_blank">squeeze.com</a>
             
                 <p>
-                  Save money on your monthly bills with <a href="http://squeeze.com/?utm_source=fed" target="_blank">Squeeze</a>. A free service that brings you the lowest rates on auto and homeowners
-                  insurance, plus TV, internet and cell phone
+                  Save money on your monthly bills with <a href="http://squeeze.com/?utm_source=fed" target="_blank">Squeeze</a>. A free service that brings you the lowest rates on
+                  insurance, plus TV, internet and cell phone.
                 </p>
               </div>
             
@@ -343,13 +395,10 @@
                   Pipestone Inc. Painting Division
                 </h2>
             
-                <a href="http://pipestonepainting.com/" target="_blank">http://pipestonepainting.com/</a>
+                <a href="http://pipestonepainting.com/" target="_blank">pipestonepainting.com</a>
             
                 <p>
                   Whatever your painting project involves, <b><a href="http://pipestonepainting.com/" target="_blank" nofollow>Pipestone Painting</a></b> has the expertise to help you find the best possible solution.
-                  They offer
-                  walls and ceilings restauration; interior trim & walls; stain finish; gel stain finish; cabinets; stairs; ceilings;
-                  doors; garage floors; epoxy finish and more!
                 </p>
               </div>
             
@@ -359,7 +408,7 @@
             <article class='article featured-work'>
               <div class='featured-img'>
                 <a href="http://smdesignhi.com/" target="_blank" nofollow>
-                  <img width="100%" src="./img/work/SM.png" loading="lazy" alt="http://smdesignhi.com" />
+                  <img width="100%" src="./img/work/SM.jpg" loading="lazy" alt="http://smdesignhi.com" />
                 </a>
               </div>
 
@@ -368,7 +417,7 @@
                   SM Design & Home Improvement
                 </h2>
               
-                <a href="http://smdesignhi.com/" target="_blank">http://smdesignhi.com/</a>
+                <a href="http://smdesignhi.com/" target="_blank">smdesignhi.com</a>
           
                 <p>
                   <b><a href="http://smdesignhi.com/" target="_blank" nofollow>SM Design & Home Improvement</a></b> has built custom homes
@@ -392,18 +441,12 @@
                   Leopoldo Commisso
                 </h2>
             
-                <a href="http://leocommisso.com/" target="_blank">http://leocommisso.com/</a>
+                <a href="http://leocommisso.com/" target="_blank">leocommisso.com</a>
             
                 <p>
-                  Violoncellist, musician and composer, born in Argentina, completed his studies in the United States to later study
-                  violoncello at the Manuel de Falla Music Conservatory, in Buenos Aires. Based in the Agulhas Negras region since
-                  2012,
-                  Leo Commisso is a musician who travels through different styles - author, classic, Latin, rock, surf music - but
-                  continues his studies in cello, performing regularly in Penedo and Visconde Mauá. He is part of the Coletivo Nosso
-                  Novo
-                  Som, in Penedo, and with different musical backgrounds, he has performed in Barra do Piraí, on Barra da Tijuca
-                  beach and
-                  in many places.
+                  Violoncellist, musician and composer based in the Agulhas Negras region since
+                  2012. Leopoldo Commisso is a musician who travels through different styles - author, classic, Latin, rock, surf music - but
+                  continues his studies in cello, performing regularly in Penedo and Visconde Mauá.
                 </p>
               </div>
             

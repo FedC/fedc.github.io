@@ -1,3 +1,5 @@
+const INITIAL_DELAY = 0;
+
 window.onload = function () {
 
   const paper = Snap('#animated-svg');
@@ -69,7 +71,7 @@ window.onload = function () {
       mina.easeinout, 
       first.animationCallback);
 
-  }, 888);
+  }, INITIAL_DELAY);
   
 
 }
