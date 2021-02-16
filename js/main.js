@@ -90,16 +90,34 @@ window.onload = function () {
     delay: 2310,
     duration: 500,
   }).add({
-    targets: '#arrow',
+    targets: '#cta',
+    opacity: [0, 1],
     translateY: [50, 0],
-    opacity: [0, 1],
-    duration: 500,
-    // easing: 'easeOutExpo',
-  }, '-=100').add({
-    targets: '#recent-work',
-    opacity: [0, 1],
-    translateY: [10, 0],
-    duration: 700,
-  }, '-=250')
+    duration: 600,
+  }).add({
+    targets: '#cta',
+    scale: [1, 1.2, 1],
+    opacity: [1, .8, 1],
+    easing: 'easeOutQuart',
+    duration: 300,
+  }, '-=90').add({
+    targets: '#cta',
+    scale: [1, 1.2, 1],
+    opacity: [1, .8, 1],
+    easing: 'easeOutQuart',
+    duration: 100,
+  }, '-=90').add({
+    targets: '#cta',
+    scale: [1, 1.2, 1],
+    opacity: [1, .8, 1],
+    easing: 'easeOutQuart',
+    duration: 100,
+  }, '-=90').add({
+    targets: '#cta',
+    scale: [1, 1.2, 1],
+    opacity: [1, .8, 1],
+    easing: 'easeOutQuart',
+    duration: 200,
+  }, '-=90');
 
 }
