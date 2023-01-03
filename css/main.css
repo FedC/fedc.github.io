@@ -106,36 +106,6 @@ body {
   margin-left: 16px;
 } */
 
-#okcoded-icon {
-  display: block;
-  width: 4em;
-  margin:auto;
-  -webkit-transform: translate3d(0, 0, 0) rotate(0deg);
-      transform: translate3d(0, 0, 0) rotate(0deg);
-  -webkit-transform-origin: center;
-      transform-origin: center;
-  -webkit-transition: .3s cubic-bezier(0.190, 1.000, 0.220, 1.000);
-  transition: .3s cubic-bezier(0.190, 1.000, 0.220, 1.000);
-}
-
-#okcoded-icon:hover {
-  -webkit-transform: translate3d(0, 0, 0) scale(1.05) rotate(-900deg);
-  transform: translate3d(0, 0, 0) scale(1.05) rotate(-900deg);
-  
-}
-
-#okcoded-icon #path1 {
-  -webkit-transition: .3s cubic-bezier(0.190, 1.000, 0.220, 1.000);
-  transition: .3s cubic-bezier(0.190, 1.000, 0.220, 1.000);
-  transform-origin: center;
-  transform-box: fill-box;
-}
-
-#okcoded-icon:hover #path1 {
-  -webkit-transform: rotate(900deg);
-  transform: rotate(900deg);
-}
-
 /* ==============
   FOOTER
    ============== */
