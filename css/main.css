@@ -1,9 +1,9 @@
 :root {
-  --foreground-color: #408BA6;
-  --background-color: #3F3D56;
-  --accent-one-color: #D0CDE1;
-  --accent-two-color: #f9fafa;
-  --accent-three-color: rgb(38, 59, 75);
+  --foreground-color: #74BDCB;
+  --background-color: #EFE7BC;
+  --accent-one-color: #E7F2F8;
+  --accent-two-color: #FFA384;
+  --accent-three-color: #FFA384;
 }
 
 /*! HTML5 Boilerplate v5.0 | MIT License | http://h5bp.com/ */
@@ -100,6 +100,11 @@ body {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+}
+
+.header-inner a {
+  color: var(--accent-two-color);
+  font-size: 28px;
 }
 
 /* .header-inner nav {
