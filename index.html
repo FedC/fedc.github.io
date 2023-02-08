@@ -1,376 +1,110 @@
 <!doctype html>
 <html class="no-js" lang="">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Federico Commisso</title>
-        <meta name="description" content="Full-Stack Web Developer based in Hollywood, Florida. Specializes in visual design, user experience & front-end development.">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,500&display=swap">
-        <link rel="stylesheet" href="css/normalize.min.css">
-        <link rel="stylesheet" href="css/main.css">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Fed</title>
+  <meta name="description"
+    content="Full-Stack Web Developer based in Hollywood, Florida. Specializes in visual design, user experience & front-end development.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
-    </head>
-    <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,500&display=swap">
+  <link rel="stylesheet" href="css/normalize.min.css">
+  <link rel="stylesheet" href="css/main.css">
 
-        <header class='header-container' id='header'>
-          <div class='header-inner'>
-            <!-- <a href='/'>
-            </a> -->
-            <!-- <nav>
-              <ul>
-                <li id='active'><a href="/">About</a></li>
-                <li><a href="/work.html">Work</a></li>
-              </ul>
-            </nav> -->
-          </div>
-        </header>
-        
-        <style>
-          .hero-container {
-            background-color: #f8f7fd;
-            padding-top: 80px;
-            padding-bottom: 40px;
-            transform-origin: top center;
-            position: relative;
-            height: calc(100vh - 40px - 80px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-        
-          .hero-wrapper {
-            position: relative;
-            z-index: 1;
-            padding: 60px 0 20px;
-            text-align: center;
-          }
-        </style>
+  <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+</head>
 
-        <style>
-          #tagline {
-            text-align: center;
-          }
-        </style>
+<body id="my-sticky-element">
+  <!--[if lt IE 8]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <![endif]-->
 
-        <style>
-          #cta-container {
-            text-align: center;
-          }
-          #cta {
-            text-align: center;
-          }
-          
-        </style>
-        
-        <style>
-          #arrow-container {
-            width: 100%;
-            position: absolute;
-            bottom: 100px;
-            left: 0;
-          }
-        
-          #arrow {
-            display: block;
-            margin: auto;
-            width: 45px;
-          }
-        
-          @media screen and (min-width: 800px) {
-            #arrow-container {
-              bottom: 45px;
-            }
-          }
-        </style>
+  <header class='header-container' id='header'>
+    <div class='header-inner'>
+      <a href="https://codepen.io/fman7">@fman7</a>
+    </div>
+  </header>
 
-        <section class="hero-container">
-          <div class='hero-inner-wrapper'>
-            <article class="hero-content">
-              <div class='hero-wrapper'>
-                <h1>Federico Commisso</h1>
-              </div>
-            </article>
+  <style>
+    /* html {
+      height: 100vh;
+    } */
 
-            <article class='article highlight'>
-              <div class='article-flex'>
-                <p class='lead' id='tagline'>
-                  Digital solutions for <span class='highlight'>web</span> and <span class='highlight'>mobile</span>.
-                </p>
-              </div>
-            </article>
+    body {
+      height: 100vh;
+      /* background-image: url('');
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: top;
+      background-attachment: fixed; */
+      font-family: Lato, sans-serif;
+    }
 
-            <div id='cta-container'>
-               <svg id="svg" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 300 300" width="300" height="300" preserveAspectRatio="xMinYMax slice">
-                <defs>
-                  <style>
-                    #svg {
-                      display: block;
-                      margin: auto;
-                    }
-              
-                    .cls-1 {
-                      fill: #2873e0;
-                      opacity: 0.2;
-                    }
-              
-                    .wave-1 {
-                      animation: wave 11s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite alternate;
-                      transform-origin: center;
-                    }
-              
-                    #wave-path-1 {
-                      transform-origin: center;
-                      animation: path 11s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite alternate;
-                    }
-              
-                    @keyframes path {
-                      0% {
-                        transform: translate3d(0px, -80px, 0);
-                      }
-              
-                      100% {
-                        transform: translate3d(5247px, -80px, 0);
-                      }
-                    }
-              
-                    @keyframes wave {
-                      0% {
-                        transform: translate3d(0px, -80px, 0);
-                      }
-              
-                      100% {
-                        transform: translate3d(-5247px, -80px, 0);
-                      }
-                    }
-              
-                    .cls-2 {
-                      fill: #4cd9d4;
-                      opacity: 0.3;
-                    }
-              
-                    .wave-2 {
-                      transform: translate3d(0px, 0, 0);
-                      transform-origin: center;
-                      animation: wave-2 12s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite alternate;
-                    }
-              
-                    #wave-path-2 {
-                      transform-origin: center;
-                      animation: path-2 12s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite alternate;
-                    }
-              
-                    @keyframes path-2 {
-                      0% {
-                        transform: translate3d(5247px, -80px, 0);
-                      }
-              
-                      100% {
-                        transform: translate3d(0px, -80px, 0);
-                      }
-                    }
-              
-                    @keyframes wave-2 {
-                      0% {
-                        transform: translate3d(-5247px, -80px, 0);
-                      }
-              
-                      100% {
-                        transform: translate3d(0, -80px, 0);
-                      }
-                    }
-              
-                    .cls-3 {
-                      fill: #aac8f3;
-                      opacity: 0.4;
-                    }
-              
-                    .wave-3 {
-                      transform-origin: center;
-                      animation: wave-3 10s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite alternate;
-                    }
-              
-                    #wave-path-3 {
-                      transform-origin: center;
-                      animation: path-3 10s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite alternate;
-                    }
-              
-                    @keyframes path-3 {
-                      0% {
-                        transform: translate3d(0px, -80px, 0);
-                      }
-              
-                      100% {
-                        transform: translate3d(5247px, -80px, 0);
-                      }
-                    }
-              
-                    @keyframes wave-3 {
-                      0% {
-                        transform: translate3d(0px, -80px, 0);
-                      }
-              
-                      100% {
-                        transform: translate3d(-5247px, -80px, 0);
-                      }
-                    }
-                  </style>
-                  <mask id="wave-path-1" clipPathUnits="userSpaceOnUse">
-                    <circle cx="150" cy="150" r="150" fill="#fff" id="circle-1"></circle>
-                  </mask>
-                  <mask id="wave-path-2" clipPathUnits="userSpaceOnUse">
-                    <circle cx="150" cy="150" r="150" fill="#fff" id="circle-2"></circle>
-                  </mask>
-                  <mask id="wave-path-3" clipPathUnits="userSpaceOnUse">
-                    <circle cx="150" cy="150" r="150" fill="#fff" id="circle-3"></circle>
-                  </mask>
-                </defs>
-              
-                <g mask="url(#wave-path-1)" class="">
-                  <path class="cls-1 wave-1"
-                    d="M3998,328.22C3549.48,328.22,3100.94,93,2610.54,93S1480.22,324.86,1211.1,324.86c-268,0-758.49-229.92-1004.62-231.77h0c-600.35,8.68-1109.15,235.13-1549,235.13C-1791,328.22-2239.55,93-2730,93S-3860.27,324.86-4129.4,324.86c-268,0-749.63-229.92-995.76-231.77V388.36H5547V93.09C4946.63,101.77,4437.82,328.22,3998,328.22Z"
-                    transform="translate(0 -90)" />
-                </g>
-              
-                <g mask="url(#wave-path-2)" class="">
-                  <path class="cls-2 wave-2"
-                    d="M4935,318.2c-100.4,0-358.59-200-574.72-200-193.05,0-397.17,130.77-535.62,126.68-29.53-.87-219-57.63-349.2-59.65-126.79-2-264.15,58.65-321.36,59.65-63.1,1.1-187.88-56.8-266.08-59.62h0c-210.75-9.81-386,132.95-612,132.95-100.4,0-358.59-200-574.72-200-193.05,0-397.17,130.77-535.62,126.68-29.53-.87-219-57.63-349.2-59.65-126.79-2-264.15,58.65-321.35,59.65-63.1,1.1-227.63-56.8-305.83-59.62h0c-210.75-9.81-386,132.95-612,132.95-100.4,0-358.59-200-574.72-200-193.05,0-397.17,130.77-535.62,126.68-29.53-.87-219-57.63-349.2-59.65-126.79-2-264.15,58.65-321.36,59.65-63.1,1.1-187.88-56.8-266.08-59.62h0c-210.75-9.81-386,132.95-612,132.95-100.4,0-358.59-200-574.72-200-193.05,0-397.17,130.77-535.62,126.68-29.53-.87-219-57.63-349.2-59.65-126.79-2-264.15,58.65-321.35,59.65-63.1,1.1-183.52-59.62-262.47-59.62V388.36H5547V185.25C5336.29,185.25,5160.94,318.2,4935,318.2Z"
-                    transform="translate(0 -90)" />
-                </g>
-              
-              
-                <g mask="url(#wave-path-3)" class="">
-                  <path class="cls-3 wave-3"
-                    d="M4535.23,342.28c-64.5,0-244-98-508-98-212,0-510.61,120-634.3,120-116.3,0-378.29-82-512.3-82-104,0-414.3,44-544.3,48s-473.72-97.75-569.89-100c-137.46-3.21-364,86-654,84s-539.57-193.9-901.41-194h-0.28c-398.93.11-758.85,222-1011.47,222-64.5,0-244-98-508-98-212,0-510.61,120-634.3,120-116.3,0-378.29-82-512.3-82-104,0-414.3,44-544.3,48s-473.73-97.75-569.89-100c-137.46-3.21-364,86-654,84s-539.7-194-901.7-194v266H5547v-266C5147.94,120.28,4787.9,342.28,4535.23,342.28Z"
-                    transform="translate(0 -90)" />
-                </g>
-              
-              </svg>
-            </div>
-          </div>
-        </section>
+    .header-inner {
+      justify-content: flex-end;
+    }
 
-        <style>
-          .lead {
-            font-size: 22px;
-            line-height: 1.4;
-            max-width: 320px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 0;
-            margin-top: 0;
-          }
+    /* .nerd {
+      max-width: 420px;
+      overflow: hidden;
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translate3d(-50%, 0, 0);
+      margin: 16px;
+      box-shadow: 0 4px 30px rgb(0 0 0 / 50%);
+      border-radius: 12px;
+    } */
 
-          @media screen and (min-width: 640px) {
-            .lead {
-              max-width: unset;
-            }
-          }
+    /* .box {
+      position: absolute;
+      width: 300px;
+      height: 140px;
+      background: #1d1e22;
+      box-shadow: 0 4px 30px rgb(0 0 0 / 50%);
+      border-radius: 6px;
+    } */
+  </style>
 
-          @media screen and (min-width: 980px) {
-            .lead {
-              font-size: 24px;
-              max-width: unset;
-            }
-          }
-        </style>
+  <!-- <div class="nerd">
+    <img src="https://cdn.midjourney.com/32a43536-cfcd-465e-9d9a-f937e318bc1b/grid_0.png" alt="A delicious pink donut." width="100%" />
+  </div> -->
 
-        <style>
-          .article.highlight {
-            background-color: #f8f7fd;
-            color: var(--background-color);
-            padding: 31px 28px;
-            position: relative;
-          }
-          .article.highlight > div {
-            position: relative;
-            z-index: 1;
-          }
+  <!-- <canvas id="hero-lightpass"></canvas> -->
 
-          p .highlight {
-            border-bottom: 3px solid var(--foreground-color);
-            font-weight: bold;
-            font-size: 120%;
-          }
-        </style>
+  <!-- <section class='footer-container'>
+    <footer class='footer wrapper'>
+      <img src="./img/icon-white-bg.svg" alt="icon" id="footer-icon" width="100%" />
+      <span id="copyright" class='text-center' property="dc:rights">&copy;
+        <span property="dc:dateCopyrighted">2023 </span>
+        <span property="dc:publisher">fedc.github.io</span>
+      </span>
+    </footer>
+  </section> -->
 
-        <style>
-          .article.first {
-            padding-top: 40px;
-            padding-bottom: 40px;
-          }
-          .article {
-            padding-top: 100px;
-            padding-bottom: 40px;
-          }
-          .article h2 {
-            margin: 0;
-            margin-bottom: 80px;
-            padding: 4px;
-            font-size: 14px;
-            border-bottom: 1px solid;
-            display: inline-block;
-            text-align: center;
-          }
-        </style>
+  <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+  <!-- <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script> -->
 
-        <section class='main-container breathing-room'>
-          <main class='main wrapper'>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script> -->
+  <!-- <script src="bower_components/animejs/lib/anime.min.js"></script> -->
+  <!-- <script src="bower_components/scrollmagic/scrollmagic/minified/ScrollMagic.min.js"></script> -->
 
-            <article class='article first'>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
 
-              <h2>Laboratory</h2>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132907791-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-              <p class="codepen" data-height="420" data-theme-id="light" data-default-tab="result" data-user="fman7"
-                data-slug-hash="EaZXwg"
-                style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;"
-                data-pen-title="GSAP Loader">
-                <span>See the Pen <a href="https://codepen.io/fman7/pen/EaZXwg">
-                    GSAP Loader</a> by Federico Commisso (<a href="https://codepen.io/fman7">@fman7</a>)
-                  on <a href="https://codepen.io">CodePen</a>.</span>
-              </p>
-              <script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
-            </article>
+    gtag('config', 'UA-132907791-1');
+  </script>
 
-          </main>
-        </section>
+</body>
 
-        <section class='footer-container'>
-          <footer class='footer wrapper'>
-            <!-- <img src="./img/icon-white-bg.svg" alt="OkCoded-icon" id="footer-icon" width="100%" /> -->
-            <span id="copyright" class='text-center' property="dc:rights">&copy;
-              <span property="dc:dateCopyrighted">2023 </span>
-              <span property="dc:publisher">fedc.github.io</span>
-            </span>
-          </footer>
-        </section>
-
-
-<!--         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
-<!--         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script> -->
-
-<!--         <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script> -->
-<!--         <script src="bower_components/animejs/lib/anime.min.js"></script> -->
-
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
-
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132907791-1"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'UA-132907791-1');
-        </script>
-
-    </body>
 </html>
