@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nutridentist - Precios</title>
+  <style>
+    :root {
+      --primary-color: #bc1e4a;
+      --body-bg: #16181a;
+      --text-color: #fff;
+      --container-x: 5vw;
+      --container-mw: 1400px;
+    }
+
+    body {
+      color: var(--text-color);
+      background-color: var(--body-bg);
+      font-family: "Open Sans", sans-serif;
+    }
+
+    .chosen-plan {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      width: 100%;
+      max-width: 400px;
+      margin-inline: auto;
+      padding: 1.5rem 0;
+      background-color: var(--primary-color);
+      text-align: center;
+      border-radius: 0 0 15px 15px;
+    }
+
+    .chosen-plan span:first-of-type {
+      margin-bottom: 8px;
+      display: block;
+      font-weight: 400;
+    }
+
+    .chosen-plan .plan-name {
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      padding-inline: 10px;
+      margin-block: 3rem;
+    }
+
+    .bill-type {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.125rem;
+      gap: 10px;
+    }
+
+    .bill-type .bill-toggle .bill-toggle-checkbox {
+      display: none;
+    }
+
+    .bill-type .bill-toggle .bill-toggle-checkbox+label {
+      display: block;
+      width: 60px;
+      height: 32px;
+      border-radius: 20px;
+      background-color: var(--primary-color);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .bill-type .bill-toggle .bill-toggle-checkbox+label::after {
+      content: "";
+      display: block;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background-color: #fff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-100%, -50%);
+      transition: transform 0.2s;
+    }
+
+    .bill-type .bill-toggle .bill-toggle-checkbox:checked+label::after {
+      transform: translate(0, -50%);
+    }
+
+    .pricing-table {
+      max-width: 500px;
+      padding-inline: var(--container-x);
+      margin-inline: auto;
+      margin-block: 40px;
+    }
+
+    @media screen and (min-width: 920px) {
+      .pricing-table:not(.basic) {
+        max-width: var(--container-mw);
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+      }
+      .pricing-table.basic {
+        max-width: var(--container-mw);
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+      }
+    }
+
+    .pricing-table .plan {
+      background-color: #22262c;
+      padding: 2rem;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pricing-table .plan p {
+      text-align: center;
+    }
+
+    @media screen and (max-width: 920px) {
+      .pricing-table .plan:not(:last-of-type) {
+        margin-bottom: 40px;
+      }
+    }
+
+    .pricing-table .plan .name {
+      text-align: center;
+      font-size: 1.7rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 18px;
+    }
+
+    .pricing-table .plan .price {
+      text-align: center;
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+
+    .pricing-table .plan .price sub {
+      position: static;
+      font-size: 1.5rem;
+    }
+
+    .pricing-table .plan.enterprise .price {
+      font-size: 2.5rem;
+    }
+
+    .pricing-table .plan .maus-options {
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      margin-inline: auto;
+    }
+
+    .pricing-table .plan .maus-options select {
+      background-color: transparent;
+      color: #fff;
+      padding: 1rem;
+      border: 1px solid #fff;
+      border-radius: 5px;
+      display: block;
+      width: 100%;
+      margin-bottom: 5px;
+    }
+
+    .pricing-table .plan .maus-options select+span {
+      font-size: 0.875rem;
+      color: var(--primary-color);
+    }
+
+    .pricing-table .plan .features {
+      margin-block: 30px;
+    }
+
+    .pricing-table .plan .features li {
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .pricing-table .plan .features li::marker {
+      color: var(--primary-color);
+    }
+
+    .pricing-table .plan .choose-btn {
+      display: block;
+      width: 100%;
+      max-width: 250px;
+      margin-inline: auto;
+      margin-top: auto;
+      padding: 1rem 1rem;
+      font-weight: 600;
+      background-color: transparent;
+      color: #fff;
+      border: 1px solid var(--primary-color);
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.1s;
+    }
+
+    .pricing-table .plan .choose-btn:hover,
+    .pricing-table .plan .choose-btn.active {
+      background-color: var(--primary-color);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+  </header>
+
+  <!-- <div class="chosen-plan">
+    <span>Nutridentist - Precios</span>
+    <span class="plan-name">
+      Starter Trial • 500MAUs
+    </span>
+  </div> -->
+
+  <h1 class="page-title">
+    Nutridentist - Precios
+  </h1>
+
+  <div class="pricing-table basic">
+    <div class="plan">
+      <h2 class="name">Levantamiento de la pagina</h2>
+      <div class="price">$1,800</div>
+      <p>Desarrollo en <strong>3 semanas</strong> con todas las características incluidas:</p>
+      <ul class="features">
+        <li>Contenido personalizado</li>
+        <li>Optimización para Dispositivos Móviles (Responsive Design)</li>
+        <li>Optimización de búsqueda (SEO)</li>
+        <li>Configuración del dominio</li>
+        <li>Certificados SSL</li>
+        <li>Formulario de Contacto</li>
+        <li>Mapa de Ubicación</li>
+        <li>Viculación de Redes Sociales</li>
+        <li>Galeria</li>
+        <li>Horarios de atención</li>
+      </ul>
+    </div>
+
+    <div class="plan">
+      <h2 class="name">Formulario y administración de Cita en Línea</h2>
+      <div class="price">$2,300</div>
+      <ul class="features">
+        <li>Programación de citas con calendario</li>
+        <li>Selección del Tipo de Tratamiento</li>
+        <li>Portal para Pacientes para Cancelación y Reagendamiento</li>
+        <li>Almacenamiento de data de contacto y cumplimiento con HIPAA</li>
+        <li>Portal de configuración de restricciones de horarios o días</li>
+        <li>Portal de administración de citas para recepcionistas</li>
+        <li>Disponibilidad en Tiempo Real</li>
+        <li>Opcional: Recordatorios Automáticos via SMS (con costos adicionales por mes)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 style="text-align: center;">Plan de Mantenimiento</h2>
+
+  <div class="pricing-table basic">
+    <div class="plan starter">
+      <h2 class="name">Mantenimiento Básico</h2>
+
+      <div class="price" id="monthly-price-basic">$79 <sub>/ mensual</sub></div>
+      <div class="price" id="annually-price-basic" style="display: none;">$799 <sub>/ año</sub></div>
+
+      <div class="bill-type">
+        <div class="monthly">Precio Anual</div>
+        <div class="bill-toggle">
+          <input type="checkbox" class="bill-toggle-checkbox" id="bill-toggle" checked onchange="togglePrice()">
+          <label for="bill-toggle"></label>
+        </div>
+        <div class="annually">Precio Mensual</div>
+      </div>
+
+      <script>
+        function togglePrice() {
+          var monthlyPrice = document.getElementById("monthly-price-basic");
+          var annuallyPrice = document.getElementById("annually-price-basic");
+          var toggleCheckbox = document.getElementById("bill-toggle");
+      
+          if (toggleCheckbox.checked) {
+            monthlyPrice.style.display = "block";
+            annuallyPrice.style.display = "none";
+          } else {
+            monthlyPrice.style.display = "none";
+            annuallyPrice.style.display = "block";
+          }
+        }
+      </script>
+
+      <ul class="features">
+        <li>Atualizaciones de Contenido limitadas (hasta 2 horas)</li>
+        <li>Gestión de Enlaces</li>
+        <li>Pruebas de Navegadores</li>
+        <li>Actualizaciones de Plataforma</li>
+        <li>Monitorización de Errores</li>
+        <li>Cumplimiento Normativo</li>
+      </ul>
+
+    </div>
+
+    <div class="plan pro">
+      <h2 class="name">Mantenimiento Full</h2>
+
+      <div class="price" id="monthly-price-pro">$150 <sub>/ mensual</sub></div>
+      <div class="price" id="annually-price-pro" style="display: none;">$1,650 <sub>/ año</sub></div>
+
+      <div class="bill-type">
+        <div class="monthly">Precio Anual</div>
+        <div class="bill-toggle">
+          <input type="checkbox" class="bill-toggle-checkbox" id="bill-toggle-2" checked onchange="togglePrice2()">
+          <label for="bill-toggle-2"></label>
+        </div>
+        <div class="annually">Precio Mensual</div>
+      </div>
+
+      <script>
+        function togglePrice2() {
+          var monthlyPrice = document.getElementById("monthly-price-pro");
+          var annuallyPrice = document.getElementById("annually-price-pro");
+          var toggleCheckbox = document.getElementById("bill-toggle-2");
+      
+          if (toggleCheckbox.checked) {
+            monthlyPrice.style.display = "block";
+            annuallyPrice.style.display = "none";
+          } else {
+            monthlyPrice.style.display = "none";
+            annuallyPrice.style.display = "block";
+          }
+        }
+      </script>
+
+      <ul class="features">
+        <li>Mas Disponibilidad de mi parte a cualquier problema</li>
+        <li>Seguridad periódicas de la base de datos y archivo</li>
+        <li>Renovación del Diseño (si aplica: 1 ves por año)</li>
+        <li>Respaldo Regular/Seguridad Periódica</li>
+        <li>Monitoreo del Tiempo de Carga</li>
+        <li>Análisis del Tráfico</li>
+      </ul>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Todos los derechos reservados.</p>
+  </footer>
+</body>
+
+</html>
