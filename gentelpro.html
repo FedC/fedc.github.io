@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>geltenpro.com - Estimados</title>
+  <style>
+    :root {
+      --primary-color: #bc1e4a; /* Deep Pink-Red remains as the vibrant primary color for emphasis */
+      --secondary-color: #2a9d8f; /* Teal remains for a balanced and complementary contrast */
+      --body-bg: #6e238b; /* Slightly darker grey for the background, enhancing the depth and focus on content */
+      --text-color: #e0e1e3; /* Light grey for text, providing a softer contrast than pure white for improved readability */
+      --accent-color: #e9c46a; /* Saffron keeps its place for a warm, inviting accent */
+      --link-color: #f4a261; /* Sandy Brown remains for links, ensuring they stand out against the dark background */
+      --border-color: #264653; /* Dark Cyan-Blue continues to provide subtle, stylish borders */
+      --container-x: 5vw;
+      --container-mw: 1400px;
+    }
+
+    body {
+      color: var(--text-color);
+      background-color: var(--body-bg);
+      font-family: "Open Sans", sans-serif;
+    }
+
+    .chosen-plan {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      width: 100%;
+      max-width: 400px;
+      margin-inline: auto;
+      padding: 1.5rem 0;
+      background-color: var(--primary-color);
+      text-align: center;
+      border-radius: 0 0 15px 15px;
+    }
+
+    .chosen-plan span:first-of-type {
+      margin-bottom: 8px;
+      display: block;
+      font-weight: 400;
+    }
+
+    .chosen-plan .plan-name {
+      font-size: 1.125rem;
+      font-weight: 700;
+    }
+
+    .page-title {
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      padding-inline: 10px;
+      margin-block: 3rem;
+    }
+
+    h2 {
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+
+    .bill-type {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.125rem;
+      gap: 10px;
+    }
+
+    .bill-type .bill-toggle .bill-toggle-checkbox {
+      display: none;
+    }
+
+    .bill-type .bill-toggle .bill-toggle-checkbox+label {
+      display: block;
+      width: 60px;
+      height: 32px;
+      border-radius: 20px;
+      background-color: var(--primary-color);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .bill-type .bill-toggle .bill-toggle-checkbox+label::after {
+      content: "";
+      display: block;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background-color: #fff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-100%, -50%);
+      transition: transform 0.2s;
+    }
+
+    .bill-type .bill-toggle .bill-toggle-checkbox:checked+label::after {
+      transform: translate(0, -50%);
+    }
+
+    .pricing-table {
+      max-width: 500px;
+      padding-inline: var(--container-x);
+      margin-inline: auto;
+      margin-block: 40px;
+    }
+
+    @media screen and (min-width: 920px) {
+      .pricing-table:not(.basic) {
+        max-width: var(--container-mw);
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+      }
+      .pricing-table.basic {
+        max-width: var(--container-mw);
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+      }
+    }
+
+    .pricing-table .plan {
+      background-color: #52117a;
+      padding: 2rem;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pricing-table .plan p {
+      text-align: center;
+    }
+
+    @media screen and (max-width: 920px) {
+      .pricing-table .plan:not(:last-of-type) {
+        margin-bottom: 40px;
+      }
+    }
+
+    .pricing-table .plan .name {
+      text-align: center;
+      font-size: 1.7rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 18px;
+    }
+
+    .pricing-table .plan .price {
+      text-align: center;
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+
+    .pricing-table .plan .price sub {
+      position: static;
+      font-size: 1.5rem;
+    }
+
+    .pricing-table .plan.enterprise .price {
+      font-size: 2.5rem;
+    }
+
+    .pricing-table .plan .maus-options {
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      margin-inline: auto;
+    }
+
+    .pricing-table .plan .maus-options select {
+      background-color: transparent;
+      color: #fff;
+      padding: 1rem;
+      border: 1px solid #fff;
+      border-radius: 5px;
+      display: block;
+      width: 100%;
+      margin-bottom: 5px;
+    }
+
+    .pricing-table .plan .maus-options select+span {
+      font-size: 0.875rem;
+      color: var(--primary-color);
+    }
+
+    .pricing-table .plan .features {
+      margin-block: 30px;
+    }
+
+    .pricing-table .plan .features li {
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .pricing-table .plan .features li::marker {
+      color: var(--primary-color);
+    }
+
+    .pricing-table .plan .choose-btn {
+      display: block;
+      width: 100%;
+      max-width: 250px;
+      margin-inline: auto;
+      margin-top: auto;
+      padding: 1rem 1rem;
+      font-weight: 600;
+      background-color: transparent;
+      color: #fff;
+      border: 1px solid var(--primary-color);
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.1s;
+    }
+
+    .pricing-table .plan .choose-btn:hover,
+    .pricing-table .plan .choose-btn.active {
+      background-color: var(--primary-color);
+    }
+
+    .text {
+      font-family: 'Lato', sans-serif;
+      font-size: 1.125rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      letter-spacing: .45px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+  </header>
+
+  <!-- <div class="chosen-plan">
+    <span>geltenpro.com - Precios</span>
+    <span class="plan-name">
+      Starter Trial • 500MAUs
+    </span>
+  </div> -->
+
+  <h1 class="page-title">
+    geltenpro.com - Estimados
+  </h1>
+
+  <div class="pricing-table basic">
+    <div class="plan">
+      <h2 class="name">Creación y Lanzamiento del Sitio</h2>
+      <div class="price">$3,300</div>
+      <p>Desarrollo en <strong>4 semanas</strong> con todas las características incluidas:</p>
+      <ul class="features">
+        <li>Contenido y experiencia informativa y accesible para clientes incluyendo servicios</li>
+        <li>Optimización para Dispositivos Móviles (Responsive Design)</li>
+        <li>Optimización de búsqueda (SEO)</li>
+        <li>Configuración del dominio</li>
+        <li>Certificados SSL</li>
+        <li>Formulario de Contacto</li>
+        <li>Mapa de Ubicación</li>
+        <li>Viculación de Redes Sociales</li>
+        <li>Galeria</li>
+        <li>Horarios de atención</li>
+      </ul>
+    </div>
+
+    <div class="plan">
+      <h2 class="name">Formulario y Administración de Cita en Línea</h2>
+      <div class="price">$3,300</div>
+      <ul class="features">
+        <li>Gestionar cuentas de usuario</li>
+        <li>Selección del Tipo de Servicio con Precios y Carrito</li>
+        <li>Formulario personalizado para subir imágenes relacionadas con la solicitud de servicio</li>
+        <li>Formulario de entrada de texto para notas adicionales del cliente sobre la solicitud de servicio</li>
+        <li>Programación de citas con calendario</li>
+        <li>Portal para Clientes para Cancelación y Reagendamiento</li>
+        <li>Portal de configuración de restricciones de horarios o días</li>
+        <li>Portal de administración de citas</li>
+        <li>Opcional: Recordatorios Automáticos via SMS (con costos adicionales por mes)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="text-align: center; max-width: 620px; margin: 1rem auto; padding: 0 16px;">
+    <h2 style="text-align: center;">Plan de Mantenimiento</h2>
+
+    <p class="text">Los planes de mantenimiento anual tienen un costo reducido si se pagan de manera anual.
+      Sin embargo, con una opción personalizada de portal de citas (booking),
+      el mantenimiento aumenta debido al trabajo de mantener y asegurar una base de datos y servidores dedicados.</p>
+  </div>
+
+  <div class="pricing-table basic">
+    <div class="plan starter">
+      <h2 class="name">Mantenimiento Básico</h2>
+
+      <div class="price" id="monthly-price-basic" style="display: none;">$79 <sub>/ mensual</sub></div>
+      <div class="price" id="annually-price-basic">$799 <sub>/ año</sub></div>
+
+      <div class="bill-type">
+        <div class="monthly">Precio Anual</div>
+        <div class="bill-toggle">
+          <input type="checkbox" class="bill-toggle-checkbox" id="bill-toggle" onchange="togglePrice()">
+          <label for="bill-toggle"></label>
+        </div>
+        <div class="annually">Precio Mensual</div>
+      </div>
+
+      <script>
+        function togglePrice() {
+          var monthlyPrice = document.getElementById("monthly-price-basic");
+          var annuallyPrice = document.getElementById("annually-price-basic");
+          var toggleCheckbox = document.getElementById("bill-toggle");
+      
+          if (toggleCheckbox.checked) {
+            monthlyPrice.style.display = "block";
+            annuallyPrice.style.display = "none";
+          } else {
+            monthlyPrice.style.display = "none";
+            annuallyPrice.style.display = "block";
+          }
+        }
+      </script>
+
+      <ul class="features">
+        <li>Atualizaciones de Contenido limitadas (hasta 2 horas)</li>
+        <li>Gestión de Enlaces</li>
+        <li>Pruebas de Navegadores</li>
+        <li>Actualizaciones de Plataforma</li>
+        <li>Monitorización de Errores</li>
+        <li>Cumplimiento Normativo</li>
+        <li>Análisis del Tráfico</li>
+      </ul>
+
+    </div>
+
+    <div class="plan pro">
+      <h2 class="name">Mantenimiento con Formulario de Citas</h2>
+
+      <div class="price" id="monthly-price-pro" style="display: none;">$150 <sub>/ mensual</sub></div>
+      <div class="price" id="annually-price-pro">$1,650 <sub>/ año</sub></div>
+
+      <div class="bill-type">
+        <div class="monthly">Precio Anual</div>
+        <div class="bill-toggle">
+          <input type="checkbox" class="bill-toggle-checkbox" id="bill-toggle-2" onchange="togglePrice2()">
+          <label for="bill-toggle-2"></label>
+        </div>
+        <div class="annually">Precio Mensual</div>
+      </div>
+
+      <script>
+        function togglePrice2() {
+          var monthlyPrice = document.getElementById("monthly-price-pro");
+          var annuallyPrice = document.getElementById("annually-price-pro");
+          var toggleCheckbox = document.getElementById("bill-toggle-2");
+      
+          if (toggleCheckbox.checked) {
+            monthlyPrice.style.display = "block";
+            annuallyPrice.style.display = "none";
+          } else {
+            monthlyPrice.style.display = "none";
+            annuallyPrice.style.display = "block";
+          }
+        }
+      </script>
+
+      <ul class="features">
+        <li>Todo lo que incluye el plan Básico+</li>
+        <li>Mas Disponibilidad de mi parte a cualquier problema</li>
+        <li>Seguridad periódicas de la base de datos y archivo</li>
+        <li>Respaldo Regular/Seguridad Periódica</li>
+        <li>Monitoreo del Tiempo de Carga</li>
+      </ul>
+
+    </div>
+  </div>
+
+  <div style="text-align: center; max-width: 620px; margin: 1rem auto; padding: 0 16px;">
+    <h2 style="text-align: center;">Renovacion de Diseño (si aplica)</h2>
+
+    <p class="text">Cada proyecto es único, y los costos asociados a posibles mejoras en un futuro
+       dependerán de la magnitud del trabajo requerido.</p>
+  </div>
+
+  <footer style="text-align: center; padding: 1em 16px;">
+    <p>&copy; 2024 - Todos los derechos reservados | Federico Commisso</p>
+  </footer>
+</body>
+
+</html>
