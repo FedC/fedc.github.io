@@ -4,61 +4,318 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About me</title>
+  <title>Federico Commisso | Web Developer</title>
   <style>
-    :root {
-      --primary-color: #bc1e4a; /* Deep Pink-Red remains as the vibrant primary color for emphasis */
-      --secondary-color: #2a9d8f; /* Teal remains for a balanced and complementary contrast */
-      --body-bg: #6e238b; /* Slightly darker grey for the background, enhancing the depth and focus on content */
-      --text-color: #e0e1e3; /* Light grey for text, providing a softer contrast than pure white for improved readability */
-      --accent-color: #e9c46a; /* Saffron keeps its place for a warm, inviting accent */
-      --link-color: #f4a261; /* Sandy Brown remains for links, ensuring they stand out against the dark background */
-      --border-color: #264653; /* Dark Cyan-Blue continues to provide subtle, stylish borders */
-      --container-x: 5vw;
+    /* CSS Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
     }
-    h1 {
-      color: var(--primary-color);
+
+    /* Body Styling */
+    body {
+      color: #333;
+      background: #fafafa;
+      line-height: 1.6;
     }
+
+    /* Container */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.6s ease-out;
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @-webkit-keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Header */
+    .site-header {
+      background-color: #FFB6C1;
+      padding: 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #333;
+    }
+
+    .nav-menu ul {
+      list-style: none;
+      margin-top: 10px;
+    }
+
+    .nav-menu ul li {
+      display: inline;
+      margin: 0 15px;
+    }
+
+    .nav-menu ul li a {
+      text-decoration: none;
+      color: #333;
+      font-size: 1.2rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(45deg, #FFDDC1, #FAF0D7);
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .hero h2 {
+      font-size: 2.5rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: #666;
+    }
+
+    .cta-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #ff69b4;
+      color: #fff;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background-color: #ff1493;
+    }
+
+    /* Section Styling */
+    section {
+      padding: 40px 0;
+    }
+
     h2 {
-      color: var(--secondary-color);
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: 0.4px;
+      color: #333;
+      margin-bottom: 20px;
     }
-    p {
-      color: var(--text-color);
+
+    .about {
+      background: #FFDFD3;
     }
-    ul {
-      color: var(--text-color);
+
+    .about h2 {
+      font-weight: 400;
     }
-    footer {
-      color: var(--text-color);
+
+    .about p {
+      font-size: 1.2rem;
+      color: #666;
     }
-    
+  
+    /* Experience */
+    .experience-item {
+      background: #E0BBE4;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+
+    /* Skills */
+    .skill-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .skill-list li {
+      background-color: #FEC8D8;
+      margin: 5px;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 1rem;
+    }
+
+    /* Contact */
+    .contact {
+      background-color: #FFDFD3;
+      text-align: center;
+    }
+
+    .contact-button {
+      background-color: #ff69b4;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 400;
+    }
+
+    .contact-button:hover {
+      background-color: #ff1493;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #FFB6C1;
+      color: #333;
+    }
   </style>
 </head>
+
 <body>
-  <h1>Federico Commisso</h1>
-  <p>Hi! I'm Federico Commisso, a web developer from Argentina.</p>
+  <!-- Navigation -->
+  <header class="site-header">
+    <div class="container">
+      <h1 class="logo">Federico Commisso</h1>
+      <nav class="nav-menu">
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-  <h2>Skills</h2>
-  <ul>
-    <li>HTML</li>
-    <li>CSS</li>
-    <li>JavaScript</li>
-    <li>PHP</li>
-  </ul>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h2>Crafting Innovative Web Solutions</h2>
+      <p>Hi! I'm a passionate web developer with a background in computer science, experienced in building scalable
+        applications at startups like Squeeze.com and Cloud.com.</p>
+      <a href="#contact" class="cta-button">Let's Connect</a>
+    </div>
+  </section>
 
-  <h2>Projects</h2>
+  <!-- About Section -->
+  <section id="about" class="about">
+    <div class="container">
+      <h2>About Me</h2>
+      <p>I specialize in JavaScript and its ecosystem, working with technologies like Node.js, MongoDB, Angular, React,
+        and more. I thrive in dynamic startup environments, turning innovative ideas into functional, beautiful web
+        applications.</p>
+    </div>
+  </section>
 
-  <h3>Project 1</h3>
-  <p>Project 1 description</p>
+  <!-- Experience Section -->
+  <section id="experience" class="experience">
+    <div class="container">
+      <h2>Experience</h2>
+      <div class="experience-item">
+        <h3>Squeeze.com</h3>
+        <p>Tech Lead | Frontend Web Developer</p>
+        <p>Focused on building performant web applications with Angular and Node.js.</p>
+      </div>
+      <div class="experience-item">
+        <h3>Cloud.com</h3>
+        <p>Full-Stack Developer | Sr. Software Developer</p>
+        <p>Developed scalable web solutions using Firebase-like in-house web technologies, WebRTC, Javascript framworks & MongoDB, optimizing for user experience and accessibility.
+        </p>
+      </div>
+    </div>
+  </section>
 
-  <h3>Project 2</h3>
-  <p>Project 2 description</p>
+  <!-- Skills Section -->
+  <section id="skills" class="skills">
+    <div class="container">
+      <h2>Technical Skills</h2>
+      <ul class="skill-list">
+        <li>JavaScript</li>
+        <li>Node.js</li>
+        <li>MongoDB</li>
+        <li>Angular</li>
+        <li>React</li>
+        <li>HTML & CSS</li>
+        <li>TypeScript</li>
+      </ul>
+    </div>
+  </section>
 
-  <h3>Project 3</h3>
-  <p>Project 3 description</p>
+  <!-- Contact Section -->
+  <section id="contact" class="contact">
+    <div class="container">
+      <h2>Contact Me</h2>
+      <p>Interested in working together or have a project in mind? Reach out!</p>
+      <br>
+      <a href="mailto:fdcommisso@gmail.com" class="contact-button">Get in Touch</a>
+    </div>
+  </section>
 
-  <footer>
-    <p>&copy; 2024 Federico Commisso</p>
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy;
+      <span class="echo-date"></span> Federico Commisso. All rights reserved.
+    </p>
   </footer>
+
+  <!-- JavaScript for Animation (optional) -->
+  <script>
+    // Simple fade-in animation for sections
+    window.addEventListener('scroll', () => {
+      document.querySelectorAll('.container').forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < window.innerHeight) {
+          section.style.opacity = 1;
+          section.style.transform = 'translateY(0)';
+        }
+      });
+
+      // nav links: on click animate scroll to section
+      document.querySelectorAll('.nav-menu a').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href').substring(1);
+          const target = document.getElementById(targetId);
+          window.scrollTo({
+            top: target.offsetTop,
+            behavior: 'smooth'
+          });
+        });
+      });
+
+      // Display current year in footer
+      document.querySelector('.echo-date').textContent = new Date().getFullYear();
+    });
+  </script>
 </body>
+
 </html>
