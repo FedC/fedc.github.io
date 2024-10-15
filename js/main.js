@@ -11,10 +11,11 @@ window.onload = function () {
   //   .setPin('#my-sticky-element') // pins the element for the the scene's duration
   //   .addTo(controller); // assign the scene to the controller
 
-  // set .echo-date span content to current year
+}
+
+document.addEventListener('DOMContentLoaded', function () {
   const dateSpan = document.querySelector('.echo-date');
   if (dateSpan) {
     dateSpan.textContent = new Date().getFullYear();
   }
-
-}
+});
