@@ -436,50 +436,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      const sections = document.querySelectorAll('.section');
-      let isScrolling = false;
-
-      // Function to detect the direction of the scroll and the current section
-      function getScrollDirection(lastScrollTop, currentScrollTop) {
-        return currentScrollTop > lastScrollTop ? 'down' : 'up';
-      }
-
-      // Function to snap to the nearest section
-      function snapToSection(direction, currentSectionIndex) {
-        if (direction === 'down' && currentSectionIndex < sections.length - 1) {
-          sections[currentSectionIndex + 1].scrollIntoView({ behavior: 'smooth' });
-        } else if (direction === 'up' && currentSectionIndex > 0) {
-          sections[currentSectionIndex - 1].scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-
-      // Scroll event handler
-      let lastScrollTop = 0;
-      window.addEventListener('scroll', function () {
-        if (isScrolling) return;
-
-        const currentScrollTop = window.scrollY;
-        const direction = getScrollDirection(lastScrollTop, currentScrollTop);
-        lastScrollTop = currentScrollTop;
-
-        // Find the section the user is currently closest to
-        sections.forEach((section, index) => {
-          const rect = section.getBoundingClientRect();
-          const halfwayPoint = window.innerHeight / 2;
-
-          // If the section's top is within the halfway point, snap to it
-          if (rect.top <= halfwayPoint && rect.bottom >= halfwayPoint) {
-            isScrolling = true; // Prevent multiple scrolls
-            snapToSection(direction, index);
-            setTimeout(() => isScrolling = false, 1000); // Wait until scrolling finishes
-          }
-        });
-      });
-    });
-  </script>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
 
       // always load the page scrolled to the top
       window.scrollTo(0, 0);
