@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test</title>
+  <title>Create-Dwell</title>
 
   <style>
     @font-face {
@@ -28,6 +28,24 @@
       font-style: normal;
     }
 
+    :root {
+      font-size: 16px;
+      --color-text: #4a4a4a;
+      --color-bg: white;
+      --color-link: #f6aa0d;
+      --color-link-hover: #f6aa0d;
+      --perspective: 0px;
+      --grid-width: 100%;
+      --grid-item-ratio: 1.2;
+      --grid-item-radius: 4px;
+      --grid-gap: 2rem;
+      --grid-columns: 2;
+      --grid-columns-full: 7;
+      --grid-rows-full: 5;
+      --grid-item-translate: 0px;
+      --grid-item-height: auto;
+    }
+
     html {
       scroll-behavior: smooth;
     }
@@ -36,7 +54,8 @@
       margin: 0;
       padding: 0;
       font-family: 'Theinhardt', sans-serif;
-      background-color: #f6aa0d;
+      background-color: white;
+      color: #4a4a4a;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
@@ -58,10 +77,59 @@
       font-size: 2.5em;
     }
 
+    @media screen and (max-width: 768px) {
+      h2 {
+        font-size: 2em;
+      }
+
+    }
+
     *,
     *::after,
     *::before {
       box-sizing: border-box;
+    }
+
+
+    /* Page Loader */
+    .js .loading::before,
+    .js .loading::after {
+      content: '';
+      position: fixed;
+      z-index: 10000;
+    }
+
+    /* don't allow scroll while loading */
+    .js .loading {
+      overflow: hidden;
+    }
+
+    .js .loading::before {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--color-bg);
+    }
+
+    .js .loading::after {
+      top: 50%;
+      left: 50%;
+      width: 60px;
+      height: 60px;
+      margin: -30px 0 0 -30px;
+      border-radius: 50%;
+      opacity: 0.4;
+      background: var(--color-link);
+      animation: loaderAnim 0.7s linear infinite alternate forwards;
+
+    }
+
+    @keyframes loaderAnim {
+      to {
+        opacity: 1;
+        transform: scale3d(0.5, 0.5, 1);
+      }
     }
 
     /* Sticky header for logo */
@@ -76,7 +144,7 @@
       transition: opacity 0.5s ease;
       opacity: 0;
       will-change: opacity, background-color;
-
+      background-color: white;
     }
 
     .white-bg {
@@ -102,6 +170,21 @@
     .logo-header path,
     .logo-header circle {
       fill: white;
+    }
+
+    .logo-header.dark path,
+    .logo-header.dark circle {
+      fill: #4a4a4a;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
     }
 
     /* Fullscreen hero section */
@@ -144,25 +227,25 @@
       transform: scale(1) translate3d(0, 0, 0);
       transition: transform 0.3s, opacity 0.3s;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    }
-
-    .parallax-active {
-      transform: scale(1.3) translate3d(0, 0, 0);
-      /* Initial zoom */
+      transform-origin: center;
     }
 
     .lottie-component {
       z-index: 6;
       aspect-ratio: 2.75 / 4;
       cursor: pointer;
-      border: .8px solid #000;
+      border: 1px solid #000;
       width: 17em;
       position: fixed;
       top: 30%;
       right: 50%;
       transform: translate3d(calc(100% + 13px), 32px, 0) scale(1);
-      /* transition: transform 0.6s ease, opacity 0.2s ease; */
       transition: all 0.6s ease;
+      transform-origin: center;
+    }
+
+    .lottie-el path {
+      stroke-width: .5px;
     }
 
     @media screen and (max-width: 768px) {
@@ -178,7 +261,7 @@
       color: #F5AA0D;
     }
 
-    .grid {
+    .two-col-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       align-items: center;
@@ -189,7 +272,7 @@
     }
 
     @media screen and (max-width: 768px) {
-      .grid {
+      .two-col-grid {
         display: block;
       }
     }
@@ -220,6 +303,10 @@
       justify-content: center;
       align-items: center;
       height: 100%;
+    }
+
+    .contact-section {
+      padding: 0 24px;
     }
 
     form {
@@ -253,7 +340,7 @@
     }
 
     button {
-      background-color: #f6aa0d;
+      background-color: #F5AA0D;
       color: white;
       border: none;
       cursor: pointer;
@@ -294,19 +381,16 @@
       color: green;
     }
 
-    .loading {
-      color: #f6aa0d;
-    }
-
     .contact-image {
       max-width: 595px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
+
     .contact-image img {
       width: 100%;
-      border-radius: 1em;
+      border-radius: 1rem;
     }
   </style>
 
@@ -317,11 +401,6 @@
       background-color: #ffffff;
       z-index: 5;
       position: relative;
-      height: 100vh;
-    }
-
-    .text-section h2 {
-      /* max-width: 456px; */
     }
 
     .text-section p {
@@ -341,25 +420,32 @@
       align-items: center;
       padding: 40px;
     }
+
     .text-section-image img {
       width: 100%;
       height: auto;
-      border-radius: 1em;
+      border-radius: 1rem;
       margin-right: -40%;
     }
+
     @media screen and (max-width: 768px) {
       .text-section-image {
         max-width: 100%;
         margin-top: 40px;
+        padding: 0;
       }
-  
-    }
 
+      .text-section-image img {
+        margin-right: 0;
+        border-radius: .5rem;
+      }
+
+    }
   </style>
 
 </head>
 
-<body>
+<body class="loading">
 
   <header id="header">
     <svg class="logo-header" xmlns="http://www.w3.org/2000/svg" width="706px" height="146px" viewBox="0 0 706 116"
@@ -383,7 +469,7 @@
   <div class="hero-fullscreen section">
     <picture>
       <source srcset="images/Cornfeld.webp">
-      <img alt="" class="magnified-item-preload parallax-active" src="images/Cornfield.jpg" alt="">
+      <img alt="" class="magnified-item-preload" src="images/Cornfield.jpg" alt="">
     </picture>
 
     <!-- Full-sized logo in hero -->
@@ -413,10 +499,10 @@
 
   <!-- Text Section -->
   <div class="text-section section">
-    <div class="grid">
+    <div class="two-col-grid">
       <div>
-        <h2>We <span class='orange-color'>create</span> spaces <br>that inspire people to d<span
-            class='orange-color'>well</span>.</h2>
+        <h2>We <span class='orange-color'>create</span> spaces <br>that inspire people to <span
+            class='orange-color'>dwell</span>.</h2>
         <p>We envision impacting the lives of our clients through spaces that convey a sense of belonging to a place.
           The place chosen for a home, office, or cultural venue is imbued with significance. This along with each
           client’s needs and desires inform our design concepts and processes. When spaces effectively address the
@@ -429,8 +515,505 @@
     </div>
   </div>
 
-  <div class="section white-bg">
+
+  <style>
+    .section-projects {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      position: relative;
+    }
+
+    .section-projects .grid {
+      padding: 20vh 0;
+      width: var(--grid-width);
+      max-width: 90%;
+      grid-template-columns: repeat(var(--grid-columns), 1fr);
+      position: relative;
+      display: grid;
+      gap: var(--grid-gap);
+      margin-top: 20vh;
+      margin-bottom: 10vh;
+    }
+
+    .section-projects .grid__item {
+      margin: 0;
+      position: relative;
+      z-index: 1;
+      perspective: 800px;
+      will-change: transform, opacity;
+    }
+
+    .section-projects .grid__item > .grid__item-img,
+    .section-projects .grid__item-imgwrap {
+      width: 100%;
+      aspect-ratio: var(--grid-item-ratio);
+      height: var(--grid-item-height);
+      border-radius: var(--grid-item-radius);
+      transform-style: preserve-3d;
+    }
+
+    .section-projects .grid__item-imgwrap {
+      position: relative;
+      overflow: hidden;
+      will-change: filter;
+    }
+
+    .section-projects .grid__item-img {
+      background-size: cover;
+      background-position: 50% 20%;
+      backface-visibility: hidden;
+      will-change: transform;
+    }
+
+    .section-projects .grid__item-imgwrap>.grid__item-img {
+      position: absolute;
+      top: calc(-1 * var(--grid-item-translate));
+      left: calc(-1 * var(--grid-item-translate));
+      height: calc(100% + var(--grid-item-translate) * 2);
+      width: calc(100% + var(--grid-item-translate) * 2);
+    }
+
+
+    .mark {
+      position: fixed;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100vw;
+      left: 0;
+      z-index: 50;
+      overflow: hidden;
+    }
+
+    .mark__inner {
+      display: flex;
+      gap: 3rem;
+      width: max-content;
+      position: relative;
+      transform: translateX(100vw);
+      will-change: transform;
+    }
+
+    .mark__inner span {
+      white-space: nowrap;
+      text-transform: uppercase;
+      font-size: 3rem;
+      line-height: 1;
+    }
+  </style>
+  <section class="section-projects">
     <div class="grid">
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/1.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/2.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/3.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/4.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/5.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/6.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/7.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/8.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/9.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/10.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/11.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/12.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/13.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/14.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/15.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/16.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/17.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/18.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/19.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/20.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/1.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/2.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/3.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/4.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/5.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/6.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/7.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/8.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/9.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/10.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/11.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/12.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/13.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/14.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/15.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/16.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/17.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/18.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/19.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/20.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/1.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/2.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/3.jpg)"></div>
+        </div>
+      </figure>
+      <figure class="grid__item">
+        <div class="grid__item-imgwrap">
+          <div class="grid__item-img" style="background-image:url(images/4.jpg)"></div>
+        </div>
+      </figure>
+    </div><!-- grid -->
+    <div class="mark">
+      <div class="mark__inner font-alt">
+        <span>Residential</span> <span class="orange-color">Architecture</span>
+        <span>Commercial</span> <span class="orange-color">Architecture</span>
+        <span>Cultural</span> <span class="orange-color">Sculptures</span>
+        <span>Community</span> <span class="orange-color">Projects</span>
+        <span>Branding</span> <span class="orange-color">Design</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- <style>
+    .projects-list {
+      width: 100%;
+      position: relative;
+      margin-top: 80px;
+      min-height: 100vh;
+      display: block;
+    }
+
+    .project-list-inner {
+      display: block;
+      margin-bottom: 3.75rem;
+      position: relative;
+    }
+
+    .projects-list-item {
+      display: block;
+      position: relative;
+      overflow: hidden;
+      padding: 40px 20px 20px;
+    }
+
+    .projects-list-item p {
+      margin-top: 0;
+    }
+
+    .projects-list-item-image {
+      display: block;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s;
+      transition-delay: 1.2s;
+    }
+
+    .projects-list-item-arrow {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      transition-delay: 0.3s;
+      transition: opacity .6s cubic-bezier(0.215, 0.61, 0.355, 1), transform .6s cubic-bezier(0.215, 0.61, 0.355, 1);
+      position: absolute;
+      right: 0;
+      top: 0;
+      display: block;
+      width: 32px;
+      height: 20px;
+    }
+
+    .projects-list-item-name {
+      font-weight: 500;
+      line-height: 1;
+    }
+
+    .text-gray-dark {
+      margin-bottom: 24px;
+    }
+
+    .projects-list-item-slider img {
+      vertical-align: middle;
+      width: auto;
+      display: block;
+      max-height: 63vw;
+      aspect-ratio: auto 600 / 685;
+    }
+
+    .swiper-slide {
+      text-align: center;
+      font-size: 18px;
+      background: #fff;
+
+      /* Center slide text vertically */
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+    }
+
+    @media screen and (min-width: 768px) {
+      .projects-list-item {}
+
+      .projects-list-item-image {}
+
+      .projects-list-item-name {
+        padding-right: 1.875rem;
+      }
+
+    }
+  </style> -->
+
+  <!-- <div class="section white-bg projects-section">
+    <div class="projects-list">
+      <div class="projects-list-inner">
+        <section class="projects-list-item">
+          <article class="projects-list-item-image" id="project-1">
+
+            <a href="#" >
+              <span class="projects-list-item-arrow">
+                <svg width="32px" height="22px" viewBox="0 0 32 22" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="reshot-icon-arrow-up-ZGEKU95YAJ"
+                      transform="translate(16.000000, 11.000000) rotate(90.000000) translate(-16.000000, -11.000000) translate(5.000000, -5.000000)"
+                      fill="#4A4A4A" fill-rule="nonzero">
+                      <path
+                        d="M21.0024956,9.58249558 L11.71,0.29 L11.71,0.29 C11.3199625,-0.0977235947 10.6900375,-0.0977235947 10.3,0.29 L1.005,9.585 C0.615639251,9.97436075 0.615639251,10.6056393 1.005,10.995 C1.39436075,11.3843607 2.02563925,11.3843607 2.415,10.995 L10,3.41 L10,3.41 L10,31 C10,31.5522847 10.4477153,32 11,32 C11.5522847,32 12,31.5522847 12,31 L12,3.41 L12,3.41 L19.5853874,10.9953874 C19.9749363,11.3849363 20.606175,11.3860516 20.997098,10.9978816 L21,10.995 C21.390739,10.6070127 21.3929697,9.9757302 21.0049824,9.58499117 C21.0041549,9.58415784 21.003326,9.58332598 21.0024956,9.58249558 Z"
+                        id="Path"></path>
+                    </g>
+                  </g>
+                </svg>
+              </span>
+              <p class="projects-list-item-name">
+                Marquez Residence
+              </p>
+              <p class="text-gray-dark">
+                Residential
+              </p>
+            </a>
+
+            <div class="projects-list-item-slider">
+              <div class="swiper swiper-horizontal">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide">
+                    <picture>
+                      <source srcset="images/Marquez_04.webp"
+                        type="image/webp">
+                      <source srcset="images/Marquez_04.jpg" type="image/jpeg">
+                      <img loading="lazy"
+                        data-load-src="images/Marquez_04.jpg"
+                        src="images/Marquez_04.jpg" width="600"
+                        height="685" alt="">
+                    </picture>
+                  </div>
+                  <div class="swiper-slide">
+                    <picture>
+                      <source srcset="images/Marquez_06.webp"
+                        type="image/webp">
+                      <source srcset="images/Marquez_06.jpg" type="image/jpeg">
+                      <img loading="lazy"
+                        data-load-src="images/Marquez_06.jpg"
+                        src="images/Marquez_06.jpg" width="600"
+                        height="425" alt="">
+                    </picture>
+                  </div>
+                  <div class="swiper-slide">
+                    <picture>
+                      <source srcset="images/Marquez_13.webp"
+                        type="image/webp">
+                      <source srcset="images/Marquez_13.jpg" type="image/jpeg">
+                      <img loading="lazy"
+                        data-load-src="images/Marquez_13.jpg"
+                        src="images/Marquez_13.jpg" width="600"
+                        height="685" alt="">
+                    </picture>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </article>
+
+        </section>
+
+      </div>
+    </div>
+
+  </div> -->
+
+
+  <div class="section white-bg contact-section">
+    <div class="two-col-grid">
       <div>
         <h2>Get in touch</h2>
         <p>Let's talk about your project. We'd love to hear from you.</p>
@@ -458,17 +1041,52 @@
     </div>
   </div>
 
-  <div class="section footer-section">
-    <!-- <picture>
-      <source srcset="images/Wiebe_Residential.webp">
-      <img alt="" class="cover-image"
-        src="images/Wiebe_Residential.jpg"
-        alt="">
-    </picture> -->
+  <div class="section footer-section orange-bg">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="logo-white.svg" alt="">
+      </div>
+      <div class="footer-text">
+        <p>&copy; 2021 Create-Dwell. All rights reserved.</p>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.4/lottie.min.js"></script>
-  <script src="js/imagesloaded.pkgd.min.js"></script>
+
+  <!-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var swiper = new Swiper('.swiper', {
+        slidesPerView: 1.5,  // Only one slide per view for mobile
+        spaceBetween: 20,  // Space between slides
+        loop: true,        // Enable infinite scrolling
+        // centeredSlides: true,
+
+        // // If you want navigation arrows and pagination
+        // pagination: {
+        //   el: '.swiper-pagination',
+        //   clickable: true,
+        // },
+        // navigation: {
+        //   nextEl: '.swiper-button-next',
+        //   prevEl: '.swiper-button-prev',
+        // },
+  
+        // Responsive breakpoints
+        breakpoints: {
+          // when window width is >= 640px
+          640: {
+            slidesPerView: 1.5,  //  larger screens
+            spaceBetween: 20,
+          },
+          1024: {
+            slidesPerView: 1.5,  // even larger screens
+            spaceBetween: 30,
+          }
+        }
+      });
+    });
+  </script> -->
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -514,16 +1132,23 @@
         }
         if (scrollY > 200) {
           header.classList.add('visible');
+          logoHeader.classList.add('dark');
           logoHero.style.opacity = 0;
         } else {
           header.classList.remove('visible');
+          logoHeader.classList.remove('dark');
           logoHero.style.opacity = 1;
+        }
+        if (scrollY > window.innerHeight) {
+          image.style.transform
+        } else {
+          image.style.display = 'block';
         }
 
         if (textSectionRect.top < 100) {
-          header.classList.add('orange-bg');
+          // header.classList.add('orange-bg');
         } else {
-          header.classList.remove('orange-bg');
+          // header.classList.remove('orange-bg');
         }
 
         if (footerSectionRect.top < 100) {
@@ -534,6 +1159,14 @@
         } else {
           header.style.transition = 'opacity 0.2s ease';
           header.classList.remove('white-bg');
+        }
+
+        if (textSectionRect.bottom < window.innerHeight * .85) {
+          document.querySelector('.contact-form').style.opacity = 1;
+          document.querySelector('.contact-form').style.transform = `translate3d(0, 0, 0)`;
+        } else {
+          document.querySelector('.contact-form').style.opacity = 0;
+          document.querySelector('.contact-form').style.transform = `translate3d(50vh, 0, 0)`;
         }
 
         // Parallax effect for background zoom-out
@@ -549,22 +1182,7 @@
           }
           image.style.transform = `scale(${scaleValue})`;
         }
-        // make sure image is display none once it's past a certain point
-        if (scrollY > window.innerHeight) {
-          image.style.display = 'none';
-        } else {
-          image.style.display = 'block';
-        }
-
-
-        if (textSectionRect.bottom < window.innerHeight * .85) {
-          document.querySelector('.contact-form').style.opacity = 1;
-          document.querySelector('.contact-form').style.transform = `translate3d(0, 0, 0)`;
-        } else {
-          document.querySelector('.contact-form').style.opacity = 0;
-          document.querySelector('.contact-form').style.transform = `translate3d(50vh, 0, 0)`;
-        }
-
+        
       }
 
       function parallaxDesktop(scrollY) {
@@ -576,16 +1194,15 @@
           lottie.style.transform = `translate3d(0px, 0, 0) scale(1.5)`;
           var scaleFactor = 1.5;
           var lottieWidth = lottieRect.width * scaleFactor;
-          var edge = document.querySelector('.grid').getBoundingClientRect().right - 60;
+          var edge = document.querySelector('.text-section .two-col-grid').getBoundingClientRect().right - 60;
           var right = window.innerWidth - edge;
           lottie.style.right = `${right}px`;
         } else {
-          lottie.style.opacity = 1;
           lottie.style.transform = `translate3d(calc(100% + 13px), 32px, 0) scale(1)`;
           lottie.style.right = '50%';
         }
 
-        if (textSectionRect.bottom < window.innerHeight * .85) {
+        if (textSectionRect.bottom < window.innerHeight * .75) {
           lottie.style.opacity = 0;
           setTimeout(() => {
             lottie.style.display = 'none';
@@ -603,10 +1220,18 @@
         const textSectionRect = textSection.getBoundingClientRect();
         const lottieRect = lottie.getBoundingClientRect();
 
+        console.log('scrollY', scrollY);
+
         if (scrollY > 100) {
           lottie.style.opacity = 0;
         } else {
           lottie.style.opacity = 1;
+        }
+
+        if (scrollY > window.innerHeight) {
+          // lottie.style.transform = `translate3d(10000px, -100000px, 0) scale(1)`;
+        } else {
+          // lottie.style.transform = `translate3d(calc(100% - 10px), 45px, 0) scale(0.8)`;
         }
       }
 
@@ -619,6 +1244,7 @@
         } else {
           parallaxAll(scrollY);
           parallaxDesktop();
+          console.log('desktop');
         }
       });
     });
