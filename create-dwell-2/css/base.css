@@ -27,9 +27,9 @@
 
 :root {
 	font-size: 16px;
-	--color-text: #fff;
-	--color-bg: #000;
-	--color-link: #fff;
+	--color-text: #000;
+	--color-bg: white;
+	--color-link: #ef5d36;
 	--color-link-hover: #ef5d36;
 	--color-title: #fff;
 	--perspective: 0px;
@@ -192,7 +192,7 @@ main {
 }
 
 .intro {
-	height: calc(100vh - 4rem);
+  	height: 100vh;
     text-align: center;
     justify-items: center;
     display: grid;
@@ -200,7 +200,7 @@ main {
     margin-bottom: 30vh;
     grid-auto-rows: 1fr;
     gap: 1.5rem;
-    background: linear-gradient(to bottom, black, rgba(0,0,0,0), black), url(../img/bg.jpg) no-repeat 50% -10%;
+    background: url(../img/bg.jpg) no-repeat center center;
     background-size: cover;
   
 }
@@ -214,15 +214,6 @@ main {
     text-transform: uppercase;
     font-size: clamp(2rem,6vw,4rem);
     color: var(--color-title);
-}
-
-.tags {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 1rem;
-	text-transform: uppercase;
-	font-size: 13px;
-	align-self: start;
 }
 
 .intro__info {
