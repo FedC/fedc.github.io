@@ -17,7 +17,7 @@
     /* Body Styling */
     body {
       color: #333;
-      background: #fafafa;
+      background: white;
       line-height: 1.6;
     }
 
@@ -58,7 +58,7 @@
 
     /* Header */
     .site-header {
-      background-color: #FFB6C1;
+      background-color: #fff;
       padding: 20px;
       text-align: center;
       position: sticky;
@@ -90,7 +90,7 @@
 
     /* Hero Section */
     .hero {
-      background: linear-gradient(45deg, #FFDDC1, #FAF0D7);
+      background: linear-gradient(45deg, #f3f3f3, #fff);
       padding: 60px 20px;
       text-align: center;
     }
@@ -109,7 +109,7 @@
     .cta-button {
       display: inline-block;
       padding: 10px 20px;
-      background-color: #ff69b4;
+      background-color: #69b4ff;
       color: #fff;
       border-radius: 25px;
       text-decoration: none;
@@ -119,7 +119,7 @@
     }
 
     .cta-button:hover {
-      background-color: #ff1493;
+      background-color: #1493ff;
     }
 
     /* Section Styling */
@@ -136,7 +136,7 @@
     }
 
     .about {
-      background: #FFDFD3;
+      background: white;
     }
 
     .about h2 {
@@ -150,10 +150,27 @@
   
     /* Experience */
     .experience-item {
-      background: #E0BBE4;
+      background: linear-gradient(45deg, #ddedf6, #fff);
       padding: 20px;
       margin-bottom: 20px;
       border-radius: 8px;
+    }
+
+    .project-item {
+      background: linear-gradient(45deg, #ddf6e0, #fff);
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 1em;
+      padding-top: 1em;
+    }
+
+    ul li {
+      margin-bottom: 10px;
     }
 
     /* Skills */
@@ -164,7 +181,7 @@
     }
 
     .skill-list li {
-      background-color: #FEC8D8;
+      background-color: #ddedf6;
       margin: 5px;
       padding: 10px 20px;
       border-radius: 20px;
@@ -173,12 +190,12 @@
 
     /* Contact */
     .contact {
-      background-color: #FFDFD3;
+      background-color: white;
       text-align: center;
     }
 
     .contact-button {
-      background-color: #ff69b4;
+      background-color: #69b4ff;
       color: #fff;
       padding: 10px 20px;
       border-radius: 25px;
@@ -187,14 +204,18 @@
     }
 
     .contact-button:hover {
-      background-color: #ff1493;
+      background-color: #1493ff;
+    }
+
+    a {
+      text-decoration: none;
     }
 
     /* Footer */
     .footer {
       text-align: center;
       padding: 20px;
-      background-color: #FFB6C1;
+      background-color: white;
       color: #333;
     }
   </style>
@@ -250,6 +271,65 @@
         <p>Full-Stack Developer | Sr. Software Developer</p>
         <p>Developed scalable web solutions using Firebase-like in-house web technologies, WebRTC, Javascript framworks & MongoDB, optimizing for user experience and accessibility.
         </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="projects">
+    <div class="container">
+      <h2>Projects</h2>
+
+      <div class="project-item">
+        <h3>Create-Dwell Architecture Portfolio (Work in progress)</h3>
+        <p>
+          I'm currently working on a portfolio website for Create-Dwell Architecture, a local architecture firm.
+          You can view some proposed designs below:
+        </p>
+        <ul>
+          <li>
+            <a href="https://fedc.github.io/create-dwell-1/index.html" target="_blank">Parallax</a>
+          </li>
+          <li>
+            <a href="https://fedc.github.io/create-dwell-2/index.html" target="_blank">Gallery</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="project-item">
+        <h3>Pipestone Painting</h3>
+        <p>
+          I built a website for Pipestone Painting, a local painting company. You can view the site here:
+        </p>
+        <ul>
+          <li>
+            <a href="https://pipestonepainting.com/" target="_blank">Pipestone Painting</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="project-item">
+        <h3>Leo Commisso</h3>
+        <p>
+          I built a website for Leo Commisso, a cellist, musician, and composer. You can view the site here:
+        </p>
+        <ul>
+          <li>
+            <a href="https://leocommisso.com/" target="_blank">Leo Commisso</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="project-item">
+        <h3>SM Design & Home Improvement</h3>
+        <p>
+          I built a website for SM Design & Home Improvement, a construction consulting and services company in South
+          Florida. You can view the site here:
+        </p>
+        <ul>
+          <li>
+            <a href="https://smdesignhi.com/" target="_blank">SM Design & Home Improvement</a>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
