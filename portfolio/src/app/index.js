@@ -264,3 +264,20 @@ class ScrollStage {
 }
 
 new ScrollStage()
+
+document.addEventListener("DOMContentLoaded", function() {
+  var hrefs = document.querySelectorAll('.page-link');
+  hrefs.forEach(function(href) {
+    href.addEventListener('click', function(e) {
+      e.preventDefault();
+      var target = this.getAttribute('href');
+      var targetElement = document.querySelector(target);
+      var targetPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    });
+  });
+});
