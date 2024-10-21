@@ -104,7 +104,9 @@ body {
 
 .header-inner a {
   color: var(--accent-two-color);
-  font-size: 28px;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 /* .header-inner nav {
