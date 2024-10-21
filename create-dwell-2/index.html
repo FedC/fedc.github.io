@@ -241,10 +241,10 @@
       </div><!-- grid -->
       <div class="mark">
         <div class="mark__inner font-alt">
-          <span class="residential">Residential</span>
-          <span class="commercial">Commercial</span>
-          <span class="cultural">Cultural</span>
-          <span class="branding">Branding</span>
+          <span class="clickable residential">Residential</span>
+          <span class="clickable commercial">Commercial</span>
+          <span class="clickable cultural">Cultural</span>
+          <span class="clickable branding">Branding</span>
         </div>
       </div>
     </section>
@@ -268,6 +268,13 @@
   <script src="js/lenis.min.js"></script>
   <script src="js/smoothscroll.js"></script>
   <script type="module" src="js/index.js"></script>
+
+  <script>
+    // repeat the spans inside the mark__inner
+    const markInner = document.querySelector('.mark__inner');
+    const markInnerHTML = markInner.innerHTML;
+    markInner.innerHTML = markInnerHTML.repeat(100);
+  </script>
 </body>
 
 </html>
