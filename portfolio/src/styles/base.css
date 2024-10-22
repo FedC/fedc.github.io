@@ -189,6 +189,7 @@ form {
 	margin: 1rem auto;
 	padding: 3rem;
 	border-radius: 3px;
+	max-width: 600px;
 }
 
 textarea {
