@@ -14,86 +14,6 @@
 </head>
 
 <body class="loading">
-  <style>
-    /* Navigation styles */
-    .nav {
-      position: sticky;
-      /* cross-browser compatibility */
-      position: -webkit-sticky;
-      top: 0;
-      left: 0;
-      width: 100%;
-      
-      color: var(--color-text);
-      z-index: var(--nav-z-index);
-    }
-
-    .nav__inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      position: relative;
-    }
-
-    .nav__inner::after {
-      content: '';
-      display: block;
-      width: 130px;
-      height: 47px;
-      background-color: var(--color-link);
-      transition: width 0.3s;
-      position: absolute;
-      left: 10px;
-      top: 10px;
-      z-index: 3000;
-    }
-
-    .nav__logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      text-decoration: none;
-      color: white;
-      position: relative;
-      z-index: 3002
-    }
-
-    .nav__list {
-      list-style: none;
-      display: flex;
-      gap: 1.5rem;
-    }
-
-    .nav__item {
-      margin: 0;
-    }
-
-    .nav__link {
-      text-decoration: none;
-      color: var(--color-link);
-      transition: color 0.3s;
-      outline: none;
-      border-bottom: 1px dashed var(--color-text);
-    }
-
-    .nav__link:hover {
-      color: var(--color-link-hover);
-    }
-  </style>
-
-  <nav class="nav">
-    <div class="nav__inner">
-      <a href="#" class="nav__logo">
-        <img src="img/logo.svg" alt="Logo" width="200" />
-      </a>
-      <ul class="nav__list">
-        <li class="nav__item"><a href="#about" class="nav__link">About</a></li>
-        <li class="nav__item"><a href="#projects" class="nav__link">Projects</a></li>
-        <li class="nav__item"><a href="#contact" class="nav__link">Contact</a></li>
-      </ul>
-    </div>
-  </nav>
-
   <main class="shadow" id="main">
 
     <section>
@@ -341,18 +261,13 @@
       }
     </style>
 
-  </main>
 
-
-  <!-- Fullscreen Overlay for Expanded Project View -->
-  <article class="fullscreen-overlay">
-    <button class="unbutton close-overlay">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-        <path fill="currentColor" d="M19.79 6.41L18.36 5l-6.36 6.36L5 5 3.59 6.41 10.95 12l-7.36 7.36L5 19.36l6.36-6.36L18.36 19l1.41-1.41-6.36-6.36z" />
-      </svg>
-    </button>
-    <div class="project-content">
-      <!-- AJAX-loaded images will be inserted here -->
+    <!-- Fullscreen Overlay for Expanded Project View -->
+    <div class="fullscreen-overlay">
+      <button class="close-overlay">Close</button>
+      <div class="project-content">
+        <!-- AJAX-loaded images will be inserted here -->
+      </div>
     </div>
 
     <style>
@@ -436,21 +351,18 @@
       }
 
       .close-overlay {
+        position: fixed;
         top: 20px;
-        right: 50%;
-        transform: translateX(50%);
+        right: 20px;
         background: none;
-        color: var(--color-text);
+        color: white;
         font-size: 2rem;
-        z-index: var(--nav-z-index);
-        padding: 20px;
-      }
-      .close-overlay:hover {
-        color: var(--color-link);
         cursor: pointer;
+        z-index: 1001;
       }
     </style>
-  </article>
+
+  </main>
 
   <script src="js/gsap.min.js"></script>
   <script src="js/ScrollTrigger.min.js"></script>
