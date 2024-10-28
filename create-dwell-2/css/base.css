@@ -261,9 +261,9 @@ main {
 
 .mark__inner span {
 	white-space: nowrap;
-	text-transform: uppercase;
+	text-transform: capitalize;
 	font-size: 3rem;
-	line-height: 1;
+	line-height: 2;
 }
 
 section {
