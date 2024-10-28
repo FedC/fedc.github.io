@@ -35,6 +35,7 @@
 	--perspective: 0px;
 	--grid-width: 100%;
 	--grid-max-width: 420px;
+	--grid-max-width-mobile: 300px;
 	--grid-item-ratio: 1.2;
 	--grid-item-radius: 4px;
 	--grid-gap: 2rem;
@@ -307,6 +308,13 @@ section {
 	gap: var(--grid-gap);
 	margin-top: 20vh;
 	margin-bottom: 10vh;
+}
+
+/* add --grid-max-width-mobile */
+@media screen and (max-width: 53em) {
+	.grid {
+		max-width: var(--grid-max-width-mobile);
+	}
 }
 
 .grid--full {
