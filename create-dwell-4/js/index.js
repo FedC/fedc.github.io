@@ -3,8 +3,11 @@ import { preloadImages } from './utils.js'; // Import utility function to preloa
 let lenis; // Declare Lenis instance
 
 gsap.registerPlugin(ScrollTrigger); // Register GSAP's ScrollTrigger plugin
+gsap.registerPlugin(ScrollToPlugin);
 // gsap.registerPlugin(SplitText);     // Register GSAP's SplitText plugin
 
+const entry = document.querySelector('.entry-animation');
+const nav = document.querySelector('.nav');
 const grid = document.querySelector('.grid'); // Select the container that holds all grid items
 const gridImages = grid.querySelectorAll('.grid__item-imgwrap'); // Select all elements with the class '.grid__item-imgwrap'
 const marqueeInner = document.querySelector('.mark > .mark__inner'); // Select the inner element of the marquee
@@ -85,7 +88,7 @@ const animateMarquee = () => {
     }
   })
     .fromTo(marqueeInner, {
-      x: '100vw'                           // Start the marquee off-screen to the right
+      x: '150vw'                           // Start the marquee off-screen to the right
     }, {
       x: '-100%',                          // Move the marquee to the left (completely across the screen)
       ease: 'sine',
@@ -141,47 +144,61 @@ const localImages = {
     type: 'text',
     text: "The design of the museum showcases Suzhou’s Garden tradition as part of the exhibitions, taking visitors on a journey and exploration of art, nature, and water. The museum is scheduled for completion in 2025.\n\nThe museum’s main design element is the ribbon of the roof, which extends into a pattern of eaves that double as sheltered walkways through the site.",
   }, "img/2.jpg", {
-    type: 'quote',
-    text: "The museum is a place where art and nature coexist harmoniously.",
-  }, "img/8.jpg"],
+      type: 'quote',
+      text: "The museum is a place where art and nature coexist harmoniously.",
+    }, "img/8.jpg"],
   "project2": ["img/4.jpg", "img/5.jpg", "img/6.jpg"],
   // Add more projects as needed
 }; const handleGridItemClick = async (imageWrapper) => {
+
+  // lock scrolling
+  document.body.style.overflow = 'hidden';
+
   const projectId = imageWrapper.dataset.projectId;
   const img = imageWrapper.querySelector('.grid__item-img');
   const initialImgSrc = img.style.backgroundImage.slice(5, -2);
 
   // zoom in image to size of project content imag
-  const zoomedImg = document.createElement('img');
-  zoomedImg.src = initialImgSrc;
+  // const zoomedImg = document.createElement('img');
+  // zoomedImg.src = initialImgSrc;
+  // zoomedImg.classList.add('zoomed-image');
+  // document.body.appendChild(zoomedImg);
+
+  // clone imageWrapper
+  const zoomedImg = imageWrapper.cloneNode(true);
   zoomedImg.classList.add('zoomed-image');
+  // remove any .zoomed-image elements from the DOM
+  document.querySelectorAll('.zoomed-image').forEach(el => el.remove());
   document.body.appendChild(zoomedImg);
 
   // position the zoomed image to the same position as the clicked image
   const rect = imageWrapper.getBoundingClientRect();
   zoomedImg.style.position = 'fixed';
+  zoomedImg.style.zIndex = '6000'; // Ensure it's on top
+  zoomedImg.style.transition = 'none'; // Disable transition for immediate positioning
+  zoomedImg.style.transform = 'scale(1) translate3d(0, 0, 0)'; // Reset transform
   zoomedImg.style.top = `${rect.top}px`;
   zoomedImg.style.left = `${rect.left}px`;
   zoomedImg.style.width = `${rect.width}px`;
   zoomedImg.style.height = `${rect.height}px`;
-  zoomedImg.style.transition = 'none'; // Disable transition for immediate effect
-  zoomedImg.style.zIndex = '6000'; // Ensure it's on top
+  zoomedImg.style.objectFit = 'cover'; // Ensure the image covers the area
+  zoomedImg.style.borderRadius = 'var(--grid-item-radius)';
+  zoomedImg.style.filter = imageWrapper.style.filter; // Apply the same filter as the original image
 
-  // Trigger reflow to apply the styles immediately
-  void zoomedImg.offsetWidth;
+  zoomedImg.style.transition = 'transform 1s ease, opacity 0.5s ease, object-fit 0.5s ease';
 
-  overlay.classList.add('show');
-  document.getElementById('main').classList.remove('shadow');
-
-    // Add transition for zoom effect
-    zoomedImg.style.transition = 'transform 1s ease, opacity 0.5s ease';
-    zoomedImg.style.transform = 'scale(3.4)';
-    zoomedImg.style.opacity = '.88'; // Fade in the image
+  // append a spinner to the image while loading
+  const spinner = document.createElement('div');
+  spinner.classList.add('spinner');
+  zoomedImg.appendChild(spinner);
 
   // Load additional project images after zoom
   const images = localImages[projectId] || [];
   images[0] = initialImgSrc; // Ensure the initial image is included
   await new Promise(resolve => setTimeout(resolve, 500)); // Simulated delay
+  // debugger;
+  // remove spinner
+  spinner.remove();
 
   projectContent.innerHTML = ''; // Clear existing content
   images.forEach(imgSrc => {
@@ -201,19 +218,58 @@ const localImages = {
       // Handle image sources
       const imgElement = document.createElement('img');
       imgElement.src = imgSrc;
+      imgElement.classList.add('project-image');
+      const alt = imgSrc.split('/').pop().split('.')[0]; // Extract alt text from image filename
+      imgElement.alt = `${alt}`;
       projectContent.appendChild(imgElement);
     }
   });
 
-  // Replace zoomed image with project content
-  zoomedImg.remove();
   overlay.appendChild(projectContent);
   isOverlayOpen = true;
 
   // Preload images to prevent visual loading issues
   await preloadImages('.project-content img');
+  const overlayFirstImg = projectContent.querySelector('img');
+  overlayFirstImg.style.opacity = 0; // Start with hidden image
+  const firstImgRect = overlayFirstImg.getBoundingClientRect();
+  overlay.classList.add('show');
+  document.getElementById('main').classList.remove('shadow');
 
-  initLenisHorizontalScroll();
+  // animate gspa timeline for zoomed image to overlay image position
+  gsap.timeline()
+    .to(zoomedImg, {
+      duration: 0.3,
+      ease: 'power2.out',
+      top: `${firstImgRect.top}px`,
+      left: `${firstImgRect.left}px`,
+      width: `${firstImgRect.width}px`,
+      height: `${firstImgRect.height}px`,
+      scale: 1,
+      blur: 0,
+      skewX: 0,
+      skewY: 0,
+      rotateX: 0,
+      rotateY: 0,
+      rotateZ: 0,
+      translateX: 0,
+      translateY: 0,
+      translateZ: 0,
+      onComplete: () => {
+        overlayFirstImg.style.opacity = 1; // Fade in the first image
+        gsap.to(zoomedImg, {
+          duration: .2,
+          opacity: 0,
+        }).then(() => {
+          zoomedImg.remove();
+        });
+      }
+    }).then(async () => {
+      // allow scrolling
+      document.body.style.overflow = 'auto';
+
+      initLenisHorizontalScroll();
+    });
 };
 
 // Initialize Lenis for horizontal scrolling
@@ -252,12 +308,13 @@ const initLenisHorizontalScroll = () => {
 const closeOverlay = () => {
   // animate overlay fade out
   overlay.classList.add('fade-out');
+
   setTimeout(() => {
-      overlay.classList.remove('show');
-      document.getElementById('main').classList.add('shadow');
-      projectContent.innerHTML = ''; // Clear content
-      isOverlayOpen = false; // Reset overlay status
-      overlay.classList.remove('fade-out'); // Remove fade-out class
+    overlay.classList.remove('show');
+    document.getElementById('main').classList.add('shadow');
+    projectContent.innerHTML = ''; // Clear content
+    isOverlayOpen = false; // Reset overlay status
+    overlay.classList.remove('fade-out'); // Remove fade-out class
   }, 600); // Match duration with CSS transition
 };
 
@@ -268,18 +325,57 @@ document.querySelectorAll('.grid__item-imgwrap').forEach(imageWrap => {
 
 closeOverlayBtn.addEventListener('click', closeOverlay);
 
+function animateGridOnLoad() {
+  window.scrollTo(0, 0);
+
+  gsap.timeline()
+    .delay(1)
+    .to(entry, {
+      left: '-100vw',
+      duration: 1.5,
+      opacity: 0,
+      ease: 'sine.out',
+    })
+    .from(nav, {
+      translateY: '-100%',
+    }, '=-1')
+    .to(nav, {
+      translateY: '0',
+      ease: 'sine.out',
+    })
+    .to(grid, {
+      opacity: 1,
+      duration: .5,
+      ease: 'sine.out',
+    }, '=-.5')
+    .to(window, {
+      scrollTo: {
+        y: document.body.clientHeight / 5,
+      },
+      duration: 2,
+      ease: 'power2.out' 
+    }, '-=.5');
+}
+
 // Main initialization function
 const init = () => {
+   
   animateScrollGrid();    // Animate the grid items on scroll
   animateMarquee();       // Animate the marquee on scroll
   animateTextElement();   // Animate the split text on scroll
   // animateCredits();       // Call the credits animation
+
+  grid.style.opacity = 0;
+  nav.style.translateY = '-100%';
+  setTimeout(() => {
+    animateGridOnLoad();
+  }, 100)
 };
 
 // Preload images and initialize animations after the images have loaded
 preloadImages('.grid__item-img').then(() => {
   document.body.classList.remove('loading'); // Remove the 'loading' class from the body
-  window.scrollTo(0, 0); // Scroll to the top of the page on load
+
   setTimeout(() => {
     init(); // Initialize the animations
   }, 0);
