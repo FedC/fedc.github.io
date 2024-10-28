@@ -372,7 +372,7 @@
         overflow-y: hidden;
         /* Disable vertical scroll */
         z-index: 1000;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.6s ease;
         opacity: 0;
         visibility: hidden;
       }
@@ -381,6 +381,31 @@
       .fullscreen-overlay.show {
         visibility: visible;
         opacity: 1;
+      }
+      .fullscreen-overlay.show .project-content {
+        opacity: 0;
+        animation: scaleFadeIn 1s ease forwards;
+      }
+
+      @keyframes scaleFadeIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @-webkit-keyframes scaleFadeIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
       }
 
       .fullscreen-overlay.fade-out {
@@ -457,7 +482,7 @@
   <script src="js/imagesloaded.pkgd.min.js"></script>
   <script src="js/lenis.min.js"></script>
   <script src="js/smoothscroll.js"></script>
-  <script type="module" src="js/index.js?v=1.0.1"></script>
+  <script type="module" src="js/index.js?v=1.0.2"></script>
 
   <script>
     // repeat the spans inside the mark__inner
