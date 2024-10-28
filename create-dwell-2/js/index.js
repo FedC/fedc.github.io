@@ -155,16 +155,17 @@ const localImages = {
   const zoomedImg = document.createElement('img');
   zoomedImg.src = initialImgSrc;
   zoomedImg.classList.add('zoomed-image');
-  overlay.appendChild(zoomedImg);
+  document.body.appendChild(zoomedImg);
 
   // position the zoomed image to the same position as the clicked image
   const rect = imageWrapper.getBoundingClientRect();
-  zoomedImg.style.position = 'absolute';
+  zoomedImg.style.position = 'fixed';
   zoomedImg.style.top = `${rect.top}px`;
   zoomedImg.style.left = `${rect.left}px`;
   zoomedImg.style.width = `${rect.width}px`;
   zoomedImg.style.height = `${rect.height}px`;
   zoomedImg.style.transition = 'none'; // Disable transition for immediate effect
+  zoomedImg.style.zIndex = '6000'; // Ensure it's on top
 
   // Trigger reflow to apply the styles immediately
   void zoomedImg.offsetWidth;
@@ -173,11 +174,9 @@ const localImages = {
   document.getElementById('main').classList.remove('shadow');
 
     // Add transition for zoom effect
-    zoomedImg.style.transition = 'transform .6s ease, opacity 0.5s ease';
-    zoomedImg.style.transform = 'scale(2)'; // Scale up the image
-    zoomedImg.style.opacity = '1'; // Fade in the image
-    
-  
+    zoomedImg.style.transition = 'transform 1s ease, opacity 0.5s ease';
+    zoomedImg.style.transform = 'scale(3.4)';
+    zoomedImg.style.opacity = '.88'; // Fade in the image
 
   // Load additional project images after zoom
   const images = localImages[projectId] || [];
