@@ -27,10 +27,10 @@
 
 :root {
 	font-size: 16px;
-	--color-text: #000;
+	--color-text: #333;
 	--color-bg: white;
-	--color-link: #ef5d36;
-	--color-link-hover: #ef5d36;
+	--color-link: #f6ab0b;
+	--color-link-hover: #fbad05;
 	--color-title: #fff;
 	--perspective: 0px;
 	--grid-width: 100%;
@@ -43,6 +43,11 @@
 	--grid-rows-full: 5;
 	--grid-item-translate: 0px;
 	--grid-item-height: auto;
+	--loading-z-index: 10000;
+	--nav-z-index: 7000;
+	--frame-z-index: 6000;
+	--shadow-z-index: 5000;
+	--mark-z-index: 50;
 }
 
 body {
@@ -75,7 +80,7 @@ body {
 .js .loading::after {
 	content: '';
 	position: fixed;
-	z-index: 10000;
+	z-index: var(--loading-z-index);
 }
 
 .js .loading::before {
@@ -169,7 +174,7 @@ main {
 	grid-template-columns: 1fr 1fr 1fr;
 	grid-template-areas: 'back archive github' 'sponsor sponsor sponsor' ;
 	grid-gap: 1.5rem;
-	z-index: 6000;
+	z-index: var(--frame-z-index);
 }
 
 .frame__title {
@@ -246,7 +251,7 @@ main {
 	transform: translateY(-50%);
 	width: 100vw;
 	left: 0;
-	z-index: 50;
+	z-index: var(--mark-z-index);
 	overflow: hidden;
 }
 
@@ -280,7 +285,7 @@ section {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	z-index: 5000;
+	z-index: var(--shadow-z-index);
 	pointer-events: none;
 	background: linear-gradient(to right, var(--color-bg), transparent, var(--color-bg));
 	background-repeat: no-repeat;
