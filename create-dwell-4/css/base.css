@@ -34,7 +34,7 @@
 	--color-title: #fff;
 	--perspective: 0px;
 	--grid-width: 100%;
-	--grid-max-width: 300px;
+	--grid-max-width: 420px;
 	--grid-item-ratio: 1.2;
 	--grid-item-radius: 4px;
 	--grid-gap: 2rem;
@@ -291,6 +291,11 @@ section {
 	background-repeat: no-repeat;
 	background-size: 100%;
 }
+@media screen and (max-width: 53em) {
+	.shadow::after {
+		display: none;
+	}
+}
 
 .grid {
 	padding: 20vh 0;
@@ -381,5 +386,104 @@ section {
 	.frame #cdawrap {
 		max-width: 300px;
 		text-align: right;
+	}
+}
+
+
+.spinner {
+	margin: auto;
+	display: block;
+	margin-top: 13%;
+	width: 80px;
+	height: 80px;
+	border-top-color: transparent;
+	/* animation: spin 1s linear infinite; */
+	position: relative;
+	z-index: var(--loading-z-index);
+	height: 100%;
+	justify-content: center;
+	align-items: center;
+}
+.spinner::before {
+	content: '';
+	width: 40px;
+	height: 40px;
+	background-color: #f6ab0b;
+	border-radius: 50%;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	margin-top: -25%;
+	transform: translate3d(0, -50%, 0);
+	animation: shrinkAndGrowLeft 1s ease-in-out infinite;
+}
+.spinner::after {
+	content: '';
+	width: 40px;
+	height: 40px;
+	background-color: #ffffff;
+	border-radius: 50%;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	margin-top: -25%;
+	transform: translate3d(0, -50%, 0);
+	animation: shrinkAndGrowRight 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+@-webkit-keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes shrinkAndGrowLeft {
+	0% {
+		transform: translate3d(0, -50%, 0) scale(1);
+	}
+	50% {
+		transform: translate3d(40px, -50%, 0) scale(.8);
+	}
+	100% {
+		transform: translate3d(0, -50%, 0) scale(1);
+	}
+}
+@-webkit-keyframes shrinkAndGrowLeft {
+	0% {
+		transform: translate3d(0, -50%, 0) scale(1);
+	}
+	50% {
+		transform: translate3d(40px, -50%, 0) scale(.8);
+	}
+	100% {
+		transform: translate3d(0, -50%, 0) scale(1);
+	}
+}
+
+@keyframes shrinkAndGrowRight {
+	0% {
+		transform: translate3d(0, -50%, 0) scale(.7);
+	}
+	50% {
+		transform: translate3d(-40px, -50%, 0) scale(1);
+	}
+	100% {
+		transform: translate3d(0, -50%, 0) scale(.7);
+	}
+}
+@-webkit-keyframes shrinkAndGrowRight {
+	0% {
+		transform: translate3d(0, -50%, 0) scale(.7);
+	}
+	50% {
+		transform: translate3d(-40px, -50%, 0) scale(1);
+	}
+	100% {
+		transform: translate3d(0, -50%, 0) scale(.7);
 	}
 }

@@ -22,31 +22,19 @@
       position: -webkit-sticky;
       top: 0;
       left: 0;
-      width: 140px;
-      background-color: var(--color-link);
+      width: 100%;
       color: var(--color-text);
       z-index: var(--nav-z-index);
+      transform: translate3d(0, 0, 0);
     }
 
     .nav__inner {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      padding: 1rem 2rem;
+      padding: 0;
       position: relative;
-    }
-
-    .nav__inner::after {
-      content: '';
-      display: block;
-      width: 130px;
-      height: 47px;
-      background-color: var(--color-link);
-      transition: width 0.3s;
-      position: absolute;
-      left: 10px;
-      top: 10px;
-      z-index: 3000;
+      width: 100%;
     }
 
     .nav__logo {
@@ -56,6 +44,12 @@
       color: white;
       position: relative;
       z-index: 3002
+    }
+
+    .nav__logo img {
+      vertical-align: bottom;
+      max-width: 500px;
+      width: 100%;
     }
 
     .nav__list {
@@ -85,13 +79,13 @@
   <nav class="nav">
     <div class="nav__inner">
       <a href="#" class="nav__logo">
-        <img src="img/logo.svg" alt="Logo" width="200" />
+        <img src="img/logo_box.svg" alt="Logo" width="500" />
       </a>
-      <ul class="nav__list">
+      <!-- <ul class="nav__list">
         <li class="nav__item"><a href="#about" class="nav__link">About</a></li>
         <li class="nav__item"><a href="#projects" class="nav__link">Projects</a></li>
         <li class="nav__item"><a href="#contact" class="nav__link">Contact</a></li>
-      </ul>
+      </ul> -->
     </div>
   </nav>
 
@@ -322,23 +316,27 @@
       </div><!-- grid -->
       <div class="mark">
         <div class="mark__inner font-alt">
+          <span class="clickable architecture">Architecture</span>
+          <span class="clickable interior-design">Interior Design</span>
           <span class="clickable residential">Residential</span>
           <span class="clickable commercial">Commercial</span>
           <span class="clickable cultural">Cultural</span>
-          <span class="clickable branding">Branding</span>
         </div>
       </div>
     </section>
 
     <style>
+      .grid {
+        opacity: 0;
+      }
       .grid__item {
         transform: scale(1);
-        transition: transform 0.5s ease-in-out;
+        transition: transform 0.2s ease-in-out;
         cursor: pointer;
       }
 
       .grid__item:hover {
-        transform: scale(1.5);
+        transform: scale(1.1);
       }
     </style>
 
@@ -391,7 +389,7 @@
       @keyframes scaleFadeIn {
         0% {
           opacity: 0;
-          transform: scale(0.95);
+          /* transform: scale(0.99); */
         }
         100% {
           opacity: 1;
@@ -401,7 +399,7 @@
       @-webkit-keyframes scaleFadeIn {
         0% {
           opacity: 0;
-          transform: scale(0.95);
+          /* transform: scale(0.99); */
         }
         100% {
           opacity: 1;
@@ -412,22 +410,6 @@
       .fullscreen-overlay.fade-out {
         opacity: 0;
         transition: opacity 0.6s ease;
-      }
-
-      /* Zoomed image style */
-      .fullscreen-image {
-        width: 80vw;
-        height: auto;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-        transform-origin: center;
-        transform: translate3d(-50%, -50%, 0);
-        margin-left: 50%;
-        position: fixed;
-        left: 0;
-        top: 0;
-        margin-top: 50%;
-        z-index: 1001;
       }
 
       /* Project content for horizontal layout */
@@ -446,6 +428,17 @@
         height: 80vh;
         /* Fit image to viewport height */
         cursor: pointer;
+      }
+
+      .project-image {
+        /* object-fit: cover; */
+      }
+      /* ensure project img is not bigger than phone width on phones */
+      @media (max-width: 768px) {
+        .project-content img {
+          height: 60vh;
+          max-width: 90vw;
+        }
       }
 
       .project-quote {
@@ -478,7 +471,31 @@
     </style>
   </article>
 
+  <article class="entry-animation">
+    <img class="entry-logo" src="img/logo.svg" width="320" />
+  </article>
+
+  <style>
+    .entry-animation {
+      position: fixed;
+      z-index: var(--nav-z-index);
+      width: 100vw;
+      height: 100vh;
+      left: 0;
+      top: 0;
+      background-color: var(--color-link);
+      background: linear-gradient(90deg, var(--color-link) 50%, white 50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .entry-logo {
+      transform: translate3d(-12px, 0, 0);
+    }
+  </style>
+
   <script src="js/gsap.min.js"></script>
+  <script src="js/ScrollToPlugin.min.js"></script>
   <script src="js/ScrollTrigger.min.js"></script>
   <script src="js/imagesloaded.pkgd.min.js"></script>
   <script src="js/lenis.min.js"></script>
@@ -487,9 +504,9 @@
 
   <script>
     // repeat the spans inside the mark__inner
-    const markInner = document.querySelector('.mark__inner');
-    const markInnerHTML = markInner.innerHTML;
-    markInner.innerHTML = markInnerHTML.repeat(100);
+    // const markInner = document.querySelector('.mark__inner');
+    // const markInnerHTML = markInner.innerHTML;
+    // markInner.innerHTML = markInnerHTML.repeat(2);
   </script>
 </body>
 
