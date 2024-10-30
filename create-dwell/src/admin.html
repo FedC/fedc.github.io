@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <meta name="author" content="Federico Commisso" />
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="./scss/base.scss">
+    <link rel="stylesheet" href="./scss/admin.scss">
+</head>
+
+<body>
+    <h1>Admin Dashboard</h1>
+
+    <button id="logoutBtn">Logout</button>
+
+    <section>
+        <!-- list images by project -->
+    </section>
+
+    <!-- Upload project images -->
+    <section>
+        <form id="projectForm">
+            <label for="title">Project Title:</label>
+            <input type="text" id="title" name="title">
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location">
+
+            <label for="area">Area (sq ft):</label>
+            <input type="number" id="area" name="area">
+
+            <label for="projectType">Project Type:</label>
+            <select id="projectType" name="projectType">
+                <option value="Historic Interior Renovation">Historic Interior Renovation</option>
+                <option value="Interior Renovation">Interior Renovation</option>
+                <option value="New Construction">New Construction</option>
+                <option value="Schematic Proposal">Schematic Proposal</option>
+                <option value="Renovation">Renovation</option>
+            </select>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"></textarea>
+
+            <label for="images">Upload Images:</label>
+            <input type="file" id="images" name="images" multiple>
+
+            <label for="photoCredit">Photo Credit:</label>
+            <input type="text" id="photoCredit" name="photoCredit">
+
+            <label for="role">Role:</label>
+            <input type="text" id="role" name="role">
+
+            <label for="award">Award:</label>
+            <input type="text" id="award" name="award">
+
+            <label for="use">Use:</label>
+            <input type="text" id="use" name="use">
+
+            <label for="order">Order:</label>
+            <input type="number" id="order" name="order">
+
+            <label for="mainImage">Main Image:</label>
+            <input type="file" id="mainImage" name="mainImage">
+
+            <!-- Add other fields as needed, like 'photoCredit', 'role', etc. -->
+            <button type="submit">Save Project</button>
+        </form>
+    </section>
+
+    <!-- Display project data -->
+    <section>
+        <h2>Manage Projects</h2>
+        <div id="projectsList">
+            <!-- Project data will be displayed here -->
+        </div>
+    </section>
+
+    <script type="module" src="./js/firebase-dashboard.js"></script>
+    <script type="module" src="./js/dashboard.js"></script>
+</body>
+
+</html>

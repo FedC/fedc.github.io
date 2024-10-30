@@ -2,3 +2,8 @@
 /.cache
 /.parcel-cache
 package-lock.json
+/dist
+/tmp
+.firebase
+.functions
+.DS_Store
