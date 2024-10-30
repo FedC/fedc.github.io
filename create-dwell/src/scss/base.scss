@@ -20,14 +20,13 @@
   font-style: normal;
 }
 
-// SCSS Variables
 $font-sans: 'Theinhardt', sans-serif;
 $font-alt: 'Poiret One', sans-serif;
 
 // Root Variables (CSS custom properties)
 :root {
   font-size: 16px;
-  --color-text: #333;
+  --color-text: #1b1b1b;
   --color-bg: white;
   --color-link: #f6ab0b;
   --color-link-hover: #fbad05;
@@ -51,7 +50,6 @@ $font-alt: 'Poiret One', sans-serif;
   --mark-z-index: 50;
 }
 
-// Mixins
 @mixin transition($property, $duration: 0.3s) {
   transition: $property $duration ease-in-out;
 }

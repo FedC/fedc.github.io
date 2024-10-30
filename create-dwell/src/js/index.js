@@ -3,8 +3,7 @@ import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-
-import { storage } from './firebase'; // Import Firebase Firestore and Storage
+import { storage } from './firebase';
 import { ref, listAll, getDownloadURL } from 'firebase/storage';
 
 async function getProjectImages(projectId) {
@@ -158,7 +157,7 @@ const handleGridItemClick = async (imageWrapper) => {
   let images = [];
   try {
     images = await getProjectImages(projectId);
-    debugger;
+    // debugger;
   } catch (error) {
     console.error("Error fetching project data:", error);
   }
