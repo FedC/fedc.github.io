@@ -8,7 +8,12 @@
     "clean": "rm -rf dist/*",
     "build:parcel": "parcel build src/index.html --no-content-hash --no-source-maps --public-url ./",
     "build": "npm run clean && npm run build:parcel",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "firebase serve",
+    "emulate": "firebase emulators:start",
+    "deploy": "firebase deploy --only hosting",
+    "deploy:all": "firebase deploy",
+    "deploy:functions": "firebase deploy --only functions"
   },
   "keywords": [],
   "author": "",
@@ -16,11 +21,16 @@
   "devDependencies": {
     "@parcel/transformer-glsl": "^2.12.0",
     "@parcel/transformer-sass": "^2.12.0",
-    "parcel": "^2.12.0"
+    "buffer": "^6.0.3",
+    "parcel": "^2.12.0",
+    "process": "^0.11.10"
   },
   "dependencies": {
+    "firebase": "^11.0.1",
+    "firebase-admin": "^12.7.0",
     "gsap": "^3.12.5",
     "imagesloaded": "^5.0.0",
-    "lenis": "^1.1.14"
+    "lenis": "^1.1.14",
+    "sharp": "^0.33.5"
   }
 }
