@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+
+<body>
+  <h1>Admin Dashboard</h1>
+
+  <!-- Form to Add New Project -->
+  <form id="add-project-form">
+    <input type="text" id="title" placeholder="Project Title" required />
+    <input type="text" id="description" placeholder="Project Description" required />
+    <input type="file" id="images" multiple />
+    <button type="submit">Add Project</button>
+  </form>
+
+  <!-- List of Existing Projects -->
+  <div id="project-list">
+    <!-- Projects will be dynamically injected here -->
+  </div>
+
+  <script type="module">
+    import { auth, db, storage } from './firebase.js';
+    import { addDoc, collection, getDocs } from 'firebase/firestore';
+    import { uploadBytes, getDownloadURL, ref } from 'firebase/storage';
+
+    // Function to fetch and display projects
+    const projectList = document.getElementById('project-list');
+    async function fetchProjects() {
+      const querySnapshot = await getDocs(collection(db, 'projects'));
+      querySnapshot.forEach((doc) => {
+        const projectData = doc.data();
+        const projectElement = document.createElement('div');
+        projectElement.innerHTML = `
+          <h3>${projectData.title}</h3>
+          <p>${projectData.description}</p>
+          <img src="${projectData.images[0]}" width="100" />
+        `;
+        projectList.appendChild(projectElement);
+      });
+    }
+    fetchProjects();
+
+    // Form to add new project
+    const addProjectForm = document.getElementById('add-project-form');
+    addProjectForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      const imageFiles = document.getElementById('images').files;
+
+      // Upload images to Firebase Storage
+      let imageUrls = [];
+      for (let file of imageFiles) {
+        const imageRef = ref(storage, 'images/' + file.name);
+        await uploadBytes(imageRef, file);
+        const imageUrl = await getDownloadURL(imageRef);
+        imageUrls.push(imageUrl);
+      }
+
+      // Add project to Firestore
+      await addDoc(collection(db, 'projects'), {
+        title: title,
+        description: description,
+        images: imageUrls
+      });
+
+      alert('Project added successfully!');
+      addProjectForm.reset();
+      fetchProjects();
+    });
+  </script>
+</body>
+
+</html>

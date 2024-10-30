@@ -4,6 +4,29 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
+import { storage } from './firebase'; // Import Firebase Firestore and Storage
+import { ref, listAll, getDownloadURL } from 'firebase/storage';
+
+async function getProjectImages(projectId) {
+  try {
+    // Reference to the project images directory
+    const projectImagesRef = ref(storage, `projects/${projectId}/images`);
+
+    // List all files in the directory
+    const result = await listAll(projectImagesRef);
+
+    // Get download URLs for each file
+    const imageUrls = await Promise.all(
+      result.items.map(itemRef => getDownloadURL(itemRef))
+    );
+
+    console.log('Project Images:', imageUrls);
+    return imageUrls;
+  } catch (error) {
+    console.error('Error fetching project images:', error);
+  }
+}
+
 let lenis;
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
@@ -90,17 +113,18 @@ const animateMarquee = () => {
     });
 };
 
-const localImages = {
-  "project1": ["img/1.jpg", {
-    type: 'text',
-    text: "The design of the museum showcases Suzhou’s Garden tradition as part of the exhibitions, taking visitors on a journey and exploration of art, nature, and water. The museum is scheduled for completion in 2025.\n\nThe museum’s main design element is the ribbon of the roof, which extends into a pattern of eaves that double as sheltered walkways through the site.",
-  }, "img/2.jpg", {
-      type: 'quote',
-      text: "The museum is a place where art and nature coexist harmoniously.",
-    }, "img/8.jpg"],
-  "project2": ["img/4.jpg", "img/5.jpg", "img/6.jpg"],
-  // Add more projects as needed
-}; const handleGridItemClick = async (imageWrapper) => {
+// const localImages = {
+//   "project1": ["img/1.jpg", {
+//     type: 'text',
+//     text: "The design of the museum showcases Suzhou’s Garden tradition as part of the exhibitions, taking visitors on a journey and exploration of art, nature, and water. The museum is scheduled for completion in 2025.\n\nThe museum’s main design element is the ribbon of the roof, which extends into a pattern of eaves that double as sheltered walkways through the site.",
+//   }, "img/2.jpg", {
+//       type: 'quote',
+//       text: "The museum is a place where art and nature coexist harmoniously.",
+//     }, "img/8.jpg"],
+//   "project2": ["img/4.jpg", "img/5.jpg", "img/6.jpg"],
+// };
+
+const handleGridItemClick = async (imageWrapper) => {
   document.body.style.overflow = 'hidden';
 
   const projectId = imageWrapper.dataset.projectId;
@@ -131,9 +155,13 @@ const localImages = {
   spinner.classList.add('spinner');
   zoomedImg.appendChild(spinner);
 
-  const images = localImages[projectId] || [];
-  images[0] = initialImgSrc;
-  await new Promise(resolve => setTimeout(resolve, 500));
+  let images = [];
+  try {
+    images = await getProjectImages(projectId);
+    debugger;
+  } catch (error) {
+    console.error("Error fetching project data:", error);
+  }
 
   spinner.remove();
 
