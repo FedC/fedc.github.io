@@ -280,7 +280,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
               {/* URL (only for image type) */}
               {contentItem.type === 'image' && (
                 <div className={styles.contentImageContainer}>
-                  <img src={contentItem.url instanceof File ? URL.createObjectURL(contentItem.url) : contentItem.url} alt="Content" className={styles.contentImage} />
+                  <img src={contentItem.url instanceof File ? URL.createObjectURL(contentItem.url) : contentItem.url} alt="Upload Image" className={styles.contentImage} />
 
                   <label htmlFor={`content-image-upload-${index}`} className={styles.uploadLabel}>Upload Image</label>
                   <input
