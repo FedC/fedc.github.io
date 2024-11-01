@@ -5,6 +5,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import { storage } from './firebase';
 import { ref, listAll, getDownloadURL } from 'firebase/storage';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from './firebase'; // Adjust path to your Firebase configuration
 
 async function getProjectImages(projectId) {
   try {
@@ -112,17 +114,6 @@ const animateMarquee = () => {
     });
 };
 
-// const localImages = {
-//   "project1": ["img/1.jpg", {
-//     type: 'text',
-//     text: "The design of the museum showcases Suzhou’s Garden tradition as part of the exhibitions, taking visitors on a journey and exploration of art, nature, and water. The museum is scheduled for completion in 2025.\n\nThe museum’s main design element is the ribbon of the roof, which extends into a pattern of eaves that double as sheltered walkways through the site.",
-//   }, "img/2.jpg", {
-//       type: 'quote',
-//       text: "The museum is a place where art and nature coexist harmoniously.",
-//     }, "img/8.jpg"],
-//   "project2": ["img/4.jpg", "img/5.jpg", "img/6.jpg"],
-// };
-
 const handleGridItemClick = async (imageWrapper) => {
   document.body.style.overflow = 'hidden';
 
@@ -154,37 +145,43 @@ const handleGridItemClick = async (imageWrapper) => {
   spinner.classList.add('spinner');
   zoomedImg.appendChild(spinner);
 
-  let images = [];
+  let content = [];
   try {
-    images = await getProjectImages(projectId);
-    // debugger;
+    // Fetch the project document from Firestore
+    const projectRef = doc(db, 'projects', projectId);
+    const projectDoc = await getDoc(projectRef);
+
+    if (projectDoc.exists()) {
+      content = projectDoc.data().content || []; // Get content array from Firestore
+    } else {
+      console.error("No such project!");
+    }
   } catch (error) {
-    console.error("Error fetching project data:", error);
+    console.error("Error fetching project content:", error);
   }
 
   spinner.remove();
 
   projectContent.innerHTML = '';
-  images.forEach(imgSrc => {
-    if (imgSrc !== null && typeof imgSrc === 'object' && imgSrc.type === 'text') {
+  content.forEach(contentItem => {
+    if (contentItem !== null && typeof contentItem === 'object' && contentItem.type === 'text') {
       // Handle text or quote objects
       const contentElement = document.createElement('div');
       contentElement.classList.add('project-text');
-      contentElement.innerText = imgSrc.text;
+      contentElement.innerText = contentItem.text;
       projectContent.appendChild(contentElement);
-    } else if (imgSrc !== null && typeof imgSrc === 'object' && imgSrc.type === 'quote') {
+    } else if (contentItem !== null && typeof contentItem === 'object' && contentItem.type === 'quote') {
       // Handle quote objects
       const quoteElement = document.createElement('blockquote');
       quoteElement.classList.add('project-quote');
-      quoteElement.innerText = imgSrc.text;
+      quoteElement.innerText = contentItem.text;
       projectContent.appendChild(quoteElement);
     } else {
       // Handle image sources
       const imgElement = document.createElement('img');
-      imgElement.src = imgSrc;
+      imgElement.src = contentItem.url;
       imgElement.classList.add('project-image');
-      const alt = imgSrc.split('/').pop().split('.')[0]; // Extract alt text from image filename
-      imgElement.alt = `${alt}`;
+      imgElement.alt = contentItem.title || contentItem.url.split('/').pop().split('.')[0];
       projectContent.appendChild(imgElement);
     }
   });
