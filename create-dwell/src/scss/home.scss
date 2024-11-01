@@ -13,6 +13,7 @@
   z-index: var(--nav-z-index);
   transform: translate3d(0, -100%, 0);
   opacity: 0;
+  background-color: #fff;
 
   &__inner {
     display: flex;
@@ -31,11 +32,6 @@
     color: white;
     position: relative;
     z-index: 3002;
-
-    // add shadow for depth effect
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1666);
-
-
     img {
       vertical-align: bottom;
       max-width: 420px;
@@ -329,7 +325,6 @@ $entry-animation-swag2: 23.5vw;
 
 .mark__inner {
   display: flex;
-  gap: 3rem;
   width: max-content;
   position: relative;
   transform: translateX(100vw);
@@ -341,6 +336,14 @@ $entry-animation-swag2: 23.5vw;
   text-transform: capitalize;
   font-size: 3rem;
   line-height: 1;
+  padding: 5px 20px;
+}
+
+.mark__inner .clickable {
+  cursor: pointer;
+  &:hover {
+    color: rgb(171, 171, 171);
+  }
 }
 
 // Fullscreen overlay styles
@@ -421,7 +424,7 @@ $entry-animation-swag2: 23.5vw;
 
 .close-overlay {
   position: absolute;
-  top: 12px;
+  top: 20px;
   right: 20px;
   background: none;
   color: var(--color-text);
