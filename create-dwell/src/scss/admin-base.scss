@@ -1,0 +1,95 @@
+:root {
+  --color-D10: #000624;
+  --color-D20: #333853;
+  --color-D30: #595D70;
+  --color-D40: #868AA5;
+  --color-D50: #ACAFC4;
+  --color-D55: #CFD1DC;
+  --color-D60: #DFE5EB;
+  --color-D70: #ECEFF3;
+  --color-D80: #FFFFFF;
+  --color-B00: #084EBD;
+  --color-B05: #0F62E6;
+  --color-B10: #116DFF;
+  --color-B20: #5999FF;
+  --color-B30: #A8CAFF;
+  --color-B40: #D6E6FE;
+  --color-B50: #E7F0FF;
+  --color-B60: #F4F7FF;
+  --color-R00: #B81206;
+  --color-R05: #D0180B;
+  --color-R10: #E62214;
+  --color-R20: #FF6D63;
+  --color-R30: #F69891;
+  --color-R40: #FBD0CD;
+  --color-R50: #FDE3E1;
+  --color-R60: #FDECEB;
+  --color-P00: #7416A5;
+  --color-P05: #8E1DD1;
+  --color-P10: #9A27D5;
+  --color-P20: #C161F0;
+  --color-P30: #CF8CF1;
+  --color-P40: #E3C3F4;
+  --color-P50: #F1E0F9;
+  --color-P60: #F7EDFC;
+  --color-G00: #1D8649;
+  --color-G05: #229954;
+  --color-G10: #25A55A;
+  --color-G20: #51B77B;
+  --color-G30: #87CEA5;
+  --color-G40: #C8E8D6;
+  --color-G50: #E1F4EB;
+  --color-G60: #E9F6EE;
+  --color-Y00: #D59900;
+  --color-Y05: #E7A600;
+  --color-Y10: #FFB700;
+  --color-Y20: #FFC23D;
+  --color-Y30: #FFD16E;
+  --color-Y40: #FFE2A5;
+  --color-Y50: #FFF0D1;
+  --color-Y60: #FFF6E5;
+  --color-O00: #DF4D00;
+  --color-O05: #F05300;
+  --color-O10: #FE620F;
+  --color-O20: #FF7D38;
+  --color-O30: #FCBD9C;
+  --color-O40: #FDDBC8;
+  --color-O50: #FEE5D7;
+  --color-O60: #FEEFE6;
+  --color-F00: #A6D0FF;
+  --color-A1: #1684EA;
+  --color-A2: #17B0E2;
+  --color-A3: #6544F9;
+  --color-A4: #3D9FA1;
+  --color-A5: #D04091;
+  --color-A6: #FDB10C;
+  --color-B1: #FF66C5;
+  --color-B2: #FF9F41;
+  --color-B3: #F9677A;
+  --color-B4: #1550AC;
+  --color-C1: #54CE91;
+  --color-C2: #1989E5;
+  --color-C3: #64B4F6;
+  --color-C4: #FF9290;
+}
+
+.header {
+  background-color: var(--color-bg);
+
+  #logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+h1 {
+  margin-bottom: 2rem;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}

@@ -8,14 +8,25 @@
   <link rel="shortcut icon" href="favicon.ico">
 
   <link rel="stylesheet" href="./scss/base.scss">
+  <link rel="stylesheet" href="./scss/admin-base.scss">
   <link rel="stylesheet" href="./scss/admin-login.scss">
 </head>
 <body>
-  <h2>Login to Admin Dashboard</h2>
+  <header class="header">
+    <img src="./img/logo.svg" alt="Logo" width="250" id="logo">
+  </header>
 
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
-  <button id="loginBtn">Login</button>
+  <main class="wrapper">
+    <div class="login-container">
+      <h2>Admin Login</h2>
+
+      <form id="loginForm" action="javascript:void(0)">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit" id="loginBtn">Login</button>
+      </form>
+    </div>
+  </main>
 
   <script type="module" src="./js/admin-login.js"></script>
 </body>

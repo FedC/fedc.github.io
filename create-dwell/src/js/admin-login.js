@@ -2,7 +2,7 @@ import { auth, db } from './firebase.js';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
-document.getElementById('loginBtn').addEventListener('click', async () => {
+document.getElementById('loginForm').addEventListener('submit', async () => {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 

@@ -105,7 +105,7 @@ const animateMarquee = () => {
     }
   })
     .fromTo(marqueeInner, {
-      x: '200vw'                           // Start the marquee off-screen to the right
+      x: '20vw'                           // Start the marquee off-screen to the right
     }, {
       x: '-100%',                          // Move the marquee to the left (completely across the screen)
       ease: 'sine',

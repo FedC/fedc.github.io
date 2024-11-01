@@ -26,11 +26,15 @@
     "process": "^0.11.10"
   },
   "dependencies": {
+    "@babel/preset-react": "^7.25.9",
+    "@parcel/transformer-react-refresh-babel": "^2.0.0-alpha.3",
     "firebase": "^11.0.1",
     "firebase-admin": "^12.7.0",
     "gsap": "^3.12.5",
     "imagesloaded": "^5.0.0",
     "lenis": "^1.1.14",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "sharp": "^0.33.5"
   }
 }
