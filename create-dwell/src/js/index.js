@@ -40,7 +40,7 @@ const marqueeInner = document.querySelector('.mark > .mark__inner');
 
 const overlay = document.querySelector('.fullscreen-overlay');
 const projectContent = overlay.querySelector('.project-content');
-const closeOverlayBtn = overlay.querySelector('.close-overlay');
+const closeOverlayBtn = document.querySelector('.close-overlay');
 let isOverlayOpen = false;
 
 const isLeftSide = (element) => {
@@ -107,7 +107,7 @@ const animateMarquee = () => {
     }
   })
     .fromTo(marqueeInner, {
-      x: '20vw'                           // Start the marquee off-screen to the right
+      x: '200vw'                           // Start the marquee off-screen to the right
     }, {
       x: '-100%',                          // Move the marquee to the left (completely across the screen)
       ease: 'sine',
@@ -228,7 +228,7 @@ const handleGridItemClick = async (imageWrapper) => {
     }).then(async () => {
       // allow scrolling
       document.body.style.overflow = 'auto';
-
+      closeOverlayBtn.style.display = 'block';
       initLenisHorizontalScroll();
     });
 };
@@ -266,6 +266,7 @@ const initLenisHorizontalScroll = () => {
 const closeOverlay = () => {
   // animate overlay fade out
   overlay.classList.add('fade-out');
+  closeOverlayBtn.style.display = 'none';
 
   setTimeout(() => {
     overlay.classList.remove('show');
@@ -285,45 +286,75 @@ closeOverlayBtn.addEventListener('click', closeOverlay);
 function animateGridOnLoad() {
   window.scrollTo(0, 0);
 
+  const timeOfWindowScroll = 2000;
+
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => {
+    document.body.style.overflow = 'auto';
+  }, timeOfWindowScroll);
+
+  const entryCreate = document.querySelector('#entry-create');
+  const entryDwell = document.querySelector('#entry-dwell');
+  const entryOrangeCircle = document.querySelector('#entry-orange-circle');
+  const entryWhiteCircle = document.querySelector('#entry-white-circle');
+
   gsap.timeline()
-    .delay(1)
-    .to(entry, {
-      left: '-100vw',
-      duration: 1.5,
+    .delay(2.5)
+    .fromTo(entryWhiteCircle, {
       opacity: 0,
-      ease: 'sine.out',
+    }, { opacity: 1, scale: 1, duration: 1, ease: 'power2.out' }, '=-1')
+    .to(entry, {
+      top: '-100vh',
+      duration: 1,
+      opacity: 0,
+      ease: 'power2.out',
     })
-    .from(nav, {
+    .fromTo(nav, {
       translateY: '-100%',
-    }, '=-1')
-    .to(nav, {
-      translateY: '0',
-      ease: 'sine.out',
-    })
+      opacity: 0,
+    },
+      {
+        opacity: 1,
+        translateY: '0',
+        ease: 'power2.out',
+      }, '=-.666')
+    .fromTo(marqueeInner, {
+      opacity: 0,
+      duration: .5,
+      ease: 'power2.out',
+    }, {
+      opacity: 1,
+      duration: 2.5,
+      ease: 'power2.out',
+    }, '=-1.333')
     .to(grid, {
       opacity: 1,
-      duration: .5,
-      ease: 'sine.out',
-    }, '=-.5')
-    .to(window, {
+      duration: 2,
+      ease: 'power2.out',
+    }, '=-1.1')
+    .fromTo(window, {
+      scrollTo: {
+        y: 0,
+      },
+    }, {
       scrollTo: {
         y: document.body.clientHeight / 5,
       },
       duration: 2,
       ease: 'power2.out'
-    }, '-=.5');
+    }, '-=2');
 }
 
 
 const init = () => {
   animateScrollGrid();
-  animateMarquee();
 
   grid.style.opacity = 0;
   nav.style.translateY = '-100%';
   setTimeout(() => {
     animateGridOnLoad();
-  }, 100);
+    animateMarquee();
+  }, 1000);
 };
 
 preloadImages('.grid__item-img').then(() => {
