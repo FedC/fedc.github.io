@@ -178,7 +178,7 @@ const animateMarquee = () => {
       start: 'top=+25% center',
       end: 'center top',
       scrub: true,
-      markers: true,
+      markers: false,
     }
   })
     .fromTo(marqueeInner, {
