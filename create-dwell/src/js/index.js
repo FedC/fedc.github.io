@@ -33,6 +33,8 @@ let lenis;
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 const entry = document.querySelector('.entry-animation');
+const entryCreate = document.querySelector('.entry-logo-create');
+const entryDwell = document.querySelector('.entry-logo-dwell');
 const nav = document.querySelector('.nav');
 const grid = document.querySelector('.grid');
 const gridImages = grid.querySelectorAll('.grid__item-imgwrap');
@@ -43,6 +45,55 @@ const projectContent = overlay.querySelector('.project-content');
 const closeOverlayBtn = document.querySelector('.close-overlay');
 let isOverlayOpen = false;
 
+function animateEntryLogo() {
+  window.scrollTo(0, 0);
+  document.body.style.overflow = 'hidden';
+
+  gsap.timeline()
+    .fromTo(entryCreate, {
+      opacity: 0,
+    }, { opacity: 1, scale: 1, duration: 1, ease: 'power2.out' }, '=-1')
+    .delay(1)
+    .to(entry, {
+      top: '-100vh',
+      duration: 1,
+      opacity: 0,
+      ease: 'power2.out',
+    })
+    .fromTo(nav, {
+      translateY: '-100%',
+      opacity: 0,
+    },
+      {
+        opacity: 1,
+        translateY: '0',
+        ease: 'power2.out',
+      }, '>')
+    .to(marqueeInner, {
+      opacity: 1,
+      duration: .5,
+      ease: 'power2.out',
+    }, '>')
+    .to(grid, {
+      opacity: 1,
+      duration: 2,
+      ease: 'power2.out',
+    }, '=-.5')
+    .fromTo(window, {
+      scrollTo: {
+        y: 0,
+      },
+    }, {
+      scrollTo: {
+        y: document.body.clientHeight / 12,
+      },
+      duration: 2,
+      ease: 'power2.out'
+    }, '-=2').then(() => {
+      document.body.style.overflow = 'auto';
+    });
+}
+
 const isLeftSide = (element) => {
   const elementCenter = element.getBoundingClientRect().left + element.offsetWidth / 2;
   const viewportCenter = window.innerWidth / 2;
@@ -50,38 +101,61 @@ const isLeftSide = (element) => {
 };
 
 const animateScrollGrid = () => {
+  // Add a scroll-triggered parallax effect on the grid container itself
+  let proxy = { scale: 1, z: 0 },
+    clamp = gsap.utils.clamp(-300, 300); // limit the z translation range
+
+  ScrollTrigger.create({
+    onUpdate: (self) => {
+      let z = clamp(self.getVelocity() / -5); // control depth with the divisor
+      if (Math.abs(z) > Math.abs(proxy.z)) {
+        proxy.z = z;
+        proxy.scale = gsap.utils.mapRange(-300, 300, 0.9, 1, -Math.abs(z)); // map z translation to a scale range
+        gsap.to(proxy, {
+          z: 0,
+          duration: 0.8,
+          ease: "power3",
+          onUpdate: () => {
+            // Apply both scale and translateZ together as part of transform
+            gsap.set(".grid", { scale: proxy.scale, z: proxy.z });
+          }
+        });
+      }
+    }
+  });
+
   gridImages.forEach(imageWrap => {
     const imgEl = imageWrap.querySelector('.grid__item-img');
     const leftSide = isLeftSide(imageWrap);
 
     gsap.timeline({
       scrollTrigger: {
-        trigger: imageWrap,
-        start: 'top bottom+=10%',
-        end: 'bottom top-=25%',
-        scrub: true,
+        trigger: imageWrap,               // Trigger the animation when this element enters the viewport
+        start: 'top bottom+=50%',         // Start when the top of the element is 10% past the bottom of the viewport
+        end: 'bottom top-=25%',           // End when the bottom of the element is 25% past the top of the viewport
+        scrub: true,                      // Smooth scrub animation
       }
     })
       .from(imageWrap, {
         // Initial state when the element enters the viewport
         startAt: { filter: 'blur(0px) brightness(100%) contrast(100%)' }, // Ensure no blur or brightness adjustments at the start
-        z: 300,                             // Translate the item 300px closer on the Z-axis
-        rotateX: 70,                        // Start with a rotation of 70 degrees on the X-axis
-        rotateZ: leftSide ? 5 : -5,         // Rotate 5 degrees if on the left, -5 degrees if on the right
-        xPercent: leftSide ? -40 : 40,      // Horizontal translation: -40% if on the left, 40% if on the right
-        skewX: leftSide ? -20 : 20,         // Skew the element on the X-axis
+        z: 100,                             // Translate the item 300px closer on the Z-axis
+        rotateX: 20,                        // Start with a rotation of 70 degrees on the X-axis
+        rotateZ: leftSide ? 2 : -2,         // Rotate 5 degrees if on the left, -5 degrees if on the right
+        xPercent: leftSide ? -15 : 15,      // Horizontal translation: -40% if on the left, 40% if on the right
+        skewX: leftSide ? -5 : 5,         // Skew the element on the X-axis
         yPercent: 100,                      // Start with the element below the viewport
-        filter: 'blur(7px) brightness(0%) contrast(400%)', // Start with a blur, low brightness, and high contrast
+        filter: 'blur(1px) brightness(75%) contrast(25%)', // Start with a blur, low brightness, and high contrast
         ease: 'sine',
       })
       .to(imageWrap, {
         // Animation when the element exits the viewport
-        z: 300,                             // Move back to original Z-translation (300px)
-        rotateX: -50,                       // Rotate -50 degrees on the X-axis
-        rotateZ: leftSide ? -1 : 1,         // Slightly rotate on the Z-axis (-1 or 1 depending on side)
-        xPercent: leftSide ? -20 : 20,      // Move slightly left (-20%) or right (20%) on exit
-        skewX: leftSide ? 10 : -10,         // Skew slightly on exit
-        filter: 'blur(4px) brightness(0%) contrast(500%)', // Add blur and reduce brightness on exit
+        z: 100,                             // Move back to original Z-translation (300px)
+        rotateX: -20,                       // Rotate -50 degrees on the X-axis
+        rotateZ: leftSide ? -2 : 2,         // Slightly rotate on the Z-axis (-1 or 1 depending on side)
+        xPercent: leftSide ? -10 : 10,      // Move slightly left (-20%) or right (20%) on exit
+        skewX: leftSide ? 5 : -5,         // Skew slightly on exit
+        filter: 'blur(1px) brightness(75%) contrast(25%)', // Add blur and reduce brightness on exit
         ease: 'sine.in',
       })
       .from(imgEl, {
@@ -100,14 +174,15 @@ const animateScrollGrid = () => {
 const animateMarquee = () => {
   gsap.timeline({
     scrollTrigger: {
-      trigger: grid,                     // Trigger the animation based on the grid's position
-      start: 'top bottom',               // Start the animation when the top of the grid is at the bottom of the viewport
-      end: 'bottom top',                 // End the animation when the bottom of the grid is at the top of the viewport
-      scrub: true,                       // Smooth scrub
+      trigger: grid,
+      start: 'top=+25% center',
+      end: 'center top',
+      scrub: true,
+      markers: true,
     }
   })
     .fromTo(marqueeInner, {
-      x: '200vw'                           // Start the marquee off-screen to the right
+      x: '100vw'                           // Start the marquee off-screen to the right
     }, {
       x: '-100%',                          // Move the marquee to the left (completely across the screen)
       ease: 'sine',
@@ -283,76 +358,13 @@ document.querySelectorAll('.grid__item-imgwrap').forEach(imageWrap => {
 
 closeOverlayBtn.addEventListener('click', closeOverlay);
 
-function animateGridOnLoad() {
-  window.scrollTo(0, 0);
-
-  const timeOfWindowScroll = 2000;
-
-  document.body.style.overflow = 'hidden';
-  setTimeout(() => {
-    document.body.style.overflow = 'auto';
-  }, timeOfWindowScroll);
-
-  const entryCreate = document.querySelector('#entry-create');
-  const entryDwell = document.querySelector('#entry-dwell');
-  const entryOrangeCircle = document.querySelector('#entry-orange-circle');
-  const entryWhiteCircle = document.querySelector('#entry-white-circle');
-
-  gsap.timeline()
-    .delay(2.5)
-    .fromTo(entryWhiteCircle, {
-      opacity: 0,
-    }, { opacity: 1, scale: 1, duration: 1, ease: 'power2.out' }, '=-1')
-    .to(entry, {
-      top: '-100vh',
-      duration: 1,
-      opacity: 0,
-      ease: 'power2.out',
-    })
-    .fromTo(nav, {
-      translateY: '-100%',
-      opacity: 0,
-    },
-      {
-        opacity: 1,
-        translateY: '0',
-        ease: 'power2.out',
-      }, '=-.666')
-    .fromTo(marqueeInner, {
-      opacity: 0,
-      duration: .5,
-      ease: 'power2.out',
-    }, {
-      opacity: 1,
-      duration: 2.5,
-      ease: 'power2.out',
-    }, '=-1.333')
-    .to(grid, {
-      opacity: 1,
-      duration: 2,
-      ease: 'power2.out',
-    }, '=-1.1')
-    .fromTo(window, {
-      scrollTo: {
-        y: 0,
-      },
-    }, {
-      scrollTo: {
-        y: document.body.clientHeight / 5,
-      },
-      duration: 2,
-      ease: 'power2.out'
-    }, '-=2');
-}
-
-
 const init = () => {
   animateScrollGrid();
 
   grid.style.opacity = 0;
   nav.style.translateY = '-100%';
   setTimeout(() => {
-    animateGridOnLoad();
+    animateEntryLogo();
     animateMarquee();
   }, 1000);
 };

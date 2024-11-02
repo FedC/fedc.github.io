@@ -6,7 +6,7 @@ import Lenis from 'lenis';
 // Function to set up smooth scrolling.
 const initSmoothScrolling = () => {
   // Initialize Lenis for smooth scroll effects. Lerp value controls the smoothness.
-  const lenis = new Lenis({ lerp: 0.12 });
+  const lenis = new Lenis({ lerp: 1.12 });
   
   // Sync ScrollTrigger with Lenis' scroll updates.
   lenis.on('scroll', ScrollTrigger.update);
