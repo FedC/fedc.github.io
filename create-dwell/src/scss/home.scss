@@ -17,13 +17,13 @@
   z-index: var(--nav-z-index);
   transform: translate3d(0, -100%, 0);
   opacity: 0;
-  background-color: #fff;
+  // background-color: #fff;
 
   &__inner {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    padding: 0;
+    padding: 0 16px;
     position: relative;
     width: 100%;
     transform: translate3d(0, 0, 0);
@@ -47,9 +47,7 @@
     display: flex;
     gap: 1.5rem;
 
-    &.hide {
-      display: none;
-    }
+    opacity: 0;
   }
 
   &__item {
@@ -159,25 +157,29 @@
 }
 
 $entry-point-half-wayish: 100vw;
-$easing: ease;
+$easing: cubic-bezier(0.77, 0, 0.175, 1);
 
 $entry-animation-swag: 320vw;
 $entry-animation-swag2: 23.5vw;
 
-@keyframes fadeIn {
+@keyframes fadeSlideUp {
   0% {
     opacity: 0;
+    transform: translateY(20px);
   }
   100% {
     opacity: 1;
+    transform: translateY(0);
   }
 }
-@-webkit-keyframes fadeIn {
+@-webkit-keyframes fadeSlideUp {
   0% {
     opacity: 0;
+    transform: translateY(20px);
   }
   100% {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -219,13 +221,13 @@ $entry-animation-swag2: 23.5vw;
 
   .entry-logo-create {
     opacity: 0;
-    animation: fadeIn .6s $easing forwards;
+    animation: fadeSlideUp .6s $easing forwards;
     animation-delay: .2s;
   }
 
   .entry-logo-dwell {
     opacity: 0;
-    animation: fadeIn .6s $easing forwards;
+    animation: fadeSlideUp .6s $easing forwards;
     animation-delay: .8s;
   }
 
@@ -233,7 +235,7 @@ $entry-animation-swag2: 23.5vw;
     left: 0;
     width: 50vw;
     background-color: var(--color-link);
-    background: linear-gradient(to bottom, rgba(246, 171, 11, 0.25) 0%, rgba(246, 171, 11, 1) 60%);
+    // background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25) 0%, rgba(246, 171, 11, 1) 99%);
     animation-delay: 1.5s;
   }
 
@@ -241,13 +243,19 @@ $entry-animation-swag2: 23.5vw;
     right: 0;
     width: 50vw;
     background-color: white;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 1) 60%);
+    // background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 1) 99%);
     animation-delay: 1.5s;
   }
 
   .entry-logo {
-    transform: translate3d(0, -10px, 0);
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
+    // max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
