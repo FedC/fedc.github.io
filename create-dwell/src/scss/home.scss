@@ -48,6 +48,10 @@
     gap: 1.5rem;
 
     opacity: 0;
+
+    @media screen and (max-width: 1400px) {
+      display: none;
+    }
   }
 
   &__item {
