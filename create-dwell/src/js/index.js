@@ -32,10 +32,12 @@ let lenis;
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-const entry = document.querySelector('.entry-animation');
 const entryLogo = document.querySelector('.entry-logo');
-const entryCreate = document.querySelector('.entry-logo-create');
-const entryDwell = document.querySelector('.entry-logo-dwell');
+const entryAnimation = document.querySelector('.entry-animation');
+const logoOrangeTile = document.querySelector('.entry-logo-orange-tile');
+const logoWhiteTile = document.querySelector('.entry-logo-white-tile');
+const entryLogoGroup = entryLogo.querySelector('.logo-group');
+
 const nav = document.querySelector('.nav');
 const grid = document.querySelector('.grid');
 const gridImages = grid.querySelectorAll('.grid__item-imgwrap');
@@ -49,55 +51,71 @@ let isOverlayOpen = false;
 
 function animateEntryLogo() {
   window.scrollTo(0, 0);
-  document.body.style.overflow = 'hidden';
+  grid.style.opacity = 0;
 
-  gsap.timeline()
-    .delay(1)
-    .to(entry, {
-      top: '-100vh',
-      duration: .6,
-      opacity: 0,
-      ease: 'power2.out',
-    })
-    .to(entryLogo, {
-      scale: .5,
-      duration: .5,
-      ease: 'power2.out',
-    }, '=-.9')
-    .fromTo(nav, {
-      translateY: '0',
-      translateX: '50vw',
-      opacity: 0,
-    },
-      {
+  setTimeout(() => {
+    document.body.style.overflow = 'hidden';
+
+    gsap.timeline()
+      .fromTo(entryLogo, {
+        opacity: 0,
+        y: '3px',
+      },{
+        y: '0',
         opacity: 1,
-        translateY: '0',
-        translateX: '0',
+        duration: 1,
         ease: 'power2.out',
-      }, '>')
-    .to(marqueeInner, {
-      opacity: 1,
-      duration: .5,
-      ease: 'power2.out',
-    }, '>')
-    .to(grid, {
-      opacity: 1,
-      duration: 2,
-      ease: 'power2.out',
-    }, '=-.5')
-    .fromTo(window, {
-      scrollTo: {
-        y: 0,
-      },
-    }, {
-      scrollTo: {
-        y: document.body.clientHeight / 12,
-      },
-      duration: 2,
-      ease: 'power2.out'
-    }, '-=2').then(() => {
-      document.body.style.overflow = 'auto';
-    });
+      })
+      .delay(1)
+      .to(logoOrangeTile, {
+        width: '124px',
+        y: '0',
+        height: '34px',
+        duration: 1,
+        ease: 'power2.out',
+      })
+      .to(logoWhiteTile, {
+        y: '-100vh',
+        duration: 1,
+        ease: 'power2.out',
+      }, '=-1')
+      .to(entryLogo, {
+        width: '200px',
+        left: '16px',
+        top: '0',
+        height: '34px',
+        transform: 'translateX(0)',
+        duration: 1,
+        ease: 'power2.out',
+      }, '=-1')
+      .to(entryLogoGroup, {
+        transform: 'translateX(0)',
+        duration: 1,
+        ease: 'power2.out',
+      }, '=-.8')
+      
+      .fromTo(grid, {
+        opacity: 0,
+      }, {
+        opacity: 1,
+        duration: 1,
+      }, '=-1')
+      .fromTo(window, {
+        scrollTo: {
+          y: 0,
+        },
+      }, {
+        scrollTo: {
+          y: document.body.clientHeight / 7.5,
+        },
+        duration: 2,
+        ease: 'power2.out'
+      }, '=-1')
+      .then(() => {
+        document.body.style.overflow = 'auto';
+      })
+
+  }, 0);
 }
 
 const isLeftSide = (element) => {
@@ -136,7 +154,7 @@ const animateScrollGrid = () => {
     gsap.timeline({
       scrollTrigger: {
         trigger: imageWrap,
-        start: 'top bottom+=50%',
+        start: 'top bottom+=25%',
         end: 'bottom top-=25%',
         scrub: true,
       }
@@ -158,8 +176,8 @@ const animateScrollGrid = () => {
         z: 150,
         rotateX: -30,
         rotateZ: leftSide ? -2 : 2,
-        xPercent: leftSide ? -9 : 9,
-        skewX: leftSide ? 2 : -2,
+        xPercent: leftSide ? -10 : 10,
+        skewX: leftSide ? 4 : -4,
         filter: 'blur(1px) brightness(75%)',
         ease: 'sine.in',
       })
@@ -196,7 +214,7 @@ const animateScrollGrid = () => {
     gsap.timeline({
       scrollTrigger: {
         trigger: grid,
-        start: 'center center+=10%',
+        start: 'top top',
         end: 'center top',
         scrub: true,
         markers: false,
@@ -382,13 +400,11 @@ const animateScrollGrid = () => {
 
   const init = () => {
     animateScrollGrid();
+    animateMarquee();
 
-    grid.style.opacity = 0;
-    nav.style.translateY = '-100%';
     setTimeout(() => {
       animateEntryLogo();
-      animateMarquee();
-    }, 1000);
+    }, 0);
   };
 
   preloadImages('.grid__item-img').then(() => {
