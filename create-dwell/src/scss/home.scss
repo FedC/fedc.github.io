@@ -86,7 +86,7 @@
 
 // Grid styles
 .grid {
-  // opacity: 0; // Start hidden
+  opacity: 0; // Start hidden
 	padding: 100vh 0;
 	width: var(--grid-width);
 	max-width: var(--grid-max-width);
@@ -211,6 +211,7 @@
   left: 0;
   width: 50vw;
   background-color: var(--color-link);
+  background: linear-gradient(180deg, rgba(246, 171, 11, 0) 0%, rgba(246, 171, 11, 1) 50%);
   height: 100vh;
 }
 
@@ -266,7 +267,7 @@
   position: relative;
   transform: translateX(100vw);
   will-change: transform;
-  // opacity: 0;
+  opacity: 0;
 }
 
 .mark__inner span {
