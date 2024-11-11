@@ -236,7 +236,15 @@
   margin-right: auto;
 
   .logo-group {
-    transform: translateX(-28px)
+    transform: translateX(-28px);
+  }
+}
+@media screen and (max-width: 768px) {
+  .entry-logo{
+    // opacity: 1;
+  }
+  .entry-logo .logo-group {
+    transform: scale(.75) translateX(90px);
   }
 }
 
