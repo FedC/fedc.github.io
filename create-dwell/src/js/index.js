@@ -71,6 +71,7 @@ function animateEntryLogo() {
         width: '124px',
         y: '0',
         height: '34px',
+        opacity: 0,
         duration: 1,
         ease: 'power2.out',
       })
@@ -95,6 +96,12 @@ function animateEntryLogo() {
       }, '=-.8')
       
       .fromTo(grid, {
+        opacity: 0,
+      }, {
+        opacity: 1,
+        duration: 1,
+      }, '=-1')
+      .fromTo(marqueeInner, {
         opacity: 0,
       }, {
         opacity: 1,
