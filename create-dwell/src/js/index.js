@@ -32,6 +32,7 @@ let lenis;
 
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
+const entryLogoContainer = document.querySelector('.entry-logo-container');
 const entryLogo = document.querySelector('.entry-logo');
 const entryAnimation = document.querySelector('.entry-animation');
 const logoOrangeTile = document.querySelector('.entry-logo-orange-tile');
@@ -60,53 +61,54 @@ function animateEntryLogo() {
       .fromTo(entryLogo, {
         opacity: 0,
         y: '3px',
-      },{
+      }, {
         y: '0',
         opacity: 1,
-        duration: 1,
+        duration: 1.5,
         ease: 'power2.out',
       })
-      .delay(1)
-      .to(logoOrangeTile, {
-        width: '124px',
-        y: '0',
-        height: '34px',
-        opacity: 0,
+      .delay(0.3)
+      .fromTo(entryAnimation, {
+        top: '0',
+      }, {
+        top: '55px',
+        duration: 1.5,
+        ease: 'power2.out',
+      }, "<")
+      .to(entryLogo, {
+        width: '200px',
+        height: '55px',
         duration: 1,
         ease: 'power2.out',
-      })
-      .to(logoWhiteTile, {
+      }, "+=0.5")
+      .to(entryLogoContainer, {
+        y: '-100vh',
+        paddingBottom: '0',
+        top: '55px',
+        duration: 1,
+        ease: 'power2.out',
+      }, "<")
+      .to(entryAnimation, {
         y: '-100vh',
         duration: 1,
         ease: 'power2.out',
-      }, '=-1')
-      .to(entryLogo, {
-        width: '200px',
-        left: '16px',
-        top: '0',
-        height: '34px',
-        transform: 'translateX(0)',
-        duration: 1,
-        ease: 'power2.out',
-      }, '=-1')
-      .to(entryLogoGroup, {
-        transform: 'translateX(0)',
-        duration: 1,
-        ease: 'power2.out',
-      }, '=-.8')
-      
-      .fromTo(grid, {
-        opacity: 0,
-      }, {
+      }, "<")
+      .to(entryAnimation, {
+        left: '-100vw',
+        duration: .6,
+        ease: 'sine.out',
+      })
+      .to(entryLogoContainer, {
+        left: '-100vw',
+        duration: .6,
+        ease: 'sine.out',
+      }, "<")
+      .to('.nav__logo img', {
         opacity: 1,
-        duration: 1,
-      }, '=-1')
-      .fromTo(marqueeInner, {
-        opacity: 0,
-      }, {
-        opacity: 1,
-        duration: 1,
-      }, '=-1')
+        duration: .2,
+        ease: 'power2.out',
+      }, "-=.5")
+
       .fromTo(window, {
         scrollTo: {
           y: 0,
@@ -117,7 +119,19 @@ function animateEntryLogo() {
         },
         duration: 2,
         ease: 'power2.out'
-      }, '=-1')
+      }, '=-1.9')
+      .fromTo(marqueeInner, {
+        opacity: 0,
+      }, {
+        opacity: 1,
+        duration: 1,
+      }, '=-1.6')
+      .fromTo(grid, {
+        opacity: 0,
+      }, {
+        opacity: 1,
+        duration: 1,
+      }, '<')
       .then(() => {
         document.body.style.overflow = 'auto';
       })
@@ -197,226 +211,226 @@ const animateScrollGrid = () => {
         scaleY: 1.2,
         ease: 'sine.in'
       }, '>');
-    });
-  };
+  });
+};
 
-  // Function to animate the horizontal marquee as the user scrolls
-  const animateMarquee = () => {
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: grid,
-        start: 'top=+25% center',
-        end: 'center top',
-        scrub: true,
-        markers: false,
-      }
-    })
-      .fromTo(marqueeInner, {
-        x: '100vw'                           // Start the marquee off-screen to the right
-      }, {
-        x: '-100%',                          // Move the marquee to the left (completely across the screen)
-        ease: 'sine',
-      });
-
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: grid,
-        start: 'top top',
-        end: 'center top',
-        scrub: true,
-        markers: false,
-      }
-    })
-      .fromTo(navList, {
-        x: '50vw', opacity: 0,
-      }, {
-        x: '0',
-        opacity: 1,
-        ease: 'sine',
-      })
-  };
-
-  const handleGridItemClick = async (imageWrapper) => {
-    document.body.style.overflow = 'hidden';
-
-    const projectId = imageWrapper.dataset.projectId;
-    const img = imageWrapper.querySelector('.grid__item-img');
-    const initialImgSrc = img.style.backgroundImage.slice(5, -2);
-
-    const zoomedImg = imageWrapper.cloneNode(true);
-    zoomedImg.classList.add('zoomed-image');
-    document.querySelectorAll('.zoomed-image').forEach(el => el.remove());
-    document.body.appendChild(zoomedImg);
-
-    const rect = imageWrapper.getBoundingClientRect();
-    zoomedImg.style.position = 'fixed';
-    zoomedImg.style.zIndex = '6000';
-    zoomedImg.style.transition = 'none';
-    zoomedImg.style.transform = 'scale(1) translate3d(0, 0, 0)';
-    zoomedImg.style.top = `${rect.top}px`;
-    zoomedImg.style.left = `${rect.left}px`;
-    zoomedImg.style.width = `${rect.width}px`;
-    zoomedImg.style.height = `${rect.height}px`;
-    zoomedImg.style.objectFit = 'cover';
-    zoomedImg.style.borderRadius = 'var(--grid-item-radius)';
-    zoomedImg.style.filter = imageWrapper.style.filter;
-
-    zoomedImg.style.transition = 'transform 1s ease, opacity 0.5s ease, object-fit 0.5s ease';
-
-    const spinner = document.createElement('div');
-    spinner.classList.add('spinner');
-    zoomedImg.appendChild(spinner);
-
-    let content = [];
-    try {
-      // Fetch the project document from Firestore
-      const projectRef = doc(db, 'projects', projectId);
-      const projectDoc = await getDoc(projectRef);
-
-      if (projectDoc.exists()) {
-        content = projectDoc.data().content || []; // Get content array from Firestore
-      } else {
-        console.error("No such project!");
-      }
-    } catch (error) {
-      console.error("Error fetching project content:", error);
+// Function to animate the horizontal marquee as the user scrolls
+const animateMarquee = () => {
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: grid,
+      start: 'top=+25% center',
+      end: 'center top',
+      scrub: true,
+      markers: false,
     }
-
-    spinner.remove();
-
-    projectContent.innerHTML = '';
-    content.forEach(contentItem => {
-      if (contentItem !== null && typeof contentItem === 'object' && contentItem.type === 'text') {
-        // Handle text or quote objects
-        const contentElement = document.createElement('div');
-        contentElement.classList.add('project-text');
-        contentElement.innerText = contentItem.text;
-        projectContent.appendChild(contentElement);
-      } else if (contentItem !== null && typeof contentItem === 'object' && contentItem.type === 'quote') {
-        // Handle quote objects
-        const quoteElement = document.createElement('blockquote');
-        quoteElement.classList.add('project-quote');
-        quoteElement.innerText = contentItem.text;
-        projectContent.appendChild(quoteElement);
-      } else {
-        // Handle image sources
-        const imgElement = document.createElement('img');
-        imgElement.src = contentItem.url;
-        imgElement.classList.add('project-image');
-        imgElement.alt = contentItem.title || contentItem.url.split('/').pop().split('.')[0];
-        projectContent.appendChild(imgElement);
-      }
+  })
+    .fromTo(marqueeInner, {
+      x: '100vw'                           // Start the marquee off-screen to the right
+    }, {
+      x: '-100%',                          // Move the marquee to the left (completely across the screen)
+      ease: 'sine',
     });
 
-    overlay.appendChild(projectContent);
-    isOverlayOpen = true;
-
-    // Preload images to prevent visual loading issues
-    await preloadImages('.project-content img');
-    const overlayFirstImg = projectContent.querySelector('img');
-    overlayFirstImg.style.opacity = 0; // Start with hidden image
-    const firstImgRect = overlayFirstImg.getBoundingClientRect();
-    overlay.classList.add('show');
-    document.getElementById('main').classList.remove('shadow');
-
-    // animate gspa timeline for zoomed image to overlay image position
-    gsap.timeline()
-      .to(zoomedImg, {
-        duration: 0.3,
-        ease: 'power2.out',
-        top: `${firstImgRect.top}px`,
-        left: `${firstImgRect.left}px`,
-        width: `${firstImgRect.width}px`,
-        height: `${firstImgRect.height}px`,
-        scale: 1,
-        blur: 0,
-        skewX: 0,
-        skewY: 0,
-        rotateX: 0,
-        rotateY: 0,
-        rotateZ: 0,
-        translateX: 0,
-        translateY: 0,
-        translateZ: 0,
-        onComplete: () => {
-          overlayFirstImg.style.opacity = 1; // Fade in the first image
-          gsap.to(zoomedImg, {
-            duration: .2,
-            opacity: 0,
-          }).then(() => {
-            zoomedImg.remove();
-          });
-        }
-      }).then(async () => {
-        // allow scrolling
-        document.body.style.overflow = 'auto';
-        closeOverlayBtn.style.display = 'block';
-        initLenisHorizontalScroll();
-      });
-  };
-
-  const initLenisHorizontalScroll = () => {
-    if (lenis) lenis.destroy();
-
-    lenis = new Lenis({
-      orientation: 'horizontal',
-      smoothWheel: true,
-      gestureOrientation: 'vertical',
-      wrapper: overlay,
-      content: projectContent,
-    });
-
-    lenis.on('scroll', (e) => {
-      const currentScroll = lenis.animatedScroll;
-      const maxScrollValue = lenis.limit;
-      // Check if we've reached the end of scroll
-      // make sure currentScroll might be half a pixel away from maxScrollValue
-      if (currentScroll >= maxScrollValue || (currentScroll >= maxScrollValue - 0.5)) {
-        closeOverlay();
-      }
-    });
-
-    // Animation frame loop for Lenis
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: grid,
+      start: 'top top',
+      end: 'center top',
+      scrub: true,
+      markers: false,
     }
+  })
+    .fromTo(navList, {
+      x: '50vw', opacity: 0,
+    }, {
+      x: '0',
+      opacity: 1,
+      ease: 'sine',
+    })
+};
+
+const handleGridItemClick = async (imageWrapper) => {
+  document.body.style.overflow = 'hidden';
+
+  const projectId = imageWrapper.dataset.projectId;
+  const img = imageWrapper.querySelector('.grid__item-img');
+  const initialImgSrc = img.style.backgroundImage.slice(5, -2);
+
+  const zoomedImg = imageWrapper.cloneNode(true);
+  zoomedImg.classList.add('zoomed-image');
+  document.querySelectorAll('.zoomed-image').forEach(el => el.remove());
+  document.body.appendChild(zoomedImg);
+
+  const rect = imageWrapper.getBoundingClientRect();
+  zoomedImg.style.position = 'fixed';
+  zoomedImg.style.zIndex = '6000';
+  zoomedImg.style.transition = 'none';
+  zoomedImg.style.transform = 'scale(1) translate3d(0, 0, 0)';
+  zoomedImg.style.top = `${rect.top}px`;
+  zoomedImg.style.left = `${rect.left}px`;
+  zoomedImg.style.width = `${rect.width}px`;
+  zoomedImg.style.height = `${rect.height}px`;
+  zoomedImg.style.objectFit = 'cover';
+  zoomedImg.style.borderRadius = 'var(--grid-item-radius)';
+  zoomedImg.style.filter = imageWrapper.style.filter;
+
+  zoomedImg.style.transition = 'transform 1s ease, opacity 0.5s ease, object-fit 0.5s ease';
+
+  const spinner = document.createElement('div');
+  spinner.classList.add('spinner');
+  zoomedImg.appendChild(spinner);
+
+  let content = [];
+  try {
+    // Fetch the project document from Firestore
+    const projectRef = doc(db, 'projects', projectId);
+    const projectDoc = await getDoc(projectRef);
+
+    if (projectDoc.exists()) {
+      content = projectDoc.data().content || []; // Get content array from Firestore
+    } else {
+      console.error("No such project!");
+    }
+  } catch (error) {
+    console.error("Error fetching project content:", error);
+  }
+
+  spinner.remove();
+
+  projectContent.innerHTML = '';
+  content.forEach(contentItem => {
+    if (contentItem !== null && typeof contentItem === 'object' && contentItem.type === 'text') {
+      // Handle text or quote objects
+      const contentElement = document.createElement('div');
+      contentElement.classList.add('project-text');
+      contentElement.innerText = contentItem.text;
+      projectContent.appendChild(contentElement);
+    } else if (contentItem !== null && typeof contentItem === 'object' && contentItem.type === 'quote') {
+      // Handle quote objects
+      const quoteElement = document.createElement('blockquote');
+      quoteElement.classList.add('project-quote');
+      quoteElement.innerText = contentItem.text;
+      projectContent.appendChild(quoteElement);
+    } else {
+      // Handle image sources
+      const imgElement = document.createElement('img');
+      imgElement.src = contentItem.url;
+      imgElement.classList.add('project-image');
+      imgElement.alt = contentItem.title || contentItem.url.split('/').pop().split('.')[0];
+      projectContent.appendChild(imgElement);
+    }
+  });
+
+  overlay.appendChild(projectContent);
+  isOverlayOpen = true;
+
+  // Preload images to prevent visual loading issues
+  await preloadImages('.project-content img');
+  const overlayFirstImg = projectContent.querySelector('img');
+  overlayFirstImg.style.opacity = 0; // Start with hidden image
+  const firstImgRect = overlayFirstImg.getBoundingClientRect();
+  overlay.classList.add('show');
+  document.getElementById('main').classList.remove('shadow');
+
+  // animate gspa timeline for zoomed image to overlay image position
+  gsap.timeline()
+    .to(zoomedImg, {
+      duration: 0.3,
+      ease: 'power2.out',
+      top: `${firstImgRect.top}px`,
+      left: `${firstImgRect.left}px`,
+      width: `${firstImgRect.width}px`,
+      height: `${firstImgRect.height}px`,
+      scale: 1,
+      blur: 0,
+      skewX: 0,
+      skewY: 0,
+      rotateX: 0,
+      rotateY: 0,
+      rotateZ: 0,
+      translateX: 0,
+      translateY: 0,
+      translateZ: 0,
+      onComplete: () => {
+        overlayFirstImg.style.opacity = 1; // Fade in the first image
+        gsap.to(zoomedImg, {
+          duration: .2,
+          opacity: 0,
+        }).then(() => {
+          zoomedImg.remove();
+        });
+      }
+    }).then(async () => {
+      // allow scrolling
+      document.body.style.overflow = 'auto';
+      closeOverlayBtn.style.display = 'block';
+      initLenisHorizontalScroll();
+    });
+};
+
+const initLenisHorizontalScroll = () => {
+  if (lenis) lenis.destroy();
+
+  lenis = new Lenis({
+    orientation: 'horizontal',
+    smoothWheel: true,
+    gestureOrientation: 'vertical',
+    wrapper: overlay,
+    content: projectContent,
+  });
+
+  lenis.on('scroll', (e) => {
+    const currentScroll = lenis.animatedScroll;
+    const maxScrollValue = lenis.limit;
+    // Check if we've reached the end of scroll
+    // make sure currentScroll might be half a pixel away from maxScrollValue
+    if (currentScroll >= maxScrollValue || (currentScroll >= maxScrollValue - 0.5)) {
+      closeOverlay();
+    }
+  });
+
+  // Animation frame loop for Lenis
+  function raf(time) {
+    lenis.raf(time);
     requestAnimationFrame(raf);
-  };
+  }
+  requestAnimationFrame(raf);
+};
 
-  // Close overlay and reset
-  const closeOverlay = () => {
-    // animate overlay fade out
-    overlay.classList.add('fade-out');
-    closeOverlayBtn.style.display = 'none';
+// Close overlay and reset
+const closeOverlay = () => {
+  // animate overlay fade out
+  overlay.classList.add('fade-out');
+  closeOverlayBtn.style.display = 'none';
 
-    setTimeout(() => {
-      overlay.classList.remove('show');
-      document.getElementById('main').classList.add('shadow');
-      projectContent.innerHTML = '';
-      isOverlayOpen = false;
-      overlay.classList.remove('fade-out');
-    }, 600);
-  };
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    document.getElementById('main').classList.add('shadow');
+    projectContent.innerHTML = '';
+    isOverlayOpen = false;
+    overlay.classList.remove('fade-out');
+  }, 600);
+};
 
-  document.querySelectorAll('.grid__item-imgwrap').forEach(imageWrap => {
-    imageWrap.addEventListener('click', () => handleGridItemClick(imageWrap));
-  });
+document.querySelectorAll('.grid__item-imgwrap').forEach(imageWrap => {
+  imageWrap.addEventListener('click', () => handleGridItemClick(imageWrap));
+});
 
-  closeOverlayBtn.addEventListener('click', closeOverlay);
+closeOverlayBtn.addEventListener('click', closeOverlay);
 
-  const init = () => {
-    animateScrollGrid();
-    animateMarquee();
+const init = () => {
+  animateScrollGrid();
+  animateMarquee();
 
-    setTimeout(() => {
-      animateEntryLogo();
-    }, 0);
-  };
+  setTimeout(() => {
+    animateEntryLogo();
+  }, 0);
+};
 
-  preloadImages('.grid__item-img').then(() => {
-    document.body.classList.remove('loading');
-    setTimeout(() => {
-      init();
-    }, 0);
-  });
+preloadImages('.grid__item-img').then(() => {
+  document.body.classList.remove('loading');
+  setTimeout(() => {
+    init();
+  }, 0);
+});
