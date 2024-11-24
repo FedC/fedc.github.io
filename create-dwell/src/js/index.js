@@ -3,30 +3,9 @@ import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import { storage } from './firebase';
+import { storage, db } from './firebase';
 import { ref, listAll, getDownloadURL } from 'firebase/storage';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from './firebase'; // Adjust path to your Firebase configuration
-
-async function getProjectImages(projectId) {
-  try {
-    // Reference to the project images directory
-    const projectImagesRef = ref(storage, `projects/${projectId}/images`);
-
-    // List all files in the directory
-    const result = await listAll(projectImagesRef);
-
-    // Get download URLs for each file
-    const imageUrls = await Promise.all(
-      result.items.map(itemRef => getDownloadURL(itemRef))
-    );
-
-    console.log('Project Images:', imageUrls);
-    return imageUrls;
-  } catch (error) {
-    console.error('Error fetching project images:', error);
-  }
-}
 
 let lenis;
 

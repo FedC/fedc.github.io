@@ -42,9 +42,24 @@ const ProjectForm = ({ onClose, editingProject }) => {
 
   // Helper function to upload image to Firebase Storage and get URL
   const uploadImage = async (projectId, file) => {
-    const storageRef = ref(storage, `projects/${projectId}/${file.name}`);
-    const snapshot = await uploadBytes(storageRef, file);
-    return await getDownloadURL(snapshot.ref);
+    if (!file) return;
+
+    try {
+        // Upload the original file to Firebase Storage
+        const storageRef = ref(storage, `projects/${projectId}/${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
+
+        // Construct the "large" size URL (assuming the resizing function will generate this)
+        const baseName = file.name.replace(/\.[^/.]+$/, ""); // Remove the extension
+        const largeImagePath = `projects/${projectId}/${baseName}_large.jpg`;
+        const largeImageRef = ref(storage, largeImagePath);
+
+        // Return the URL for the "large" image
+        return await getDownloadURL(largeImageRef);
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        throw error;
+    }
   };
 
   // Handle dynamic content change
@@ -59,16 +74,22 @@ const ProjectForm = ({ onClose, editingProject }) => {
     if (!file) return;
 
     try {
-      const storageRef = ref(storage, `projects/${formData.title}/content/${file.name}`);
-      const snapshot = await uploadBytes(storageRef, file);
-      const imageUrl = await getDownloadURL(snapshot.ref);
+        // Upload the original file to Firebase Storage
+        const storageRef = ref(storage, `projects/${formData.title}/content/${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
 
-      // Update the content array with the image URL
-      const newContent = [...formData.content];
-      newContent[index].url = imageUrl;
-      setFormData({ ...formData, content: newContent });
+        // Construct the "large" size URL (assuming the resizing function will generate this)
+        const baseName = file.name.replace(/\.[^/.]+$/, ""); // Remove the extension
+        const largeImagePath = `projects/${formData.title}/content/${baseName}_large.jpg`;
+        const largeImageRef = ref(storage, largeImagePath);
+        const imageUrl = await getDownloadURL(largeImageRef);
+
+        // Update the content array with the "large" image URL
+        const newContent = [...formData.content];
+        newContent[index].url = imageUrl;
+        setFormData({ ...formData, content: newContent });
     } catch (error) {
-      console.error('Error uploading content image:', error);
+        console.error('Error uploading content image:', error);
     }
   };
 
@@ -232,7 +253,6 @@ const ProjectForm = ({ onClose, editingProject }) => {
           <div className={styles.formGroup}>
             <label htmlFor="description">Description</label>
             <textarea name="description" placeholder="Description" rows={4} cols={40}
-              defaultValue={formData.description}
               onChange={handleInputChange} value={formData.description}>
             </textarea>
           </div>
