@@ -1,6 +1,7 @@
 {
   "functions": [
     {
+      "location": "us-east1",
       "source": "functions",
       "codebase": "default",
       "ignore": [
@@ -14,10 +15,14 @@
   ],
   "hosting": {
     "public": "dist",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
     "rewrites": [
       {
-        "source": "/admin-login", 
+        "source": "/admin-login",
         "destination": "/admin-login.html"
       },
       {
@@ -33,5 +38,17 @@
         "destination": "/index.html"
       }
     ]
+  },
+  "emulators": {
+    "functions": {
+      "port": 5001
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
   }
 }
