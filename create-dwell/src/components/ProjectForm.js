@@ -1,8 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, getMetadata, deleteObject } from 'firebase/storage';
 import { db, storage } from '../js/firebase';
 import styles from './ProjectForm.module.scss';
+
+const getBaseName = (fileName) => fileName.replace(/\.[^/.]+$/, ""); // Remove the extension
+
+const deleteOldImages = async (basePath) => {
+  const suffixes = ["_small.jpg", "_medium.jpg", "_large.jpg", "_small.webp", "_medium.webp", "_large.webp"];
+  for (const suffix of suffixes) {
+    try {
+      const fileRef = ref(storage, `${basePath}${suffix}`);
+      await deleteObject(fileRef); // Deletes the old version
+      console.log(`Deleted old image: ${basePath}${suffix}`);
+    } catch (error) {
+      if (error.code === "storage/object-not-found") {
+        console.warn(`File not found: ${basePath}${suffix}`); // Not an issue, just log it
+      } else {
+        console.error(`Error deleting file ${basePath}${suffix}:`, error);
+      }
+    }
+  }
+};
+
+// Helper function to poll for the resized image
+const waitForProcessedFile = async (filePath) => {
+  const fileRef = ref(storage, filePath);
+  try {
+      await getMetadata(fileRef); // Check if metadata exists (file is available)
+      return await getDownloadURL(fileRef); // Return the download URL
+  } catch (error) {
+      if (error.code === "storage/object-not-found") {
+          return new Promise((resolve) =>
+              setTimeout(() => resolve(waitForProcessedFile(filePath)), 1000) // Retry after 1 second
+          );
+      } else {
+          throw error; // Handle unexpected errors
+      }
+  }
+};
 
 const ProjectForm = ({ onClose, editingProject }) => {
   const [formData, setFormData] = useState({
@@ -22,6 +58,10 @@ const ProjectForm = ({ onClose, editingProject }) => {
     published: false,
   });
 
+  const [loading, setLoading] = useState(false);
+
+  const globalProjectId = editingProject?.id;
+
   useEffect(() => {
     if (editingProject) {
       setFormData((prevData) => ({
@@ -36,29 +76,56 @@ const ProjectForm = ({ onClose, editingProject }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFileChange = (e) => {
-    setFormData({ ...formData, mainImage: e.target.files[0] });
+  const handleMainImageFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Update preview image immediately
+      setFormData({ ...formData, mainImage: file });
+      // If creating a new project, we must first create a placeholder document to get an ID
+      if (!globalProjectId) {
+        const projectRef = await addDoc(collection(db, 'projects'), {}); // Placeholder
+        globalProjectId = projectRef.id;
+      }
+
+      // Upload image and get URL
+      imageUrl = await uploadImage(globalProjectId, file);
+      setFormData({ ...formData, mainImage: imageUrl });
+    }
   };
 
   // Helper function to upload image to Firebase Storage and get URL
   const uploadImage = async (projectId, file) => {
     if (!file) return;
 
+    setLoading(true); // Start loading
     try {
+        const baseName = getBaseName(file.name);
+        const basePath = `projects/${projectId}/${baseName}`;
+
+        // Cleanup old assets
+        const mainImage = editingProject?.mainImage;
+        if (mainImage) {
+            const basePath = decodeURIComponent(mainImage.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
+            await deleteOldImages(basePath);
+        }
+
         // Upload the original file to Firebase Storage
-        const storageRef = ref(storage, `projects/${projectId}/${file.name}`);
+        const storageRef = ref(storage, `${basePath}.jpg`);
         const snapshot = await uploadBytes(storageRef, file);
 
-        // Construct the "large" size URL (assuming the resizing function will generate this)
-        const baseName = file.name.replace(/\.[^/.]+$/, ""); // Remove the extension
-        const largeImagePath = `projects/${projectId}/${baseName}_large.jpg`;
-        const largeImageRef = ref(storage, largeImagePath);
+        // Construct the "large" size path
+        const largeImagePath = `${basePath}_large.jpg`;
 
-        // Return the URL for the "large" image
-        return await getDownloadURL(largeImageRef);
+        // Wait for the "large" version to be processed
+        const imageUrl = await waitForProcessedFile(largeImagePath);
+
+        console.log("Processed large image URL:", imageUrl);
+        return imageUrl;
     } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error("Error uploading image:", error);
         throw error;
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -73,23 +140,39 @@ const ProjectForm = ({ onClose, editingProject }) => {
   const uploadContentImage = async (index, file) => {
     if (!file) return;
 
+    setLoading(true); // Start loading
     try {
+        const baseName = getBaseName(file.name);
+        const basePath = `projects/${formData.title}/content/${baseName}`;
+        
+        // Cleanup old assets
+        if (formData.content[index]?.url) {
+            const imageUrl = formData.content[index].url;
+            const oldBaseName = imageUrl.split("_")[0]; // Extract old base name
+            const basePath = decodeURIComponent(imageUrl.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
+            debugger;
+            await deleteOldImages(basePath);
+        }
+
         // Upload the original file to Firebase Storage
-        const storageRef = ref(storage, `projects/${formData.title}/content/${file.name}`);
+        const storageRef = ref(storage, `${basePath}.jpg`);
         const snapshot = await uploadBytes(storageRef, file);
 
-        // Construct the "large" size URL (assuming the resizing function will generate this)
-        const baseName = file.name.replace(/\.[^/.]+$/, ""); // Remove the extension
-        const largeImagePath = `projects/${formData.title}/content/${baseName}_large.jpg`;
-        const largeImageRef = ref(storage, largeImagePath);
-        const imageUrl = await getDownloadURL(largeImageRef);
+        // Construct the "large" size path
+        const largeImagePath = `${basePath}_large.jpg`;
+
+        // Wait for the "large" version to be processed
+        const imageUrl = await waitForProcessedFile(largeImagePath);
+        console.log("Processed large image URL:", imageUrl);
 
         // Update the content array with the "large" image URL
         const newContent = [...formData.content];
         newContent[index].url = imageUrl;
         setFormData({ ...formData, content: newContent });
     } catch (error) {
-        console.error('Error uploading content image:', error);
+        console.error("Error uploading content image:", error);
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -102,23 +185,15 @@ const ProjectForm = ({ onClose, editingProject }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let projectId = editingProject ? editingProject.id : null;
-      // If there's a mainImage file, upload it first
-      let imageUrl = formData.mainImage;
-      if (formData.mainImage && formData.mainImage instanceof File) {
-        // If creating a new project, we must first create a placeholder document to get an ID
-        if (!projectId) {
-          const projectRef = await addDoc(collection(db, 'projects'), {}); // Placeholder
-          projectId = projectRef.id;
-        }
-
-        // Upload image and get URL
-        imageUrl = await uploadImage(projectId, formData.mainImage);
+      let projectId = globalProjectId;
+      // If creating a new project, we must first create a placeholder document to get an ID
+      if (!projectId) {
+        const projectRef = await addDoc(collection(db, 'projects'), {}); // Placeholder
+        projectId = projectRef.id;
       }
 
       const projectData = {
         ...formData,
-        mainImage: imageUrl, // Store the image URL in Firestore
       };
 
       if (editingProject) {
@@ -166,6 +241,13 @@ const ProjectForm = ({ onClose, editingProject }) => {
 
   return (
     <section className="modal" onClick={onClickClose}>
+      {loading && (
+        <div className={styles.loadingOverlay}>
+            <div className={styles.spinner}></div>
+            <p>Uploading images, please wait...</p>
+        </div>
+      )}
+
       <div className="modal-content" onClick={stopPropagation}>
         <div className="modal-header">
           <h2>
@@ -179,6 +261,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
         <div className={styles.mainImageContainer}>
           {formData.mainImage && (
             <img
+              id="main-image-preview"
               src={formData.mainImage instanceof File ? URL.createObjectURL(formData.mainImage) : formData.mainImage}
               alt="Main Image"
               className={styles.mainImage}
@@ -186,7 +269,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
           )}
 
           <label htmlFor="main-image-upload" className={styles.uploadLabel}>Upload Project Main Image</label>
-          <input type="file" name="mainImage" id="main-image-upload" onChange={handleFileChange} />
+          <input type="file" name="mainImage" id="main-image-upload" onChange={handleMainImageFileChange} />
         </div>
 
 
@@ -194,49 +277,49 @@ const ProjectForm = ({ onClose, editingProject }) => {
           <input type="hidden" name="id" value={formData.id} />
           <div className={styles.formGroup}>
             <label htmlFor="published">Published</label>
-            <input type="checkbox" name="published" id="published" onChange={handleInputChange} checked={formData.published} />
+            <input type="checkbox" name="published" id="published" onChange={handleInputChange} checked={!!formData.published} />
           </div>
 
           <div className="grid-two-col">
             <div className={styles.formGroup}>
               <label htmlFor="title">Title</label>
-              <input type="text" name="title" placeholder="Project Title" onChange={handleInputChange} value={formData.title} />
+              <input type="text" name="title" placeholder="Project Title" onChange={handleInputChange} value={formData.title || ''} />
             </div>
             <div className={styles.formGroup}>
               <label htmlFor="location">Location</label>
-              <input type="text" name="location" placeholder="Location" onChange={handleInputChange} value={formData.location} />
+              <input type="text" name="location" placeholder="Location" onChange={handleInputChange} value={formData.location || ''} />
             </div>
           </div>
 
           <div className="grid-two-col">
             <div className={styles.formGroup}>
               <label htmlFor="award">Award</label>
-              <input type="text" name="award" placeholder="Award" onChange={handleInputChange} value={formData.award} />
+              <input type="text" name="award" placeholder="Award" onChange={handleInputChange} value={formData.award || ''} />
             </div>
             <div className={styles.formGroup}>
               <label htmlFor="photoCredit">Photo Credit</label>
-              <input type="text" name="photoCredit" placeholder="Photo Credit" onChange={handleInputChange} value={formData.photoCredit} />
+              <input type="text" name="photoCredit" placeholder="Photo Credit" onChange={handleInputChange} value={formData.photoCredit || ''} />
             </div>
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="role">Role</label>
-            <input type="text" name="role" placeholder="Role" onChange={handleInputChange} value={formData.role} />
+            <input type="text" name="role" placeholder="Role" onChange={handleInputChange} value={formData.role || ''} />
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="use">Use</label>
-            <input type="text" name="use" placeholder="Use (comma separated)" onChange={handleInputChange} value={formData.use} />
+            <label htmlFor="use">Use (use comma separated for many)</label>
+            <input type="text" name="use" placeholder="Use (comma separated)" onChange={handleInputChange} value={formData.use || ''} />
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="order">Order</label>
-            <input type="number" name="order" placeholder="Order" onChange={handleInputChange} value={formData.order} />
+            <input type="number" name="order" placeholder="Order" onChange={handleInputChange} value={formData.order || 0} />
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="projectType">Project Type</label>
-            <select id="projectType" name="projectType" onChange={handleInputChange} value={formData.projectType}>
+            <select id="projectType" name="projectType" onChange={handleInputChange} value={formData.projectType || ''}>
               <option value="Historic Interior Renovation">Historic Interior Renovation</option>
               <option value="Interior Renovation">Interior Renovation</option>
               <option value="New Construction">New Construction</option>
@@ -247,13 +330,13 @@ const ProjectForm = ({ onClose, editingProject }) => {
 
           <div className={styles.formGroup}>
             <label htmlFor="area">Area (sq ft)</label>
-            <input type="number" name="area" placeholder="Area (sq ft)" onChange={handleInputChange} value={formData.area} />
+            <input type="number" name="area" placeholder="Area (sq ft)" onChange={handleInputChange} value={formData.area || ''} />
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="description">Description</label>
             <textarea name="description" placeholder="Description" rows={4} cols={40}
-              onChange={handleInputChange} value={formData.description}>
+              onChange={handleInputChange} value={formData.description || ''}>
             </textarea>
           </div>
 
@@ -276,7 +359,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
                   <input
                     type="text"
                     placeholder="Title"
-                    value={contentItem.title}
+                    value={contentItem.title || ''}
                     onChange={(e) => handleContentChange(index, 'title', e.target.value)}
                   />
                 </div>
@@ -291,7 +374,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
                   <input
                     type="text"
                     placeholder="Description"
-                    value={contentItem.description}
+                    value={contentItem.description || ''}
                     onChange={(e) => handleContentChange(index, 'description', e.target.value)}
                   />
                 </div>
@@ -300,7 +383,9 @@ const ProjectForm = ({ onClose, editingProject }) => {
               {/* URL (only for image type) */}
               {contentItem.type === 'image' && (
                 <div className={styles.contentImageContainer}>
-                  <img src={contentItem.url instanceof File ? URL.createObjectURL(contentItem.url) : contentItem.url} alt="Upload Image" className={styles.contentImage} />
+                  <img
+                    id={`content-image-preview-${index}`}
+                    src={contentItem.url instanceof File ? URL.createObjectURL(contentItem.url) : contentItem.url} alt="Upload Image" className={styles.contentImage} />
 
                   <label htmlFor={`content-image-upload-${index}`} className={styles.uploadLabel}>Upload Image</label>
                   <input
@@ -320,7 +405,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
                   </label>
                   <textarea
                     placeholder="Text"
-                    value={contentItem.text}
+                    value={contentItem.text || ''}
                     rows={6}
                     cols={40}
                     onChange={(e) => handleContentChange(index, 'text', e.target.value)}
@@ -336,7 +421,9 @@ const ProjectForm = ({ onClose, editingProject }) => {
             <button type="button" className="accent-btn" onClick={() => addContentSection('quote')}>Add Quote Content</button>
           </div>
 
-          <button type="submit" className={styles.submitButton}>Save Project</button>
+          <button type="submit" className={styles.submitButton} disabled={loading}>
+            {loading ? "Uploading..." : "Save Project"}
+          </button>
         </form>
       </div>
     </section>
