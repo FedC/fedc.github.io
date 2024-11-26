@@ -150,7 +150,6 @@ const ProjectForm = ({ onClose, editingProject }) => {
             const imageUrl = formData.content[index].url;
             const oldBaseName = imageUrl.split("_")[0]; // Extract old base name
             const basePath = decodeURIComponent(imageUrl.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
-            debugger;
             await deleteOldImages(basePath);
         }
 
@@ -180,6 +179,41 @@ const ProjectForm = ({ onClose, editingProject }) => {
   const addContentSection = (type) => {
     const newContentItem = { type, title: '', text: '', description: '', url: '' };
     setFormData({ ...formData, content: [...formData.content, newContentItem] });
+  };
+
+  const deleteContentImage = async (imageUrl) => {
+    try {
+      // Parse the image path from the URL
+      const basePath = decodeURIComponent(imageUrl.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
+      const suffixes = ["_small.jpg", "_medium.jpg", "_large.jpg", "_small.webp", "_medium.webp", "_large.webp"];
+  
+      for (const suffix of suffixes) {
+        const fileRef = ref(storage, `${basePath}${suffix}`);
+        try {
+          await deleteObject(fileRef);
+          console.log(`Deleted image: ${basePath}${suffix}`);
+        } catch (error) {
+          if (error.code !== "storage/object-not-found") {
+            console.error(`Failed to delete image: ${basePath}${suffix}`, error);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting content image:", error);
+    }
+  };
+  
+  const handleRemoveContentSection = async (index) => {
+    const contentItem = formData.content[index];
+  
+    if (contentItem.type === "image" && contentItem.url) {
+      await deleteContentImage(contentItem.url);
+    }
+  
+    // Update the content array after deletion
+    const newContent = [...formData.content];
+    newContent.splice(index, 1);
+    setFormData({ ...formData, content: newContent });
   };
 
   const handleSubmit = async (e) => {
@@ -240,7 +274,18 @@ const ProjectForm = ({ onClose, editingProject }) => {
   };
 
   return (
-    <section className="modal" onClick={onClickClose}>
+    <section className={styles.projectForm}>
+      <div className={styles.projectHeader}>
+        <button className="close-btn" onClick={onClickClose}>
+          <span>&times;</span>
+        </button>
+
+        <h2>
+          {editingProject ? `Edit Project: ${formData.title}` : 'New Project'}
+        </h2>
+      </div>
+
+
       {loading && (
         <div className={styles.loadingOverlay}>
             <div className={styles.spinner}></div>
@@ -248,16 +293,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
         </div>
       )}
 
-      <div className="modal-content" onClick={stopPropagation}>
-        <div className="modal-header">
-          <h2>
-            {editingProject ? `Edit Project: ${formData.title}` : 'New Project'}
-          </h2>
-          <button className="close-btn" onClick={onClickClose}>
-            <span>&times;</span>
-          </button>
-        </div>
-
+      <div className="content" onClick={stopPropagation}>
         <div className={styles.mainImageContainer}>
           {formData.mainImage && (
             <img
@@ -271,7 +307,6 @@ const ProjectForm = ({ onClose, editingProject }) => {
           <label htmlFor="main-image-upload" className={styles.uploadLabel}>Upload Project Main Image</label>
           <input type="file" name="mainImage" id="main-image-upload" onChange={handleMainImageFileChange} />
         </div>
-
 
         <form onSubmit={handleSubmit}>
           <input type="hidden" name="id" value={formData.id} />
@@ -347,7 +382,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
               <div className={styles.flex}>
                 <h3>{capitalize(contentItem.type)} Section</h3>
 
-                <button type="button" className="warn-btn" onClick={() => setFormData({ ...formData, content: formData.content.filter((_, i) => i !== index) })}>
+                <button type="button" className="warn-btn" onClick={() => handleRemoveContentSection(index)}>
                   Remove
                 </button>
               </div>

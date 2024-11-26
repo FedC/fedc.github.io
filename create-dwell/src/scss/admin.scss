@@ -146,10 +146,10 @@ button.accent-btn {
 
   .modal-content {
     background-color: white;
-    margin: 15vh auto;
+    margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 100%;
   }
 }
 
@@ -230,9 +230,17 @@ table {
     background-color: var(--color-B40);
   }
 
-  td.td-actions {
+  .td-actions {
     display: flex;
     justify-content: flex-end;
     gap: 5px;
   }
+}
+
+.green-text {
+  color: green;
+}
+
+.yellow-text {
+  color: rgb(255, 170, 0);
 }

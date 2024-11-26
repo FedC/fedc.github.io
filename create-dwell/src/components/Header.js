@@ -1,33 +1,21 @@
 import React from 'react';
-import { signOut } from 'firebase/auth';
-import { auth } from '../js/firebase';
-import logo from '../img/logo.svg';
+import './Header.scss';
 
-const Header = () => {
-  const handleLogout = () => {
-    signOut(auth).then(() => {
-      window.location.href = "/admin-login";
-    }).catch((error) => {
-      console.error("Error logging out:", error);
-    });
-  };
-
-  return (
-    <header className="header">
-      <img src={logo} alt="Logo" width="250" id="logo" />
-      <nav className="header-nav">
-        <ul>
-          <li><a href="#projects" className="active">Projects</a></li>
-          <li><a href="#users">Users</a></li>
-          <li><a href="#analytics">Analytics</a></li>
-          <li><a href="#settings">Settings</a></li>
-        </ul>
-      </nav>
-      <div className="actions">
-        <button id="logoutBtn" className="warn-btn" onClick={handleLogout}>Logout</button>
-      </div>
-    </header>
-  );
-};
+const Header = () => (
+  <nav className="nav">
+    <div className="nav__inner">
+      <a href="/" className="nav__logo">
+        <img src="img/logo.svg" alt="Logo" width="500" />
+      </a>
+      <ul className="nav__list">
+        <li className="nav__item"><a href="#about" className="nav__link">About</a></li>
+        <li className="nav__item"><a href="#residential" className="nav__link">Residential</a></li>
+        <li className="nav__item"><a href="#commercial" className="nav__link">Commercial</a></li>
+        <li className="nav__item"><a href="#cultural" className="nav__link">Cultural</a></li>
+        <li className="nav__item"><a href="#contact" className="nav__link">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+);
 
 export default Header;
