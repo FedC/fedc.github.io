@@ -26,14 +26,6 @@
         "destination": "/admin-login.html"
       },
       {
-        "source": "/admin",
-        "destination": "/admin.html"
-      },
-      {
-        "source": "/admin/**",
-        "destination": "/admin.html"
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }

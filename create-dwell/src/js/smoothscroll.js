@@ -4,7 +4,7 @@ import Lenis from 'lenis';
 
 // Initializes smooth scrolling with Lenis and integrates it with GSAP's ScrollTrigger.
 // Function to set up smooth scrolling.
-const initSmoothScrolling = () => {
+export const initSmoothScrolling = () => {
   // Initialize Lenis for smooth scroll effects. Lerp value controls the smoothness.
   const lenis = new Lenis({ lerp: 1.12 });
   
@@ -19,6 +19,3 @@ const initSmoothScrolling = () => {
   // Turn off GSAP's default lag smoothing to avoid conflicts with Lenis.
   gsap.ticker.lagSmoothing(0);
 };
-
-// Activate the smooth scrolling feature.
-initSmoothScrolling();
