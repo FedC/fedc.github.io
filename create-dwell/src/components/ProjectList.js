@@ -1,7 +1,7 @@
 import React from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../js/firebase';
-import styles from './ProjectList.module.scss';
+import * as styles from './ProjectList.module.scss';
 
 const ProjectList = ({ projects, onEdit, onUpdate }) => {
 
