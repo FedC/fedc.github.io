@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import AdminPanel from './AdminPanel';
@@ -11,7 +11,6 @@ const App = () => {
           path="/"
           element={
             <>
-              <DynamicCssLoader cssPath="/home.css" />
               <Home />
             </>
           }
@@ -20,8 +19,6 @@ const App = () => {
           path="/admin/*"
           element={
             <>
-              <DynamicCssLoader cssPath="/admin-base.css" />
-              <DynamicCssLoader cssPath="/admin.css" />
               <AdminPanel />
             </>
           }
@@ -29,21 +26,6 @@ const App = () => {
       </Routes>
     </Router>
   );
-};
-
-const DynamicCssLoader = ({ cssPath }) => {
-  useEffect(() => {
-    const css = document.createElement('link');
-    css.rel = 'stylesheet';
-    css.href = cssPath;
-    document.head.appendChild(css);
-
-    return () => {
-      document.head.removeChild(css);
-    };
-  }, [cssPath]);
-
-  return null;
 };
 
 export default App;

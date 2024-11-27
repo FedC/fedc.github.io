@@ -8,7 +8,7 @@ import { initSmoothScrolling } from '../js/smoothscroll';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { preloadImages } from '../js/utils';
-import styles from './Home.module.scss';
+import * as styles from './Home.module.scss';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,12 +33,11 @@ const Home = () => {
     fetchProjects();
   }, []);
 
-  onProjectsLoaded = () => {
+  const onProjectsLoaded = () => {
     preloadImages('.grid__item-img').then(() => {
       document.body.classList.remove('loading');
     });
   };
-
 
   const animateEntryLogo = () => {
     const grid = document.querySelector('.grid');

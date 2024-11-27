@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "parcel src/index.html src/admin-login.html --open",
+    "start": "parcel src/index.html src/admin-login.html --open --dist-dir dist",
     "dev": "npm run start",
     "clean": "rm -rf dist/* && rm -rf .parcel-cache",
-    "build:parcel": "parcel build src/*.html --no-content-hash --no-source-maps --public-url ./",
+    "build:parcel": "parcel build src/*.html --no-content-hash --no-source-maps --public-url ./ --dist-dir dist",
     "build": "npm run clean && npm run build:parcel",
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "firebase serve",

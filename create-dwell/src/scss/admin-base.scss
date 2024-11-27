@@ -73,7 +73,7 @@
   --color-C4: #FF9290;
 }
 
-.header {
+.admin .header {
   background-color: var(--color-bg);
 
   #logo {
@@ -83,13 +83,13 @@
   }
 }
 
-h1 {
+.admin h1 {
   margin-bottom: 2rem;
   color: var(--color-primary);
   font-weight: 700;
 }
 
-h2 {
+.admin h2 {
   margin-bottom: 1.5rem;
   font-weight: 400;
 }

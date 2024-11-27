@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, getMetadata, deleteObject } from 'firebase/storage';
 import { db, storage } from '../js/firebase';
-import styles from './ProjectForm.module.scss';
+import * as styles from './ProjectForm.module.scss';
 
 const getBaseName = (fileName) => fileName.replace(/\.[^/.]+$/, ""); // Remove the extension
 

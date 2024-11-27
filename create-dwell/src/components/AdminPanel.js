@@ -7,6 +7,9 @@ import ProjectList from './ProjectList';
 import { auth, db } from '../js/firebase';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 
+import * as adminBaseCss from '../scss/admin-base.scss';
+import * as adminCss from '../scss/admin.scss';
+
 const AdminPanel = () => {
   const [user, setUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,25 +18,6 @@ const AdminPanel = () => {
   let params = useParams();
   const [toasts, setToasts] = useState([]);
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   // Dynamically load admin CSS
-  //   const adminBaseCss = document.createElement('link');
-  //   adminBaseCss.rel = 'stylesheet';
-  //   adminBaseCss.href = '/admin-base.css'; // Ensure this path is correct
-  //   document.head.appendChild(adminBaseCss);
-
-  //   const adminCss = document.createElement('link');
-  //   adminCss.rel = 'stylesheet';
-  //   adminCss.href = '/admin.css'; // Ensure this path is correct
-  //   document.head.appendChild(adminCss);
-
-  //   return () => {
-  //     // Cleanup the admin CSS when unmounting
-  //     document.head.removeChild(adminCss);
-  //     document.head.removeChild(adminBaseCss);
-  //   };
-  // }, []);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -128,7 +112,7 @@ const AdminPanel = () => {
   };
 
   return (
-    <div>
+    <div className="admin">
       <AdminHeader />
       <div className="container">
         <Routes>
