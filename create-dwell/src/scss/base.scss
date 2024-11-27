@@ -31,18 +31,7 @@ $font-alt: 'Poiret One', sans-serif;
   --color-link: rgb(246, 171, 11);
   --color-link-hover: #fbad05;
   --color-title: #fff;
-  --perspective: 0px;
-  --grid-width: 100%;
-  --grid-max-width: 500px;
-  --grid-max-width-mobile: 280px;
-  --grid-item-ratio: 1.2;
-  --grid-item-radius: 2px;
-  --grid-gap: 2rem;
-  --grid-columns: 2;
-  --grid-columns-full: 7;
-  --grid-rows-full: 5;
-  --grid-item-translate: 0px;
-  --grid-item-height: auto;
+  
   --toast-z-index: 1000;
   --shadow-z-index: 2001;
   --entry-animation-z-index: 2000;
@@ -60,6 +49,12 @@ $font-alt: 'Poiret One', sans-serif;
 
 // Reset and Global Styles
 @include border-box();
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  font-family: sans-serif;
+}
 
 body {
   margin: 0;
