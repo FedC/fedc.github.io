@@ -20,6 +20,7 @@ const App = () => {
           path="/admin/*"
           element={
             <>
+              <DynamicCssLoader cssPath="/admin-base.css" />
               <DynamicCssLoader cssPath="/admin.css" />
               <AdminPanel />
             </>
