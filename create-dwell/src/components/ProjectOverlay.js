@@ -56,24 +56,26 @@ const ProjectOverlay = ({ project, onClose }) => {
         <h2>{project.title}</h2>
         <p>{project.description}</p>
         {project.content.map((content, index) => {
+          const uniqueKey = content.id || content.url || `${content.type}-${index}`;
+
           if (content.type === 'image' && content.description) {
             return (
-              <>
-              <img className='project-image' key={index} src={content.url} alt={content.title} />
+              <div key={uniqueKey}>
+              <img className='project-image' src={content.url} alt={content.title} />
               <p className='project-image-description'>{content.description}</p>
-              </>
+              </div>
             );
           } else if (content.type === 'image') {
             return (
-              <img className='project-image' key={index} src={content.url} alt={content.title} />
+              <img key={uniqueKey} className='project-image' src={content.url} alt={content.title} />
             );
           } else if (content.type === 'text') {
             return (
-              <div className='project-text' key={index}>{content.text}</div>
+              <div key={uniqueKey} className='project-text'>{content.text}</div>
             );
           } else if (content.type === 'quote') {
             return (
-              <blockquote className='project-quote' key={index}>{content.text}</blockquote>
+              <blockquote key={uniqueKey} className='project-quote'>{content.text}</blockquote>
             );
           }
         })}
