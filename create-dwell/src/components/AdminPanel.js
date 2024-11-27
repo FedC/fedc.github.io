@@ -16,24 +16,24 @@ const AdminPanel = () => {
   const [toasts, setToasts] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Dynamically load admin CSS
-    const adminBaseCss = document.createElement('link');
-    adminBaseCss.rel = 'stylesheet';
-    adminBaseCss.href = '/admin-base.css'; // Ensure this path is correct
-    document.head.appendChild(adminBaseCss);
+  // useEffect(() => {
+  //   // Dynamically load admin CSS
+  //   const adminBaseCss = document.createElement('link');
+  //   adminBaseCss.rel = 'stylesheet';
+  //   adminBaseCss.href = '/admin-base.css'; // Ensure this path is correct
+  //   document.head.appendChild(adminBaseCss);
 
-    const adminCss = document.createElement('link');
-    adminCss.rel = 'stylesheet';
-    adminCss.href = '/admin.css'; // Ensure this path is correct
-    document.head.appendChild(adminCss);
+  //   const adminCss = document.createElement('link');
+  //   adminCss.rel = 'stylesheet';
+  //   adminCss.href = '/admin.css'; // Ensure this path is correct
+  //   document.head.appendChild(adminCss);
 
-    return () => {
-      // Cleanup the admin CSS when unmounting
-      document.head.removeChild(adminCss);
-      document.head.removeChild(adminBaseCss);
-    };
-  }, []);
+  //   return () => {
+  //     // Cleanup the admin CSS when unmounting
+  //     document.head.removeChild(adminCss);
+  //     document.head.removeChild(adminBaseCss);
+  //   };
+  // }, []);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {

@@ -36,9 +36,6 @@ const Home = () => {
   onProjectsLoaded = () => {
     preloadImages('.grid__item-img').then(() => {
       document.body.classList.remove('loading');
-      setTimeout(() => {
-
-      }, 0);
     });
   };
 
