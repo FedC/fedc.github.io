@@ -48,16 +48,20 @@ const ProjectOverlay = ({ project, onClose }) => {
 
   return (
     <div className="fullscreen-overlay">
-      <button className="unbutton close-overlay" onClick={onClose}>
+      {/* <button className="unbutton close-overlay" onClick={onClose}>
         <span className="close-overlay__line close-overlay__line--1"></span>
         <span className="close-overlay__line close-overlay__line--2"></span>
-      </button>
+      </button> */}
       <div className="project-content">
         <h2>{project.title}</h2>
         <p>{project.description}</p>
+        <div key={'mainImage-' + project.id}>
+          <img className='project-image' src={project.mainImage} alt={project.title} />
+          <p className='project-image-description'>{project.description}</p>
+        </div>
+
         {project.content.map((content, index) => {
           const uniqueKey = content.id || content.url || `${content.type}-${index}`;
-
           if (content.type === 'image' && content.description) {
             return (
               <div key={uniqueKey}>

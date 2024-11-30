@@ -1,11 +1,12 @@
 import React from 'react';
-import './Header.scss';
+import * as styles from './Header.module.scss';
 
 const Header = () => (
-  <nav className="nav">
-    <div className="nav__inner">
-      <a href="/" className="nav__logo">
-        <svg className='logo-svg' width="200px" height="34px" viewBox="0 0 706 116" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+  <>
+  <nav className={styles.nav}>
+    <div className={styles.nav__inner}>
+      <a href="/" className={styles.nav__logo}>
+        <svg className={styles.logoSvg} width="200px" height="34px" viewBox="0 0 706 116" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
           <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
             <g id="logo" fillRule="nonzero">
               <path d="M36.2129,114.95 C29.7129,114.95 23.7129,113.4 18.2129,110.3 C12.8129,107.2 8.51289,102.95 5.3129,97.55 C2.11289,92.15 0.51289,86.05 0.51289,79.25 C0.51289,72.95 2.11289,67.15 5.3129,61.85 C8.51289,56.45 12.8629,52.15 18.3629,48.95 C23.9629,45.75 30.1129,44.15 36.8129,44.15 C42.4129,44.15 47.2129,45.05 51.2129,46.85 C55.2129,48.65 59.1129,51.45 62.9129,55.25 L62.9129,63.35 C59.6129,58.45 55.9129,54.75 51.8129,52.25 C47.8129,49.65 42.8129,48.35 36.8129,48.35 C31.3129,48.35 26.1129,49.8 21.2129,52.7 C16.4129,55.5 12.5629,59.3 9.6629,64.1 C6.7629,68.9 5.3129,74.05 5.3129,79.55 C5.3129,85.55 6.7129,90.95 9.51289,95.75 C12.3129,100.45 16.0629,104.15 20.7629,106.85 C25.5629,109.45 30.7129,110.75 36.2129,110.75 C47.4129,110.75 56.3129,105.7 62.9129,95.6 L62.9129,103.7 C59.3129,107.5 55.3129,110.35 50.9129,112.25 C46.6129,114.05 41.7129,114.95 36.2129,114.95 Z M76.1902,45.5 L80.9902,45.5 L80.9902,61.1 C82.9902,56.2 85.8902,52.35 89.6902,49.55 C93.5902,46.75 97.99,45.35 102.89,45.35 C105.99,45.35 109.14,46 112.34,47.3 L112.34,52.85 C109.44,50.65 106.19,49.55 102.59,49.55 C98.99,49.55 95.49,50.65 92.0902,52.85 C88.7902,55.05 86.0902,58 83.9902,61.7 C81.9902,65.4 80.9902,69.35 80.9902,73.55 L80.9902,113 L76.1902,113 L76.1902,45.5 Z M152.546,110.6 C157.746,110.6 162.696,109.25 167.396,106.55 C172.096,103.85 175.996,100.15 179.096,95.45 L179.096,103.1 C175.396,107.2 171.346,110.2 166.946,112.1 C162.546,113.9 157.546,114.8 151.946,114.8 C145.746,114.8 139.896,113.15 134.396,109.85 C128.996,106.55 124.646,102.15 121.346,96.65 C118.146,91.15 116.546,85.3 116.546,79.1 C116.546,72.4 118.146,66.4 121.346,61.1 C124.546,55.7 128.896,51.5 134.396,48.5 C139.996,45.5 146.196,44 152.996,44 C163.396,44 172.246,48.1 179.546,56.3 L132.446,102.8 C135.746,105.5 138.946,107.5 142.046,108.8 C145.146,110 148.646,110.6 152.546,110.6 Z M121.346,78.65 C121.346,86.95 124.096,94.05 129.596,99.95 L173.546,56.3 C170.246,53.4 167.046,51.35 163.946,50.15 C160.846,48.85 157.146,48.2 152.846,48.2 C146.746,48.2 141.296,49.55 136.496,52.25 C131.796,54.85 128.096,58.45 125.396,63.05 C122.696,67.65 121.346,72.85 121.346,78.65 Z M226.35,114.65 C219.95,114.65 214,113.05 208.5,109.85 C203,106.65 198.65,102.35 195.45,96.95 C192.25,91.45 190.65,85.55 190.65,79.25 C190.65,72.95 192.25,67.1 195.45,61.7 C198.65,56.2 203,51.85 208.5,48.65 C214,45.45 219.95,43.85 226.35,43.85 C232.85,43.85 239,45.6 244.8,49.1 C250.6,52.5 254.65,56.95 256.95,62.45 L256.95,45.5 L261.75,45.5 L261.75,113 L256.95,113 L256.95,96.2 C254.25,101.8 250.05,106.3 244.35,109.7 C238.75,113 232.75,114.65 226.35,114.65 Z M226.65,110.45 C232.15,110.45 237.25,109.05 241.95,106.25 C246.65,103.35 250.35,99.55 253.05,94.85 C255.85,90.05 257.25,84.85 257.25,79.25 C257.25,73.75 255.85,68.6 253.05,63.8 C250.25,59 246.5,55.2 241.8,52.4 C237.1,49.5 232,48.05 226.5,48.05 C221,48.05 215.85,49.5 211.05,52.4 C206.35,55.3 202.55,59.15 199.65,63.95 C196.85,68.75 195.45,73.9 195.45,79.4 C195.45,84.9 196.85,90.05 199.65,94.85 C202.55,99.55 206.4,103.35 211.2,106.25 C216,109.05 221.15,110.45 226.65,110.45 Z M304.832,113.9 C297.432,113.9 291.282,111.65 286.382,107.15 C281.582,102.65 279.182,96.45 279.182,88.55 L279.182,18.35 L283.982,18.35 L283.982,45.5 L304.682,45.5 L304.682,49.7 L283.982,49.7 L283.982,88.55 C283.982,95.15 285.932,100.35 289.832,104.15 C293.832,107.85 298.832,109.7 304.832,109.7 L304.832,113.9 Z" id="Shape" fill="#FFFFFF"></path>
@@ -16,16 +17,41 @@ const Header = () => (
           </g>
         </svg>
       </a>
-      <div className="nav__list">
+      {/* <div className="nav__list">
         <div className="nav__item"><a href="#residential" className="nav__link">Residential</a></div>
         <div className="nav__item"><a href="#commercial" className="nav__link">Commercial</a></div>
         <div className="nav__item"><a href="#cultural" className="nav__link">Cultural</a></div>
         <div className="nav__separation"></div>
         <div className="nav__item"><a href="#about" className="nav__link">About</a></div>
         <div className="nav__item"><a href="#contact" className="nav__link">Contact</a></div>
+      </div> */}
+      <div className={styles.nav__list}>
+
+        {/* <button className={styles.nav__hamburger}>
+          <span className={styles.nav__hamburgerLine}></span>
+          <span className={styles.nav__hamburgerLine}></span>
+          <span className={styles.nav__hamburgerLine}></span>
+        </button> */}
+
+        {/* <div className={styles.nav__item}><a href="#residential" className={styles.nav__link}>
+        </a></div> */}
+        {/* <div className={styles.nav__item}><a href="#residential" className={styles.nav__link}></a></div> */}
+        {/* <div className={styles.nav__item}><a href="#commercial" className={styles.nav__link}>Commercial</a></div>
+        <div className={styles.nav__item}><a href="#cultural" className={styles.nav__link}>Cultural</a></div>
+        <div className={styles.nav__item}><a href="#about" className={styles.nav__link}>About</a></div>
+        <div className={styles.nav__item}><a href="#contact" className={styles.nav__link}>Contact</a></div> */}
       </div>
+      
+      
     </div>
   </nav>
+    <nav className={styles.nav__topbar}>
+    <div className={styles.nav__topbarInner}>
+      {/* <a href="tel:+1234567890" className={styles.nav__phone}>+1 234 567 890</a> */}
+      {/* <a href="mailto:carolina@create-dwell.com" className={styles.nav__email}></a> */}
+    </div>
+  </nav>
+  </>
 );
 
 export default Header;

@@ -3,7 +3,19 @@
 }
 
 .pageWrapper {
-    padding-left: 20vw;
+    min-height: 100vh;
+    padding-left: 0;
+
+    background-color: #fdfdfd;
+
+    // background-color: rgba(248, 209, 123, 0.1); // rgb(158 108 2 / 8%)
+    // background-image:
+    //   linear-gradient(rgba(255,255,255,.5) 2px, transparent 2px),
+    //   linear-gradient(90deg, rgba(255,255,255,.5) 2px, transparent 2px),
+    //   linear-gradient(rgba(255,255,255,.28) 1px, transparent 1px),
+    //   linear-gradient(90deg, rgba(255,255,255,.28) 1px, transparent 1px);
+    // background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    // background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
 }
 
 .loading::before,

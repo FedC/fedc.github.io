@@ -12,21 +12,21 @@
 }
 
 .fullscreen-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: var(--color-bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow-x: auto;
-    overflow-y: hidden;
-    z-index: var(--frame-z-index);
-    transition: opacity 0.6s ease;
-    opacity: 0;
-    visibility: hidden;
+    // position: fixed;
+    // top: 0;
+    // left: 0;
+    // width: 100vw;
+    // height: 100vh;
+    // background-color: var(--color-bg);
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+    // overflow-x: auto;
+    // overflow-y: hidden;
+    // z-index: var(--frame-z-index);
+    // transition: opacity 0.6s ease;
+    // opacity: 0;
+    // visibility: hidden;
   
     &.show {
       visibility: visible;

@@ -29,6 +29,7 @@ $font-alt: 'Poiret One', sans-serif;
   --color-text: #1b1b1b;
   --color-bg: white;
   --color-link: rgb(246, 171, 11);
+  --color-link-transparent: rgba(246, 171, 11, 0.65);
   --color-link-hover: #fbad05;
   --color-title: #fff;
   
@@ -38,7 +39,6 @@ $font-alt: 'Poiret One', sans-serif;
   --loading-z-index: 2002;
   --nav-z-index: 700;
   --frame-z-index: 600;
-  --mark-z-index: 50;
 }
 
 @mixin border-box() {
