@@ -209,7 +209,7 @@ const Home = () => {
         <section className="grid-container">
           <ProjectGrid
             projects={projects}
-            onProjectClick={handleGridItemClick}
+            // onProjectClick={handleGridItemClick}
           />
         </section>
       </main>
