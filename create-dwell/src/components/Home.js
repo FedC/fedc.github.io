@@ -2,15 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../js/firebase';
 import Header from './Header';
-import ProjectGrid from './ProjectGrid';
+// import ProjectGrid from './ProjectGrid';
 import ProjectOverlay from './ProjectOverlay';
 import { initSmoothScrolling } from '../js/smoothscroll';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { preloadImages } from '../js/utils';
 import * as styles from './Home.module.scss';
+import HomeProjectList from './HomeProjectList';
+import { CSSPlugin } from 'gsap/CSSPlugin';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { Draggable } from 'gsap/Draggable';
+import InertiaPlugin from './InertiaPlugin.js';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(InertiaPlugin, ScrollTrigger, Draggable, CSSPlugin, ScrollToPlugin);
 
 initSmoothScrolling();
 
@@ -207,10 +212,11 @@ const Home = () => {
       <Header />
       <main className={styles.pageWrapper}>
         <section className="grid-container">
-          <ProjectGrid
+          {/* <ProjectGrid
             projects={projects}
             // onProjectClick={handleGridItemClick}
-          />
+          /> */}
+          <HomeProjectList projects={projects} />
         </section>
       </main>
 
