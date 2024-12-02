@@ -3,7 +3,7 @@ import * as styles from './Header.module.scss';
 
 const Header = () => (
   <>
-  <nav className={styles.nav}>
+  <nav className={styles.nav} id="verticalnav">
     <div className={styles.nav__inner}>
       <a href="/" className={styles.nav__logo}>
         <svg className={styles.logoSvg} width="200px" height="34px" viewBox="0 0 706 116" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
@@ -45,7 +45,7 @@ const Header = () => (
       
     </div>
   </nav>
-    <nav className={styles.nav__topbar}>
+  <nav className={styles.nav__topbar} id="topbar">
     <div className={styles.nav__topbarInner}>
       {/* <a href="tel:+1234567890" className={styles.nav__phone}>+1 234 567 890</a> */}
       {/* <a href="mailto:carolina@create-dwell.com" className={styles.nav__email}></a> */}

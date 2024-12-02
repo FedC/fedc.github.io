@@ -2,48 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Draggable } from 'gsap/Draggable';
-import { CSSPlugin } from 'gsap/CSSPlugin';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 
 import './ProjectGrid.scss';
-
-const InertiaPlugin = {
-  version: '1.0.0',
-  name: 'inertia',
-  register: function (core) {
-    gsap = core;
-  },
-  init: function (target, vars, tween, index, targets) {
-    const velocity = vars.velocity || 0;
-    this._props = [];
-    this._pt = new gsap.PropTween(
-      null,
-      target,
-      'y',
-      0,
-      velocity * tween.duration(),
-      null,
-      0,
-      tween
-    );
-    this._pt.u = 'px';
-    tween._pt = this._pt;
-  },
-  render: function (ratio, data) {
-    const pt = data._pt;
-    if (pt) {
-      pt.set(pt.t, pt.p, pt.s + pt.c * ratio + pt.u, pt.d, ratio);
-    }
-  },
-  track: function (element) {
-    return gsap.getProperty(element, 'x'); // Velocity logic
-  },
-  untrack: function (element) {
-    // No cleanup logic for now
-  },
-};
-
-gsap.registerPlugin(InertiaPlugin, ScrollTrigger, Draggable, CSSPlugin, ScrollToPlugin);
 
 const ProjectGrid = ({ projects, onProjectClick }) => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
