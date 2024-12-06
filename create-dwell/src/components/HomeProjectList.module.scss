@@ -1,7 +1,10 @@
 :root {
   --grid-max-width: 500px;
+  --grid-max-width-mobile: 268px;
   --color-link: #f6ab0b;
   --loading-z-index: 9999;
+  --mark-z-index: 1;
+  --grid-z-index: 2;
 }
 
 .projectList {
@@ -10,6 +13,8 @@
   overflow: hidden;
   padding-top: 100px;
   padding-bottom: 10vh;
+  position: relative;
+  z-index: var(--grid-z-index);
 
   .projectListVertical {
     display: flex;
@@ -18,11 +23,10 @@
     // overflow-y: auto;
     overflow: visible;
     height: 100%;
-    row-gap: 20px;
+    row-gap: 24px;
   }
 
   .projectItem {
-    margin: 20px 0;
     text-align: center;
     cursor: pointer;
     display: flex;
@@ -34,6 +38,7 @@
       max-width: var(--grid-max-width);
       height: auto;
       border-radius: 2px;
+      filter: brightness(1);
     }
 
     .projectContent {
@@ -119,6 +124,14 @@
   }
 }
 
+/* add --grid-max-width-mobile */
+@media screen and (max-width: 53em) {
+	.projectList .projectItem .projectMainImage {
+		max-width: var(--grid-max-width-mobile);
+    margin: auto;
+	}
+}
+
 .spinner {
   margin: auto;
   display: block;
@@ -159,9 +172,11 @@
   0% {
     transform: translateY(-50%) scale(1);
   }
+
   50% {
     transform: translateY(-50%) translateX(40px) scale(0.8);
   }
+
   100% {
     transform: translateY(-50%) scale(1);
   }
@@ -171,10 +186,73 @@
   0% {
     transform: translateY(-50%) scale(0.7);
   }
+
   50% {
     transform: translateY(-50%) translateX(-40px) scale(1);
   }
+
   100% {
     transform: translateY(-50%) scale(0.7);
+  }
+}
+
+
+.mark {
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  transform: translateY(-50%);
+  width: 100vw;
+  left: 0;
+  z-index: var(--mark-z-index);
+  overflow: hidden;
+  padding: 8px;
+}
+
+.spacer {
+  padding: 0 100px;
+}
+
+.mark__inner {
+  display: flex;
+  width: max-content;
+  position: relative;
+  transform: translateX(100vw);
+  will-change: transform;
+  opacity: 0;
+}
+
+.mark__inner span {
+  white-space: nowrap;
+  text-transform: capitalize;
+  font-size: 3rem;
+  line-height: 1;
+  padding: 5px 20px;
+  // background: rgba(255, 255, 255, 0.9);
+  margin-right: 10px;
+  transition: background 0.2s, color 0.2s;
+  color: #bab9b7;
+  font-family: 'Poiret One', sans-serif;
+
+  // bigger fonts on desktop
+  @media screen and (min-width: 768px) {
+    font-size: 4rem;
+  }
+
+  // -webkit-backdrop-filter: blur(6px);
+  // backdrop-filter: blur(6px);
+  // box-shadow: 0 3px 7px rgba(47, 47, 47, 0.1);
+}
+
+.mark__inner a {
+  text-decoration: none;
+}
+
+.mark__inner .clickable {
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    color: rgb(171, 171, 171);
   }
 }

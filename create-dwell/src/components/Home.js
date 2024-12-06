@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../js/firebase';
 import Header from './Header';
 // import ProjectGrid from './ProjectGrid';
-import ProjectOverlay from './ProjectOverlay';
+// import ProjectOverlay from './ProjectOverlay';
 import { initSmoothScrolling } from '../js/smoothscroll';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -14,6 +14,7 @@ import { CSSPlugin } from 'gsap/CSSPlugin';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { Draggable } from 'gsap/Draggable';
 import InertiaPlugin from './InertiaPlugin.js';
+import { Cursor } from '../js/cursor.js';
 
 gsap.registerPlugin(InertiaPlugin, ScrollTrigger, Draggable, CSSPlugin, ScrollToPlugin);
 
@@ -22,6 +23,9 @@ initSmoothScrolling();
 const Home = () => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [headerAnimationComplete, setHeaderAnimationComplete] = useState(false);
+  cursor = null;
+  cursorRef = useRef(null);
 
   useEffect(() => {
     document.body.classList.add('loading');
@@ -44,89 +48,8 @@ const Home = () => {
     });
   };
 
-  const animateEntryLogo = () => {
-    const grid = document.querySelector('.grid');
-    grid.style.opacity = 0;
-    window.scrollTo(0, 0);
-
-    setTimeout(() => {
-      document.body.style.overflow = 'hidden';
-
-      gsap.timeline()
-        .fromTo(
-          '.entry-logo',
-          { opacity: 0, y: '3px' },
-          { y: '0', opacity: 1, duration: 1.5, ease: 'power2.out' }
-        )
-        .delay(0.3)
-        .fromTo(
-          '.entry-animation',
-          { top: '0' },
-          { top: '55px', duration: 1.5, ease: 'power2.out' },
-          '<'
-        )
-        .to('.entry-logo', {
-          width: '200px',
-          height: '55px',
-          duration: 1,
-          ease: 'power2.out',
-        }, '+=0.5')
-        .to('.entry-logo-container', {
-          y: '-100vh',
-          paddingBottom: '0',
-          top: '55px',
-          duration: 1,
-          ease: 'power2.out',
-        }, '<')
-        .to('.entry-animation', {
-          y: '-100vh',
-          duration: 1,
-          ease: 'power2.out',
-        }, '<')
-        .to('.entry-animation', {
-          left: '-100vw',
-          duration: 0.6,
-          ease: 'sine.out',
-        })
-        .to('.entry-logo-container', {
-          left: '-100vw',
-          duration: 0.6,
-          ease: 'sine.out',
-        }, '<')
-        .to('.nav__logo img', {
-          opacity: 1,
-          duration: 0.2,
-          ease: 'power2.out',
-        }, '-=0.5')
-        // .to(
-        //   window,
-        //   {
-        //     scrollTo: { y: document.body.clientHeight / 7.5 },
-        //     duration: 2,
-        //     ease: 'power2.out',
-        //   },
-        //   '=-1.9'
-        // )
-        .fromTo(
-          '.mark > .mark__inner',
-          { opacity: 0 },
-          { opacity: 1, duration: 1 },
-          '=-1.6'
-        )
-        .fromTo(
-          grid,
-          { opacity: 0 },
-          { opacity: 1, duration: 1 },
-          '<'
-        )
-        .eventCallback('onComplete', () => {
-          document.body.style.overflow = 'auto';
-        });
-    }, 0);
-  };
-
   useEffect(() => {
-    
+    cursor = new Cursor(cursorRef.current);
   }, []);
 
   const handleCloseProjectOverlay = () => {
@@ -135,97 +58,33 @@ const Home = () => {
     gsap.to('.nav', { x: '0', duration: 0.3, ease: 'power2.out' });
   };
 
-  const handleGridItemClick = async (project, imageWrapper) => {
-    // document.body.style.overflow = 'hidden';
-
-    const projectId = project.id || imageWrapper.dataset.projectId;
-    const img = imageWrapper.querySelector('.grid__item-img');
-    const initialImgSrc = img.style.backgroundImage.slice(5, -2);
-
-    setSelectedProject(project);
-
-    // animate header out of view
-    gsap.to('.nav', { x: '-100%', duration: 0.3, ease: 'power2.out' });
-
-    return;
-
-    const zoomedImg = imageWrapper.cloneNode(true);
-    zoomedImg.classList.add('zoomed-image');
-    document.querySelectorAll('.zoomed-image').forEach(el => el.remove());
-    document.body.appendChild(zoomedImg);
-
-    const rect = imageWrapper.getBoundingClientRect();
-    zoomedImg.style.position = 'fixed';
-    zoomedImg.style.zIndex = '6000';
-    zoomedImg.style.transition = 'none';
-    zoomedImg.style.transform = 'scale(1) translate3d(0, 0, 0)';
-    zoomedImg.style.top = `${rect.top}px`;
-    zoomedImg.style.left = `${rect.left}px`;
-    zoomedImg.style.width = `${rect.width}px`;
-    zoomedImg.style.height = `${rect.height}px`;
-    zoomedImg.style.objectFit = 'cover';
-    zoomedImg.style.borderRadius = 'var(--grid-item-radius)';
-    zoomedImg.style.filter = imageWrapper.style.filter;
-
-    zoomedImg.style.transition = 'transform 1s ease, opacity 0.5s ease, object-fit 0.5s ease';
-
-    const spinner = document.createElement('div');
-    spinner.classList.add('spinner');
-    zoomedImg.appendChild(spinner);
-
-    let content = [];
-    // try {
-    //   const projectRef = doc(db, 'projects', projectId);
-    //   const projectDoc = await getDoc(projectRef);
-
-    //   if (projectDoc.exists()) {
-    //     content = projectDoc.data().content || [];
-    //   } else {
-    //     console.error("No such project!");
-    //   }
-    // } catch (error) {
-    //   console.error("Error fetching project content:", error);
-    // }
-
-    spinner.remove();
-
-    setTimeout(() => {
-      // Zoom animation
-      gsap.timeline()
-        .to(zoomedImg, {
-          duration: 0.3,
-          ease: 'power2.out',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          scale: 1,
-        })
-        .then(() => {
-          document.body.style.overflow = 'auto';
-        });
-    }, 0);
-  };
+  const onHeaderAnimationEnd = () => {
+    setHeaderAnimationComplete(true);
+  }
 
   return (
     <>
-      <Header />
+      <Header onAnimationEnd={onHeaderAnimationEnd} />
       <main className={styles.pageWrapper}>
         <section className="grid-container">
           {/* <ProjectGrid
             projects={projects}
             // onProjectClick={handleGridItemClick}
           /> */}
-          <HomeProjectList projects={projects} />
+          <HomeProjectList projects={projects} headerAnimationComplete={headerAnimationComplete} />
         </section>
       </main>
 
-      {selectedProject && (
+      <svg className={styles.cursor} ref={cursorRef} width="40" height="40" viewBox="0 0 40 40">
+        <circle className="cursor__inner" cx="20" cy="20" r="10"/>
+      </svg>
+
+      {/* {selectedProject && (
         <ProjectOverlay
           project={selectedProject}
           onClose={() => handleCloseProjectOverlay()}
         />
-      )}
+      )} */}
     </>
   );
 };
