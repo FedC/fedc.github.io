@@ -51,3 +51,31 @@
         transform: scale3d(0.5, 0.5, 1);
     }
 }
+
+
+.cursor {
+    display: none;
+
+    circle {
+        fill: var(--color-link);
+    }
+}
+
+@media (any-pointer:fine) {
+    .cursor {
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: block;
+        pointer-events: none;
+        z-index: 10000;
+    }
+
+    .cursor__inner {
+        fill: var(--cursor-fill);
+    }
+
+    .no-js .cursor {
+        display: none;
+    }
+}
