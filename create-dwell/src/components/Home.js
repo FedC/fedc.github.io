@@ -24,8 +24,8 @@ const Home = () => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [headerAnimationComplete, setHeaderAnimationComplete] = useState(false);
-  cursor = null;
-  cursorRef = useRef(null);
+  let cursor = null;
+  let cursorRef = useRef(null);
 
   useEffect(() => {
     document.body.classList.add('loading');
