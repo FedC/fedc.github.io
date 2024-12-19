@@ -536,7 +536,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
       });
   };
 
-  toggleProjectDescription = (projectId, event) => {
+  const toggleProjectDescription = (projectId, event) => {
     event.stopPropagation();
     const projectRef = projectRefs.current[projectId];
     const projectDescription = projectRef.querySelector(`.${styles.projectDescription}`);
