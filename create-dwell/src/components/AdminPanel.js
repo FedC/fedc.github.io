@@ -7,6 +7,8 @@ import ProjectList from './ProjectList';
 import { auth, db } from '../js/firebase';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 
+import * as styles from './AdminPanel.module.scss';
+
 import * as adminBaseCss from '../scss/admin-base.scss';
 import * as adminCss from '../scss/admin.scss';
 
@@ -119,28 +121,34 @@ const AdminPanel = () => {
           <Route
             path="/"
             element={
-              <div>
-                <h2>Manage Projects</h2>
-                <button id="newProjectBtn" className="primary-btn mb10" onClick={handleNewProjectClick}>New Project</button>
-                <ProjectList projects={projects} onEdit={handleEditProject} onUpdate={handleUpdateProjects} />
+              <div className={styles.adminContent}>
+                <div className={styles.manageProjects}>
+                  <h2>Manage Projects</h2>
+                  <button id="newProjectBtn" className="primary-btn mb10" onClick={handleNewProjectClick}>New Project</button>
+                  <ProjectList projects={projects} onEdit={handleEditProject} onUpdate={handleUpdateProjects} />
+                </div>
               </div>
             } />
           <Route
             path="/new-project"
             element={
-              <ProjectForm
-                onClose={() => navigate('/admin')}
-                editingProject={null}
-              />
+              <div className={styles.adminContent}>
+                <ProjectForm
+                  onClose={() => navigate('/admin')}
+                  editingProject={null}
+                />
+              </div>
             }
           />
           <Route
             path="/edit-project/:projectId"
             element={
-              <ProjectForm
-                onClose={() => navigate('/admin')}
-                editingProject={editingProject}
-              />
+              <div className={styles.adminContent}>
+                <ProjectForm
+                  onClose={() => navigate('/admin')}
+                  editingProject={editingProject}
+                />
+              </div>
             }
           />
           <Route path="/users" element={<div>Users Management</div>} />

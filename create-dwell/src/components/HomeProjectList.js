@@ -65,11 +65,13 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
   const animation = async () => {
     await preloadImages(`.${styles.projectMainImage}`);
 
+    gsap.set(gridRef.current, { y: '100vh' });
+
     gsap.to(gridRef.current, {
       y: 0,
       opacity: 1,
-      duration: 1,
-      ease: 'power3.out',
+      duration: 1.6,
+      ease: 'power2.out',
       onComplete: () => {
         document.body.classList.remove('loading');
         // allow scrolling
@@ -327,12 +329,16 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
     // Preload images in the project content
     const contentSelector = `#project-${projectId} .${styles.projectContent}`;
+    const mainImageWrapper = `#project-${projectId} .${styles.mainImageWrapper}`;
     const mainImageSelector = `#project-${projectId} .${styles.projectMainImage}`;
     const contentRef = projectRefs.current[projectId];
     const projectRef = projectRefs.current[projectId];
 
     const mainImage = projectRef.querySelector(`.${styles.projectMainImage}`);
     gsap.set(mainImageSelector, {
+      willChange: 'width, height', // Hint the browser to prepare for these changes
+    });
+    gsap.set(mainImageWrapper, {
       willChange: 'width, height', // Hint the browser to prepare for these changes
     });
 
@@ -404,6 +410,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
             gsap.set(`#project-${projectId} .${styles.projectContent}`, { x: updatedMainImageWidth, opacity: 0 });
             gsap.set(`#project-${projectId}`, { overflow: 'visible' });
             gsap.set(contentSelector, { x: updatedMainImageWidth, opacity: 0 });
+            gsap.set(projectRef.querySelector(`.${styles.projectDescriptionIconButton}`), { display: 'flex' });
 
             tl.fromTo(contentSelector, {
               duration: 0.5,
@@ -430,7 +437,8 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                 onUpdate: () => {
                   // Dynamically calculate the x position of the main image
                   const contentX = gsap.getProperty(contentSelector, 'x'); // Content's current x position
-                  gsap.set(mainImageSelector, { x: contentX - updatedMainImageWidth }); // Position main image accordingly
+                  // gsap.set(mainImageSelector, { x: contentX - updatedMainImageWidth }); // Position main image accordingly
+                  gsap.set(mainImageWrapper, { x: contentX - updatedMainImageWidth }); // Position main image wrapper accordingly
                   const spinner = projectRef.querySelector(`.${styles.spinner}`);
                   if (spinner) {
                     gsap.set(spinner, { x: contentX - updatedMainImageWidth });
@@ -563,6 +571,44 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     });
   }, [openProjects]);
 
+  toggleProjectDescription = (projectId, event) => {
+    event.stopPropagation();
+    const projectRef = projectRefs.current[projectId];
+    const projectDescription = projectRef.querySelector(`.${styles.projectDescription}`);
+    const projectDescriptionButton = projectRef.querySelector(`.${styles.projectDescriptionButton}`);
+    const projectDescriptionIconButton = projectRef.querySelector(`.${styles.projectDescriptionIconButton}`);
+    if (!projectDescription) return;
+
+    if (projectDescription.style.opacity === '1') {
+      gsap.to(projectDescription, {
+        y: '100%',
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power3.out',
+      });
+
+      gsap.to(projectDescriptionButton, {
+        scale: 1,
+        duration: 0.5,
+        ease: 'bounce.out',
+      });
+    } else {
+      gsap.to(projectDescription, {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power3.out',
+        yoyo: true,
+      });
+
+      gsap.to(projectDescriptionButton, {
+        scale: 1.1,
+        duration: 0.5,
+        ease: 'bounce.out',
+      });
+    }
+  };
+
   return (
     <>
       <div className={styles.projectList}>
@@ -577,14 +623,29 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                   ref={(el) => (projectRefs.current[project.id] = el)}
                   onClick={() => toggleProject(project.id)}
                 >
-                  <img
-                    className={styles.projectMainImage}
-                    src={project.mainImage}
-                    alt={project.title}
-                  />
+                  <div className={styles.mainImageWrapper}>
+                    <img
+                      className={styles.projectMainImage}
+                      src={project.mainImage}
+                      alt={project.title}
+                    />
 
-                  {loadingContentImages.includes(project.id) && (
-                    <div className={styles.spinner}></div>)}
+                    {project.description && (
+                      <>
+                        <div className={styles.projectDescriptionIconButton}>
+                          <button className={styles.projectDescriptionButton} onClick={(e) => toggleProjectDescription(project.id, e)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
+                          </button>
+                        </div>
+                        <div className={styles.projectDescription} onClick={(e) => toggleProjectDescription(project.id, e)}>
+                          <p>{project.description}</p>
+                        </div>
+                      </>
+                    )}
+
+                    {loadingContentImages.includes(project.id) && (
+                      <div className={styles.spinner}></div>)}
+                  </div>
 
                   {openProjects.includes(project.id) && (
                     <div className={styles.projectContent}>
