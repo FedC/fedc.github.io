@@ -3,6 +3,7 @@ import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, getMetadata, deleteObject } from 'firebase/storage';
 import { db, storage } from '../js/firebase';
 import * as styles from './ProjectForm.module.scss';
+import Checkbox from './Checkbox';
 
 const getBaseName = (fileName) => fileName.replace(/\.[^/.]+$/, ""); // Remove the extension
 
@@ -72,8 +73,11 @@ const ProjectForm = ({ onClose, editingProject }) => {
   }, [editingProject]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    });
   };
 
   const handleMainImageFileChange = async (e) => {
@@ -239,7 +243,9 @@ const ProjectForm = ({ onClose, editingProject }) => {
         console.log('Project saved', projectData);
       }
 
-      onClose({ updated: !!editingProject, new: !editingProject });
+      // onClose({ updated: !!editingProject, new: !editingProject });
+      alert('Project saved successfully');
+
     } catch (error) {
       console.error('Error saving project:', error);
     }
@@ -276,13 +282,19 @@ const ProjectForm = ({ onClose, editingProject }) => {
   return (
     <section className={styles.projectForm}>
       <div className={styles.projectHeader}>
-        <button className="close-btn" onClick={onClickClose}>
-          <span>&times;</span>
+        <button className={styles.backButton} onClick={onClickClose}>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/></svg>
+          <span>Back</span>
         </button>
 
         <h2>
           {editingProject ? `Edit Project: ${formData.title}` : 'New Project'}
         </h2>
+
+        <button type="submit" className={styles.saveButton} onClick={handleSubmit} disabled={loading}>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM480-240q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"/></svg>
+          <span>{loading ? "Uploading..." : "Save Project"}</span>
+        </button>
       </div>
 
 
@@ -293,7 +305,8 @@ const ProjectForm = ({ onClose, editingProject }) => {
         </div>
       )}
 
-      <div className="content" onClick={stopPropagation}>
+      <div className={styles.projectFormContent} onClick={stopPropagation}>
+        
         <div className={styles.mainImageContainer}>
           {formData.mainImage && (
             <img
@@ -309,70 +322,75 @@ const ProjectForm = ({ onClose, editingProject }) => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <input type="hidden" name="id" value={formData.id} />
-          <div className={styles.formGroup}>
-            <label htmlFor="published">Published</label>
-            <input type="checkbox" name="published" id="published" onChange={handleInputChange} checked={!!formData.published} />
-          </div>
 
-          <div className="grid-two-col">
+          <div className={styles.formBox}>
+            <input type="hidden" name="id" value={formData.id} />
             <div className={styles.formGroup}>
-              <label htmlFor="title">Title</label>
-              <input type="text" name="title" placeholder="Project Title" onChange={handleInputChange} value={formData.title || ''} />
+              <div className={styles.flexRight}>
+                <Checkbox label="Published" checked={!!formData.published} onChange={handleInputChange} name="published" />
+              </div>
             </div>
+
+            <div className="grid-two-col">
+              <div className={styles.formGroup}>
+                <label htmlFor="title">Title</label>
+                <input type="text" name="title" placeholder="Project Title" onChange={handleInputChange} value={formData.title || ''} />
+              </div>
+              <div className={styles.formGroup}>
+                <label htmlFor="location">Location</label>
+                <input type="text" name="location" placeholder="Location" onChange={handleInputChange} value={formData.location || ''} />
+              </div>
+            </div>
+
+            <div className="grid-two-col">
+              <div className={styles.formGroup}>
+                <label htmlFor="award">Award</label>
+                <input type="text" name="award" placeholder="Award" onChange={handleInputChange} value={formData.award || ''} />
+              </div>
+              <div className={styles.formGroup}>
+                <label htmlFor="photoCredit">Photo Credit</label>
+                <input type="text" name="photoCredit" placeholder="Photo Credit" onChange={handleInputChange} value={formData.photoCredit || ''} />
+              </div>
+            </div>
+
             <div className={styles.formGroup}>
-              <label htmlFor="location">Location</label>
-              <input type="text" name="location" placeholder="Location" onChange={handleInputChange} value={formData.location || ''} />
+              <label htmlFor="role">Role</label>
+              <input type="text" name="role" placeholder="Role" onChange={handleInputChange} value={formData.role || ''} />
             </div>
-          </div>
 
-          <div className="grid-two-col">
             <div className={styles.formGroup}>
-              <label htmlFor="award">Award</label>
-              <input type="text" name="award" placeholder="Award" onChange={handleInputChange} value={formData.award || ''} />
+              <label htmlFor="use">Use (use comma separated for many)</label>
+              <input type="text" name="use" placeholder="Use (comma separated)" onChange={handleInputChange} value={formData.use || ''} />
             </div>
+
             <div className={styles.formGroup}>
-              <label htmlFor="photoCredit">Photo Credit</label>
-              <input type="text" name="photoCredit" placeholder="Photo Credit" onChange={handleInputChange} value={formData.photoCredit || ''} />
+              <label htmlFor="order">Order</label>
+              <input type="number" name="order" placeholder="Order" onChange={handleInputChange} value={formData.order || 0} />
             </div>
-          </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="role">Role</label>
-            <input type="text" name="role" placeholder="Role" onChange={handleInputChange} value={formData.role || ''} />
-          </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="projectType">Project Type</label>
+              <select id="projectType" name="projectType" onChange={handleInputChange} value={formData.projectType || ''}>
+                <option value="Historic Interior Renovation">Historic Interior Renovation</option>
+                <option value="Interior Renovation">Interior Renovation</option>
+                <option value="New Construction">New Construction</option>
+                <option value="Schematic Proposal">Schematic Proposal</option>
+                <option value="Renovation">Renovation</option>
+              </select>
+            </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="use">Use (use comma separated for many)</label>
-            <input type="text" name="use" placeholder="Use (comma separated)" onChange={handleInputChange} value={formData.use || ''} />
-          </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="area">Area (sq ft)</label>
+              <input type="number" name="area" placeholder="Area (sq ft)" onChange={handleInputChange} value={formData.area || ''} />
+            </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="order">Order</label>
-            <input type="number" name="order" placeholder="Order" onChange={handleInputChange} value={formData.order || 0} />
-          </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="description">Description</label>
+              <textarea name="description" placeholder="Description" rows={4} cols={40}
+                onChange={handleInputChange} value={formData.description || ''}>
+              </textarea>
+            </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="projectType">Project Type</label>
-            <select id="projectType" name="projectType" onChange={handleInputChange} value={formData.projectType || ''}>
-              <option value="Historic Interior Renovation">Historic Interior Renovation</option>
-              <option value="Interior Renovation">Interior Renovation</option>
-              <option value="New Construction">New Construction</option>
-              <option value="Schematic Proposal">Schematic Proposal</option>
-              <option value="Renovation">Renovation</option>
-            </select>
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="area">Area (sq ft)</label>
-            <input type="number" name="area" placeholder="Area (sq ft)" onChange={handleInputChange} value={formData.area || ''} />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="description">Description</label>
-            <textarea name="description" placeholder="Description" rows={4} cols={40}
-              onChange={handleInputChange} value={formData.description || ''}>
-            </textarea>
           </div>
 
           {/* Dynamic content sections */}

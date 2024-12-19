@@ -40,7 +40,7 @@ const ProjectList = ({ projects, onEdit, onUpdate }) => {
   }
 
   return (
-    <div id="projectsList">
+    <div id="projectsList" className={styles.projectsList}>
       <table>
         <thead>
           <tr>

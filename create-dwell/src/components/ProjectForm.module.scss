@@ -30,7 +30,30 @@
 }
 
 .projectForm {
-  padding-top: 10px;
+  padding-top: 0;
+  height: 100%;
+}
+
+button.backButton {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background-color: transparent !important;
+  border: 1px solid #ccc !important;
+  color: #4f4e4e !important;
+  text-transform: uppercase;
+
+  svg {
+    margin-right: 5px;
+    width: 14px;
+    fill: #4f4e4e;
+  }
+}
+
+.projectFormContent {
+  max-width: 980px;
+  height: 100%;
+  margin: 0 auto;
 }
 
 .projectHeader {
@@ -38,6 +61,20 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding: 8px 20px;
+  border-bottom: 1px solid #f6e1b8;
+  background-color: #feeece;
+
+  position: sticky;
+  top: 55px;
+  width: 100%;
+  left: 0;
+  z-index: var(--nav-z-index);
+
+  h2 {
+    margin: 0;
+    margin-bottom: 0 !important;
+  }
 }
 
 h3 {
@@ -112,6 +149,13 @@ h3 {
   border-radius: 2px;
 }
 
+.saveButton {
+  display: flex;
+  align-items: center;
+  column-gap: 5px;
+  background-color: var(--color-link);
+}
+
 .submitButton {
   background-color: var(--color-link);
   margin: 10px 0;
@@ -119,6 +163,20 @@ h3 {
   &:hover {
     background-color: var(--color-link-hover);
   }
+}
+
+.flexRight {
+  display: flex;
+  justify-content: flex-end;
+  column-gap: 10px;
+}
+
+.formBox {
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #f0f0f0;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
 .formGroup {
@@ -156,10 +214,11 @@ h3 {
 
 .contentSection {
   margin-bottom: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #f0f0f0;
   padding: 20px;
+  background-color: white;
+  border-radius: 4px;
 }
-
 
 .contentImageContainer {
   position: relative;
