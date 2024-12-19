@@ -451,6 +451,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
             scrollToProject(projectId);
             ScrollTrigger.refresh();
+            setupDraggable(projectId);
 
             function handleScroll(e) {
               const scrollingSideWays = Math.abs(e.deltaX) > Math.abs(e.deltaY);
@@ -494,14 +495,10 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     };
   };
 
-  useEffect(() => {
-    openProjects.forEach(async (projectId) => {
-      const scrollRef = projectRefs.current[projectId];
-      if (!scrollRef) return;
-
-      await preloadImages(`#project-${projectId} img`);
-
-      const items = scrollRef.querySelectorAll(`.${styles.projectContentItem}`);
+  const setupDraggable = (projectId) => {
+    const scrollRef = projectRefs.current[projectId];
+    if (!scrollRef) return;
+    const items = scrollRef.querySelectorAll(`.${styles.projectContentItem}`);
       // snappoints is the x position of projectContentHorizontal needs to be for each project
       // to be at the center of the window
       const snappoints = Array.from(items).reduce((acc, item, index) => {
@@ -510,25 +507,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
         return acc;
       }, []);
       console.log('snappoints', snappoints);
-
-      const moveMainImage = (self) => {
-        // move main image in same direction
-        // const contentX = gsap.getProperty(scrollRef, 'x');
-        // const contentWidth = scrollRef.clientWidth;
-        // // const mainImageSelector = `#project-${projectId} .projectMainImage`;
-        // const contentItems = document.querySelector(`#project-${projectId} .projectContentHorizontal .projectContentItem`);
-        // const lastProjectContent = contentItems[contentItems.length - 1];
-        // const lastProjectContentX = gsap.getProperty(lastProjectContent, 'x');
-        // console.log('lastProjectContentX', lastProjectContentX, contentWidth);
-
-        // if (Math.abs(lastProjectContentX) > contentWidth) {
-        //   gsap.set(scrollRef, { x: -contentWidth });
-        // } else if (lastProjectContentX > 0) {
-        //   gsap.set(scrollRef, { x: 0 });
-        // } else {
-        //   // gsap.set(mainImageSelector, { x: contentX - contentFirstMoveX });
-        // }
-      };
 
       // get width of the project content and scrollRef width
       const contentWidth = scrollRef.clientWidth;
@@ -542,8 +520,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
         bounds: { minX: -minX, maxX: 0 },
         inertia: true,
         // edgeResistance: .1,
-        onDrag: moveMainImage,
-        onThrowUpdate: moveMainImage,
         onDragEnd: () => {
           // console.log('Drag end');
           const contentX = gsap.getProperty(scrollRef, 'x');
@@ -558,18 +534,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
           // });
         },
       });
-
-      // Draggable.create(scrollRef, {
-      //   type: 'x',
-      //   bounds: { minX: -scrollRef.offsetWidth, maxX: 0 },
-      //   inertia: true,
-      //   onDrag: () => {
-      //     contentX = gsap.getProperty(scrollRef, 'x');
-      //   },
-      // });
-
-    });
-  }, [openProjects]);
+  };
 
   toggleProjectDescription = (projectId, event) => {
     event.stopPropagation();
