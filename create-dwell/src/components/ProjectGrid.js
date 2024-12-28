@@ -287,69 +287,6 @@ const ProjectGrid = ({ projects, onProjectClick }) => {
     }
   };
 
-  const snapToGrid = () => {
-    const gridElement = gridRef.current;
-    if (!gridElement) return;
-    if (snapping) return;
-    snapping = true;
-    const isAnimating = gsap.isTweening(gridElement);
-    const currentScale = gsap.getProperty(gridElement, 'scaleX');
-    const gridItems = Array.from(gridElement.querySelectorAll('.grid__item'));
-    const item = gridItems.find((gridItem) => gridItem.dataset.projectId === currentProjectId);
-
-    debugger;
-
-    if (item) {
-      const itemOffsetTop = item.getBoundingClientRect().top + window.scrollY; // Absolute position of the item
-      const scrollToY = itemOffsetTop - 100; // Position the item 100px from the top of the page
-
-      ScrollTrigger.disable(); // Disable ScrollTrigger to prevent conflicts
-  
-      gsap.to(window, {
-        scrollTo: { y: scrollToY },
-        duration: 0.8,
-        ease: 'power2.out',
-        onComplete: () => {
-          snapping = false; // Allow snapping again after animation completes
-          ScrollTrigger.enable(); // Re-enable ScrollTrigger
-        },
-      });
-    } else {
-      snapping = false; // No matching item found, reset snapping flag
-    }
-    return;
-
-    if (!isAnimating && currentScale !== 1) {
-      debugger;
-      snapping = true;
-      gsap.to(gridElement, {
-        scale: 1,
-        duration: .5,
-        ease: 'ease.out',
-        onComplete: () => {
-          const snapPoints = Array.from(gridElement.querySelectorAll('.grid__item'));
-          const item = snapPoints.find((snapPoint) => snapPoint.dataset.projectId === currentProjectId);
-          if (item) {
-            debugger;
-            item.scrollIntoView({
-              behavior: 'smooth',
-              block: 'center',  
-            });
-          }
-          // window.scrollTo({ top: y});
-          // gsap.to(window, { duration: 2, scrollTo: y });
-
-          // let nearestSnapPoint;
-          // const y = nearestSnapPoint.getBoundingClientRect().top;
-          // gsap.to(window, { duration: 2, scrollTo: y });
-          previousScale.current = 1;
-          snapping = false;
-        }
-      });
-    }
-
-  };
-
   const transformToDashedLowerCase = (str) => str.toLowerCase().replace(/\s/g, '-');
 
   const throttle = (callback, delay) => {

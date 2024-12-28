@@ -13,17 +13,19 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
   const marqueeRef = useRef(null);
   const marqueeInnerRef = useRef(null);
 
+  const imageRefs = useRef({});
+  const snapTimeout = useRef(null);
+  const observerRef = useRef(null);
+  // State to track the most visible image
+  const [mostVisibleImage, setMostVisibleImage] = useState(null);
+
   const previousScrollY = useRef(0);
   const velocityScale = useRef(1);
   const minimumScaleOffset = 0.88;
   const maxScaleOffset = 1;
   const previousScale = useRef(1);
-  let lenis;
   let scrollDirection;
-  let currentProjectId;
-  let snapping = false;
-  let contentFirstMoveX = 160;
-
+  let contentFirstMoveX = 240;
 
   useEffect(() => {
     gsap.set(gridRef.current, { scale: 1, opacity: 0, y: '10vh' });
@@ -37,6 +39,9 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
       console.log('Header animation completed, starting project list animations');
       // Trigger any animations or effects for the project list here
       animation();
+
+      // Set up the draggable effect for the project list
+      setupDraggableToToggleProject();
     }
   }, [headerAnimationComplete]);
 
@@ -70,8 +75,8 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     gsap.to(gridRef.current, {
       y: 0,
       opacity: 1,
-      duration: 1.6,
-      ease: 'power2.out',
+      duration: 2,
+      ease: 'ease',
       onComplete: () => {
         document.body.classList.remove('loading');
         // allow scrolling
@@ -199,10 +204,8 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
   const updateVelocityScale = (velocity) => {
     const gridElement = gridRef.current;
     if (!gridElement) return;
-
     // console.log('velocity', velocity);
 
-    const scrollDirection = velocity > 0 ? 1 : -1;
     const gridItems = Object.values(projectRefs.current);
     if (!gridItems.length) return;
 
@@ -325,7 +328,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
       return;
     }
 
-    setOpenProjects((prev) => [...prev, projectId]);
+    setOpenProjects([...openProjects, projectId]);
 
     // Preload images in the project content
     const contentSelector = `#project-${projectId} .${styles.projectContent}`;
@@ -351,141 +354,157 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
       ScrollTrigger.disable();
 
       setTimeout(() => {
+        const mm = gsap.matchMedia();
+        mm.add(
+          {
+            isDesktop: "(min-width: 768px)", // Desktop logic
+            isMobile: "(max-width: 767px)", // Mobile logic
+          },
+          (context) => {
+            const { isDesktop, isMobile } = context.conditions;
 
-        const tl = gsap.timeline();
+            const tl = gsap.timeline();
 
-        tl.to(mainImageSelector, {
-          filter: 'brightness(0.5)',
-          duration: 0.5,
-          ease: 'ease.out',
-        }, '<');
 
-        tl.to(gridRef.current, {
-          scale: 1,
-          duration: 0.5,
-          ease: 'ease.out',
-        }, '<');
-
-        tl.to(`#project-${projectId}`, {
-          y: 0,
-          scale: 1,
-          duration: 0.5,
-          ease: 'ease.out',
-        }, '<');
-
-        gsap.set(contentSelector, { opacity: 0 });
-        const maxWidth = window.innerWidth * 0.75; // 75vw
-        const maxHeight = window.innerHeight * 0.75; // 75vh
-        const mainImageWidth = mainImage ? mainImage.clientWidth : 0;
-        const mainImageHeight = mainImage ? mainImage.clientHeight : 0;
-        const aspectRatio = mainImageWidth / mainImageHeight;
-        let targetWidth = maxWidth;
-        let targetHeight = maxWidth / aspectRatio;
-
-        if (targetHeight > maxHeight) {
-          targetHeight = maxHeight;
-          targetWidth = maxHeight * aspectRatio;
-        }
-
-        // Use transform: scale for smoother animation
-        const scaleX = targetWidth / mainImageWidth;
-        const scaleY = targetHeight / mainImageHeight;
-        const scale = Math.min(scaleX, scaleY);
-
-        // gsap.set(mainImageSelector, { maxWidth: '100%' });
-
-        tl.fromTo(mainImageSelector, {
-          width: mainImageWidth,
-        }, {
-          width: targetWidth,
-          maxWidth: `${targetWidth}px`,
-          duration: 0.5,
-          ease: 'ease.out',
-          onComplete: async () => {
-            const updatedMainImage = projectRef.querySelector(`.${styles.projectMainImage}`);
-            updatedMainImageWidth = updatedMainImage ? updatedMainImage.clientWidth : 0;
-            updatedMainImageHeight = updatedMainImage ? updatedMainImage.clientHeight : 0;
-
-            await preloadImages(`#project-${projectId} img`);
-            gsap.set(`#project-${projectId} .${styles.projectContent}`, { x: updatedMainImageWidth, opacity: 0 });
-            gsap.set(`#project-${projectId}`, { overflow: 'visible' });
-            gsap.set(contentSelector, { x: updatedMainImageWidth, opacity: 0 });
-            gsap.set(projectRef.querySelector(`.${styles.projectDescriptionIconButton}`), { display: 'flex' });
-
-            tl.fromTo(contentSelector, {
+            tl.to(mainImageSelector, {
+              filter: 'brightness(0.5)',
               duration: 0.5,
-              opacity: 0,
-            }, {
-              opacity: 1,
               ease: 'ease.out',
-            });
-            tl.delay(0.25);
-            tl.to(contentSelector,
-              {
-                x: updatedMainImageWidth - contentFirstMoveX,
-                ease: 'power2.out',
-                duration: 0.5,
-                onComplete: () => {
-                  tl.to(mainImageSelector, {
-                    filter: 'brightness(1)',
-                    duration: 0.1,
-                    ease: 'ease.out',
-                  });
-                  setLoadingContentImages((prev) => prev.filter((id) => id !== projectId));
-                  ScrollTrigger.enable();
-                },
-                onUpdate: () => {
-                  // Dynamically calculate the x position of the main image
-                  const contentX = gsap.getProperty(contentSelector, 'x'); // Content's current x position
-                  // gsap.set(mainImageSelector, { x: contentX - updatedMainImageWidth }); // Position main image accordingly
-                  gsap.set(mainImageWrapper, { x: contentX - updatedMainImageWidth }); // Position main image wrapper accordingly
-                  const spinner = projectRef.querySelector(`.${styles.spinner}`);
-                  if (spinner) {
-                    gsap.set(spinner, { x: contentX - updatedMainImageWidth });
-                  }
-                },
-              },
-            );
+            }, '<');
 
-            const projectContent = document.querySelector(`#project-${projectId} .${styles.projectContent}`);
+            tl.to(gridRef.current, {
+              scale: 1,
+              duration: 0.5,
+              ease: 'ease.out',
+            }, '<');
 
-            scrollToProject(projectId);
-            ScrollTrigger.refresh();
-            setupDraggable(projectId);
+            tl.to(`#project-${projectId}`, {
+              y: 0,
+              scale: 1,
+              duration: 0.5,
+              ease: 'ease.out',
+            }, '<');
 
-            function handleScroll(e) {
-              const scrollingSideWays = Math.abs(e.deltaX) > Math.abs(e.deltaY);
-              if (!scrollingSideWays) {
-                e.preventDefault();
-                return;
-              }
+            gsap.set(contentSelector, { opacity: 0 });
+            const maxWidth = isMobile ? window.innerWidth * 0.98 : window.innerWidth * 0.75; // 75vw on desktop and 98vw on mobile
+            const maxHeight = window.innerHeight * 0.75; // 75vh
+            const mainImageWidth = mainImage ? mainImage.clientWidth : 0;
+            const mainImageHeight = mainImage ? mainImage.clientHeight : 0;
+            const aspectRatio = mainImageWidth / mainImageHeight;
+            let targetWidth = maxWidth;
+            let targetHeight = maxWidth / aspectRatio;
 
-              gsap.to(
-                gridRef.current,
-                {
-                  scale: 1,
-                  duration: 0.5,
-                  ease: 'ease.out',
-                },
-              );
-
-              const deltaX = e.deltaX;
-              let contentX = gsap.getProperty(projectRef, 'x');
-              contentX -= deltaX * 5.5; // Adjust scroll speed (0.5 is a multiplier)
-
-              // Set new x position with bounds checking
-              const maxScroll = projectContent.offsetWidth - projectRef.offsetWidth + (window.innerWidth - 100);
-              contentX = Math.max(-maxScroll, Math.min(0, contentX));
-
-              gsap.to(projectRef, {
-                x: contentX, duration: 0.1,
-                ease: 'power2.out',
-              });
+            if (targetHeight > maxHeight) {
+              targetHeight = maxHeight;
+              targetWidth = maxHeight * aspectRatio;
             }
 
-            projectRef.addEventListener('wheel', handleScroll, { passive: false });
-          },
-        });
+            // Use transform: scale for smoother animation
+            const scaleX = targetWidth / mainImageWidth;
+            const scaleY = targetHeight / mainImageHeight;
+            const scale = Math.min(scaleX, scaleY);
+
+            // gsap.set(mainImageSelector, { maxWidth: '100%' });
+
+            tl.fromTo(mainImageSelector, {
+              width: mainImageWidth,
+            }, {
+              width: targetWidth,
+              maxWidth: `${targetWidth}px`,
+              duration: 0.5,
+              ease: 'ease.out',
+              onComplete: async () => {
+                const updatedMainImage = projectRef.querySelector(`.${styles.projectMainImage}`);
+                updatedMainImageWidth = updatedMainImage ? updatedMainImage.clientWidth : 0;
+                updatedMainImageHeight = updatedMainImage ? updatedMainImage.clientHeight : 0;
+
+                await preloadImages(`#project-${projectId} img`);
+                gsap.set(`#project-${projectId} .${styles.projectContent}`, { x: updatedMainImageWidth, opacity: 0 });
+                gsap.set(`#project-${projectId}`, { overflow: 'visible' });
+                gsap.set(contentSelector, { x: updatedMainImageWidth, opacity: 0 });
+                gsap.set(projectRef.querySelector(`.${styles.projectDescriptionIconButton}`), { display: 'flex' });
+
+                tl.fromTo(contentSelector, {
+                  duration: 0.5,
+                  opacity: 0,
+                }, {
+                  opacity: 1,
+                  ease: 'ease.out',
+                });
+                tl.delay(0.25);
+                tl.to(projectRef,
+                  {
+                    x: -contentFirstMoveX,
+                    ease: 'power2.out',
+                    duration: 0.5,
+                    onComplete: () => {
+                      tl.to(mainImageSelector, {
+                        filter: 'brightness(1)',
+                        duration: 0.1,
+                        ease: 'ease.out',
+                      });
+                      setLoadingContentImages((prev) => prev.filter((id) => id !== projectId));
+                      ScrollTrigger.enable();
+                      ScrollTrigger.refresh();
+                    },
+                    onUpdate: () => {
+                      // // Dynamically calculate the x position of the main image
+                      // const contentX = gsap.getProperty(contentSelector, 'x'); // Content's current x position
+                      // // gsap.set(mainImageSelector, { x: contentX - updatedMainImageWidth }); // Position main image accordingly
+                      // gsap.set(mainImageWrapper, { x: contentX - updatedMainImageWidth }); // Position main image wrapper accordingly
+                      // const spinner = projectRef.querySelector(`.${styles.spinner}`);
+                      // if (spinner) {
+                      //   gsap.set(spinner, { x: contentX - updatedMainImageWidth });
+                      // }
+                    },
+                  },
+                );
+
+                const projectContent = document.querySelector(`#project-${projectId} .${styles.projectContent}`);
+
+                scrollToProject(projectId);
+                ScrollTrigger.refresh();
+                setupDraggable(projectId);
+
+                function handleScroll(e) {
+                  const scrollingSideWays = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+                  if (!scrollingSideWays) {
+                    e.preventDefault();
+                    return;
+                  }
+
+                  gsap.to(
+                    gridRef.current,
+                    {
+                      scale: 1,
+                      duration: 0.5,
+                      ease: 'ease.out',
+                    },
+                  );
+
+                  const deltaX = e.deltaX;
+                  let contentX = gsap.getProperty(projectRef, 'x');
+                  contentX -= deltaX * 5.5; // Adjust scroll speed (0.5 is a multiplier)
+
+                  // Set new x position with bounds checking
+                  // const mainImageWrapperEl =  projectRef.querySelector(`.${styles.mainImageWrapper}`);
+                  // const mainIMageWrapperRect = mainImageWrapperEl.getBoundingClientRect();
+                  const maxScroll = isMobile ? projectContent.offsetWidth + 20 : projectContent.offsetWidth;
+                  contentX = Math.max(-maxScroll, Math.min(0, contentX));
+                  // console.log('contentX', contentX);
+
+                  gsap.to(projectRef, {
+                    x: contentX,
+                    duration: 0.1,
+                    ease: 'power2.out',
+                  });
+                }
+
+                projectRef.addEventListener('wheel', handleScroll, { passive: false });
+              },
+            });
+
+          });
 
       }, 0);
     }
@@ -495,44 +514,86 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     };
   };
 
+  const setupDraggableToToggleProject = () => {
+    const projectIds = Object.keys(projectRefs.current);
+    projectIds.forEach((projectId) => {
+      const scrollRef = projectRefs.current[projectId];
+      if (!scrollRef) return;
+
+
+      // open project if dragged to the left
+
+      let dragStartX = 0;
+      let dragDistance = 0;
+      let isOpen = false;
+
+      Draggable.create(scrollRef, {
+        type: 'x',
+        bounds: { minX: -50, maxX: 0 }, // Limit the drag to the left
+        inertia: true,
+        edgeResistance: 0.5,
+        onDragStart: function () {
+          dragStartX = this.x; // Store the initial drag position
+        },
+        onDragEnd: function () {
+          isOpen = openProjects.includes(projectId);
+          dragDistance = this.x - dragStartX;
+          // do nothing if project is already open
+          if (openProjects.includes(projectId)) return;
+
+          toggleProject(projectId);
+        },
+      });
+    });
+  };
+
   const setupDraggable = (projectId) => {
     const scrollRef = projectRefs.current[projectId];
     if (!scrollRef) return;
     const items = scrollRef.querySelectorAll(`.${styles.projectContentItem}`);
-      // snappoints is the x position of projectContentHorizontal needs to be for each project
-      // to be at the center of the window
-      const snappoints = Array.from(items).reduce((acc, item, index) => {
-        const x = -item.offsetLeft;
-        acc.push(x);
-        return acc;
-      }, []);
-      console.log('snappoints', snappoints);
+    const snappoints = Array.from(items).map((item) => -item.offsetLeft);
 
-      // get width of the project content and scrollRef width
-      const contentWidth = scrollRef.clientWidth;
-      const projectContent = scrollRef.querySelector(`.${styles.projectContent}`);
-      const projectContentWidth = projectContent.offsetWidth;
-      const totalWidth = projectContentWidth + contentWidth;
-      const minX = (totalWidth - window.innerWidth / 2) - contentFirstMoveX;
+    // console.log('snappoints', snappoints);
 
-      Draggable.create(scrollRef, {
-        type: 'x',
-        bounds: { minX: -minX, maxX: 0 },
-        inertia: true,
-        // edgeResistance: .1,
-        onDragEnd: () => {
-          // console.log('Drag end');
-          const contentX = gsap.getProperty(scrollRef, 'x');
-          const snap = gsap.utils.snap(snappoints);
-          const snapX = snap(contentX);
-          console.log('contentX', contentX);
-          console.log(scrollRef.clientWidth);
-          // gsap.to(scrollRef, {
-          //   x: -snapX,
-          //   duration: 0.5,
-          //   ease: 'power2.out',
-          // });
-        },
+    const mm = gsap.matchMedia();
+
+    mm.add(
+      {
+        isDesktop: "(min-width: 768px)", // Desktop logic
+        isMobile: "(max-width: 767px)", // Mobile logic
+      },
+      (context) => {
+        const { isDesktop, isMobile } = context.conditions;
+
+        // get width of the project content and scrollRef width
+        const gridItemWidth = scrollRef.clientWidth;
+        const projectContent = scrollRef.querySelector(`.${styles.projectContent}`);
+        const projectContentWidth = projectContent.offsetWidth;
+        const totalWidth = projectContentWidth + gridItemWidth;
+        let minX = (totalWidth - window.innerWidth / 2) - (gridItemWidth / 2) + 24;
+        if (isDesktop) {
+          minX = (totalWidth - window.innerWidth / 2) - contentFirstMoveX;
+        }
+
+        Draggable.create(scrollRef, {
+          type: 'x',
+          bounds: { minX: -minX, maxX: 0 },
+          inertia: true,
+          // edgeResistance: .1,
+          onDragEnd: () => {
+            // console.log('Drag end');
+            const contentX = gsap.getProperty(scrollRef, 'x');
+            const snap = gsap.utils.snap(snappoints);
+            const snapX = snap(contentX);
+            console.log(mostVisibleImage);
+            console.log('Snapping to', snapX);
+            // gsap.to(scrollRef, {
+            //   x: snapX,
+            //   duration: 0.5,
+            //   ease: 'power2.out',
+            // });
+          },
+        });
       });
   };
 
@@ -574,13 +635,53 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     }
   };
 
+  // Setup IntersectionObserver
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        // Find the entry with the highest intersection ratio
+        const mostVisible = entries.reduce(
+          (max, entry) =>
+            entry.intersectionRatio > (max?.intersectionRatio || 0) ? entry : max,
+          null
+        );
+
+        if (mostVisible) {
+          setMostVisibleImage(mostVisible.target);
+        }
+      },
+      {
+        root: null, // Viewport
+        threshold: [0.1, 0.5, 1], // Observe different visibility thresholds
+      }
+    );
+
+    // Attach observer to all images
+    Object.values(imageRefs.current).forEach((imageArray) => {
+      imageArray.forEach((img) => {
+        if (img) observerRef.current.observe(img);
+      });
+    });
+
+    return () => {
+      // Cleanup observer
+      observerRef.current.disconnect();
+    };
+  }, [projects]);
+
   return (
     <>
       <div className={styles.projectList}>
         <div className={styles.projectListVertical} ref={gridRef}>
           {projects.map(
-            (project) =>
-              project.published && (
+            (project) => {
+
+              // Initialize an array for each project's images in `imageRefs`
+              if (!imageRefs.current[project.id]) {
+                imageRefs.current[project.id] = [];
+              }
+
+              return project.published && (
                 <div
                   key={project.id}
                   className={styles.projectItem}
@@ -588,18 +689,18 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                   ref={(el) => (projectRefs.current[project.id] = el)}
                   onClick={() => toggleProject(project.id)}
                 >
-                  <div className={styles.mainImageWrapper}>
+                  <div className={styles.mainImageWrapper} ref={(el) => el && imageRefs.current[project.id].push(el)}>
                     <img
                       className={styles.projectMainImage}
                       src={project.mainImage}
                       alt={project.title}
                     />
 
-                    {project.description && (
+                    {project.description && openProjects.includes(project.id) && (
                       <>
                         <div className={styles.projectDescriptionIconButton}>
                           <button className={styles.projectDescriptionButton} onClick={(e) => toggleProjectDescription(project.id, e)}>
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
+                            <span>i</span>
                           </button>
                         </div>
                         <div className={styles.projectDescription} onClick={(e) => toggleProjectDescription(project.id, e)}>
@@ -632,15 +733,16 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                                 <div
                                   key={uniqueKey}
                                   className={styles.projectContentItem}
+                                  ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
                                 >
                                   <img
                                     className={styles.projectImage}
                                     src={content.url}
                                     alt={content.title}
                                   />
-                                  <p className={styles.projectImageDescription}>
+                                  {/* <p className={styles.projectImageDescription}>
                                     {content.description}
-                                  </p>
+                                  </p> */}
                                 </div>
                               );
                             } else if (content.type === 'image') {
@@ -648,6 +750,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                                 <div
                                   key={uniqueKey}
                                   className={styles.projectContentItem}
+                                  ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
                                 >
                                   <img
                                     className={styles.projectImage}
@@ -661,6 +764,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                                 <div
                                   key={uniqueKey}
                                   className={styles.projectContentItem}
+                                  ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
                                 >
                                   <div className={styles.projectText}>
                                     {content.text}
@@ -684,18 +788,29 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                   )}
                 </div>
               )
+            }
           )}
         </div>
       </div>
 
       <div className={styles.mark} ref={marqueeRef}>
         <div className={styles.mark__inner} ref={marqueeInnerRef}>
-          <span>Architecture</span>
-          <span>Interior Design</span>
-          <a href={'#residential-0'}><span>Residential</span></a>
-          <span>Commercial</span>
-          <span>Cultural</span>
+
+          {
+            Array.from({ length: 3 }, () => ['Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning'])
+              .flat()
+              .map((item, index) => (
+                item === 'spacer' ?
+                  <div key={`spacer-${index}`} className={styles.spacer}></div>
+                  :
+                  <span key={`item-${index}`}>{item}</span>
+              ))}
+
+          {/* <span>Architecture</span>
           <div className={styles.spacer}></div>
+          <span>Interior Design</span>
+          <div className={styles.spacer}></div>
+          <span>Planning</span> */}
         </div>
       </div>
     </>
