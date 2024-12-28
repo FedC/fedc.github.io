@@ -17,6 +17,7 @@ const Header = ({ onAnimationEnd }) => {
   const contactLinkRef = useRef(null);
   const contactLinkMobileRef = useRef(null);
 
+  let hasFired = false;
   let entryAnimation = false;
 
   useEffect(() => {
@@ -36,9 +37,9 @@ const Header = ({ onAnimationEnd }) => {
     const tl = gsap.timeline({
       onUpdate: function () {
         // Fire onAnimationEnd when progress reaches 95%
-        if (this.progress() >= 0.4 && !this.hasFired) {
+        if (tl.currentLabel() === 'logoUp' && !hasFired) {
           onAnimationEnd();
-          this.hasFired = true; // Ensure it only fires once
+          hasFired = true; // Ensure it only fires once
         }
       },
       onComplete: () => {
@@ -58,7 +59,7 @@ const Header = ({ onAnimationEnd }) => {
         const { isDesktop, isMobile } = context.conditions;
 
         gsap.set(navRef.current, {
-          width: isDesktop ? '60%' : '50%', // Wider nav width initially
+          width: '50%',
         });
 
         if (isMobile) {
@@ -72,25 +73,29 @@ const Header = ({ onAnimationEnd }) => {
           transformOrigin: '50% 50%',
         });
 
+        gsap.to(letterRefsCreate.current, { opacity: 1, duration: .5 });
+        gsap.set(letterRefsDwell.current, { x: 0 });
+        gsap.to(letterRefsDwell.current, { opacity: 1, duration: .5 });
+
         // Animate "CREATE"
-        tl.to(letterRefsCreate.current, {
-          opacity: 1,
-          y: 0,
-          x: 0,
-          duration: .5,
-          stagger: .1,
-          ease: 'power2.out',
-        });
+        // tl.to(letterRefsCreate.current, {
+        //   opacity: 1,
+        //   y: 0,
+        //   x: 0,
+        //   duration: .5,
+        //   stagger: .1,
+        //   ease: 'power2.out',
+        // });
 
         // Animate "DWELL"
-        tl.to(letterRefsDwell.current, {
-          opacity: 1,
-          x: 0,
-          y: 0,
-          duration: .5,
-          ease: 'power2.out',
-          stagger: 0.1,
-        }, '-=0');
+        // tl.to(letterRefsDwell.current, {
+        //   opacity: 1,
+        //   x: 0,
+        //   y: 0,
+        //   duration: .5,
+        //   ease: 'power2.out',
+        //   stagger: 0.1,
+        // }, '-=0');
 
         tl.delay(2.5); // Delay the animation
 
@@ -98,16 +103,17 @@ const Header = ({ onAnimationEnd }) => {
           logoRef.current,
           {
             y: 8,
-            duration: .9,
+            duration: 1.5,
             ease: 'power2.out',
           },
-        );
+        ).addLabel('logoUp', '-=1.4');
 
         if (isMobile) {
           tl.to(navRef.current, {
-            height: '60px',
-            duration: .5,
-            ease: 'power2.out',
+            y: 0,
+            height: '100px',
+            duration: 1.2,
+            ease: 'ease',
           }, '<');
         }
 
@@ -116,7 +122,7 @@ const Header = ({ onAnimationEnd }) => {
           x: 0,
           height: isMobile ? '60px' : '100vh',
           width: originalInnerNavWidth,
-          duration: 1.5,
+          duration: 2,
           ease: 'power2.out',
         })
           .to(
