@@ -149,7 +149,8 @@ h3 {
   border-radius: 2px;
 }
 
-.saveButton {
+.saveButton,
+.iconButton {
   display: flex;
   align-items: center;
   column-gap: 5px;
@@ -168,6 +169,18 @@ h3 {
 .flexRight {
   display: flex;
   justify-content: flex-end;
+  column-gap: 10px;
+}
+
+.flexSpaceBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
   column-gap: 10px;
 }
 
@@ -190,11 +203,15 @@ h3 {
   input[type="text"],
   input[type="number"],
   select {
-    width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-bottom: 10px;
+  }
+
+  input[type="text"],
+  select {
+    width: 100%;
   }
 
   textarea {
@@ -202,6 +219,21 @@ h3 {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+  }
+}
+
+.numberInput {
+  width: 100px;
+}
+
+.arrayItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  column-gap: 10px;
+
+  input {
+    margin-bottom: 0 !important;
   }
 }
 
