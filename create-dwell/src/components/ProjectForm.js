@@ -28,16 +28,16 @@ const deleteOldImages = async (basePath) => {
 const waitForProcessedFile = async (filePath) => {
   const fileRef = ref(storage, filePath);
   try {
-      await getMetadata(fileRef); // Check if metadata exists (file is available)
-      return await getDownloadURL(fileRef); // Return the download URL
+    await getMetadata(fileRef); // Check if metadata exists (file is available)
+    return await getDownloadURL(fileRef); // Return the download URL
   } catch (error) {
-      if (error.code === "storage/object-not-found") {
-          return new Promise((resolve) =>
-              setTimeout(() => resolve(waitForProcessedFile(filePath)), 1000) // Retry after 1 second
-          );
-      } else {
-          throw error; // Handle unexpected errors
-      }
+    if (error.code === "storage/object-not-found") {
+      return new Promise((resolve) =>
+        setTimeout(() => resolve(waitForProcessedFile(filePath)), 1000) // Retry after 1 second
+      );
+    } else {
+      throw error; // Handle unexpected errors
+    }
   }
 };
 
@@ -57,6 +57,13 @@ const ProjectForm = ({ onClose, editingProject }) => {
     mainImage: null,
     content: [],
     published: false,
+    status: '',
+    yearCompleted: '', 
+    clientDescription: '',
+    challenge: '',
+    solution: '',
+    publications: [], // { title: '', link: '', date: '' } // Example fields for each publication
+    teams: [],
   });
 
   const [loading, setLoading] = useState(false);
@@ -103,34 +110,67 @@ const ProjectForm = ({ onClose, editingProject }) => {
 
     setLoading(true); // Start loading
     try {
-        const baseName = getBaseName(file.name);
-        const basePath = `projects/${projectId}/${baseName}`;
+      const baseName = getBaseName(file.name);
+      const basePath = `projects/${projectId}/${baseName}`;
 
-        // Cleanup old assets
-        const mainImage = editingProject?.mainImage;
-        if (mainImage) {
-            const basePath = decodeURIComponent(mainImage.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
-            await deleteOldImages(basePath);
-        }
+      // Cleanup old assets
+      const mainImage = editingProject?.mainImage;
+      if (mainImage) {
+        const basePath = decodeURIComponent(mainImage.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
+        await deleteOldImages(basePath);
+      }
 
-        // Upload the original file to Firebase Storage
-        const storageRef = ref(storage, `${basePath}.jpg`);
-        const snapshot = await uploadBytes(storageRef, file);
+      // Upload the original file to Firebase Storage
+      const storageRef = ref(storage, `${basePath}.jpg`);
+      const snapshot = await uploadBytes(storageRef, file);
 
-        // Construct the "large" size path
-        const largeImagePath = `${basePath}_large.jpg`;
+      // Construct the "large" size path
+      const largeImagePath = `${basePath}_large.jpg`;
 
-        // Wait for the "large" version to be processed
-        const imageUrl = await waitForProcessedFile(largeImagePath);
+      // Wait for the "large" version to be processed
+      const imageUrl = await waitForProcessedFile(largeImagePath);
 
-        console.log("Processed large image URL:", imageUrl);
-        return imageUrl;
+      console.log("Processed large image URL:", imageUrl);
+      return imageUrl;
     } catch (error) {
-        console.error("Error uploading image:", error);
-        throw error;
+      console.error("Error uploading image:", error);
+      throw error;
     } finally {
       setLoading(false); // End loading
     }
+  };
+
+  const handleArrayChange = (arrayName, index, value) => {
+    const newArray = [...formData[arrayName]];
+    newArray[index] = value;
+    setFormData({ ...formData, [arrayName]: newArray });
+  };
+
+  const addArrayItem = (arrayName, item = '') => {
+    setFormData({ ...formData, [arrayName]: [...formData[arrayName], item] });
+  };
+
+  const removeArrayItem = (arrayName, index) => {
+    const newArray = [...formData[arrayName]];
+    newArray.splice(index, 1);
+    setFormData({ ...formData, [arrayName]: newArray });
+  };
+
+  const handlePublicationChange = (index, field, value) => {
+    const updatedPublications = [...formData.publications];
+    updatedPublications[index][field] = value;
+    setFormData({ ...formData, publications: updatedPublications });
+  };
+  
+  const addPublication = () => {
+    const newPublication = { title: '', link: '', date: '' }; // Adjust fields as needed
+    setFormData({ ...formData, publications: [...formData.publications, newPublication] });
+  };
+  
+  const removePublication = (index) => {
+    const updatedPublications = [...formData.publications];
+    updatedPublications.splice(index, 1);
+    setFormData({ ...formData, publications: updatedPublications });
   };
 
   // Handle dynamic content change
@@ -146,34 +186,34 @@ const ProjectForm = ({ onClose, editingProject }) => {
 
     setLoading(true); // Start loading
     try {
-        const baseName = getBaseName(file.name);
-        const basePath = `projects/${formData.title}/content/${baseName}`;
-        
-        // Cleanup old assets
-        if (formData.content[index]?.url) {
-            const imageUrl = formData.content[index].url;
-            const oldBaseName = imageUrl.split("_")[0]; // Extract old base name
-            const basePath = decodeURIComponent(imageUrl.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
-            await deleteOldImages(basePath);
-        }
+      const baseName = getBaseName(file.name);
+      const basePath = `projects/${formData.title}/content/${baseName}`;
 
-        // Upload the original file to Firebase Storage
-        const storageRef = ref(storage, `${basePath}.jpg`);
-        const snapshot = await uploadBytes(storageRef, file);
+      // Cleanup old assets
+      if (formData.content[index]?.url) {
+        const imageUrl = formData.content[index].url;
+        const oldBaseName = imageUrl.split("_")[0]; // Extract old base name
+        const basePath = decodeURIComponent(imageUrl.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
+        await deleteOldImages(basePath);
+      }
 
-        // Construct the "large" size path
-        const largeImagePath = `${basePath}_large.jpg`;
+      // Upload the original file to Firebase Storage
+      const storageRef = ref(storage, `${basePath}.jpg`);
+      const snapshot = await uploadBytes(storageRef, file);
 
-        // Wait for the "large" version to be processed
-        const imageUrl = await waitForProcessedFile(largeImagePath);
-        console.log("Processed large image URL:", imageUrl);
+      // Construct the "large" size path
+      const largeImagePath = `${basePath}_large.jpg`;
 
-        // Update the content array with the "large" image URL
-        const newContent = [...formData.content];
-        newContent[index].url = imageUrl;
-        setFormData({ ...formData, content: newContent });
+      // Wait for the "large" version to be processed
+      const imageUrl = await waitForProcessedFile(largeImagePath);
+      console.log("Processed large image URL:", imageUrl);
+
+      // Update the content array with the "large" image URL
+      const newContent = [...formData.content];
+      newContent[index].url = imageUrl;
+      setFormData({ ...formData, content: newContent });
     } catch (error) {
-        console.error("Error uploading content image:", error);
+      console.error("Error uploading content image:", error);
     } finally {
       setLoading(false); // End loading
     }
@@ -190,7 +230,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
       // Parse the image path from the URL
       const basePath = decodeURIComponent(imageUrl.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
       const suffixes = ["_small.jpg", "_medium.jpg", "_large.jpg", "_small.webp", "_medium.webp", "_large.webp"];
-  
+
       for (const suffix of suffixes) {
         const fileRef = ref(storage, `${basePath}${suffix}`);
         try {
@@ -206,14 +246,14 @@ const ProjectForm = ({ onClose, editingProject }) => {
       console.error("Error deleting content image:", error);
     }
   };
-  
+
   const handleRemoveContentSection = async (index) => {
     const contentItem = formData.content[index];
-  
+
     if (contentItem.type === "image" && contentItem.url) {
       await deleteContentImage(contentItem.url);
     }
-  
+
     // Update the content array after deletion
     const newContent = [...formData.content];
     newContent.splice(index, 1);
@@ -283,7 +323,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
     <section className={styles.projectForm}>
       <div className={styles.projectHeader}>
         <button className={styles.backButton} onClick={onClickClose}>
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" /></svg>
           <span>Back</span>
         </button>
 
@@ -292,7 +332,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
         </h2>
 
         <button type="submit" className={styles.saveButton} onClick={handleSubmit} disabled={loading}>
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM480-240q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM480-240q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35ZM240-560h360v-160H240v160Zm-40-86v446-560 114Z" /></svg>
           <span>{loading ? "Uploading..." : "Save Project"}</span>
         </button>
       </div>
@@ -300,13 +340,13 @@ const ProjectForm = ({ onClose, editingProject }) => {
 
       {loading && (
         <div className={styles.loadingOverlay}>
-            <div className={styles.spinner}></div>
-            <p>Uploading images, please wait...</p>
+          <div className={styles.spinner}></div>
+          <p>Uploading images, please wait...</p>
         </div>
       )}
 
       <div className={styles.projectFormContent} onClick={stopPropagation}>
-        
+
         <div className={styles.mainImageContainer}>
           {formData.mainImage && (
             <img
@@ -325,8 +365,16 @@ const ProjectForm = ({ onClose, editingProject }) => {
 
           <div className={styles.formBox}>
             <input type="hidden" name="id" value={formData.id} />
-            <div className={styles.formGroup}>
-              <div className={styles.flexRight}>
+
+            <div className={styles.flexSpaceBetween}>
+              <div className={styles.formGroup}>
+                <div className={styles.flex}>
+                  <label htmlFor="order">Order</label>
+                  <input type="number" name="order" placeholder="Order" onChange={handleInputChange} value={formData.order || 0} className={styles.numberInput}/>
+                </div>
+              </div>
+              
+              <div className={styles.formGroup}>
                 <Checkbox label="Published" checked={!!formData.published} onChange={handleInputChange} name="published" />
               </div>
             </div>
@@ -363,39 +411,126 @@ const ProjectForm = ({ onClose, editingProject }) => {
               <input type="text" name="use" placeholder="Use (comma separated)" onChange={handleInputChange} value={formData.use || ''} />
             </div>
 
-            <div className={styles.formGroup}>
-              <label htmlFor="order">Order</label>
-              <input type="number" name="order" placeholder="Order" onChange={handleInputChange} value={formData.order || 0} />
+            <div className="grid-two-col">
+              <div className={styles.formGroup}>
+                <label htmlFor="projectType">Project Type</label>
+                <select id="projectType" name="projectType" onChange={handleInputChange} value={formData.projectType || ''}>
+                  <option value="Historic Interior Renovation">Historic Interior Renovation</option>
+                  <option value="Interior Renovation">Interior Renovation</option>
+                  <option value="New Construction">New Construction</option>
+                  <option value="Schematic Proposal">Schematic Proposal</option>
+                  <option value="Renovation">Renovation</option>
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="status">Project Status</label>
+                <select name="status" onChange={handleInputChange} value={formData.status}>
+                  <option value="">Select Status</option>
+                  <option value="Built">Built</option>
+                  <option value="Unbuilt">Unbuilt</option>
+                  <option value="Permitting">Permitting</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid-two-col">
+              <div className={styles.formGroup}>
+                <label htmlFor="yearCompleted">Year Completed</label>
+                <input type="number" name="yearCompleted" placeholder="Year Completed" onChange={handleInputChange} value={formData.yearCompleted} />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="area">Area (sq ft)</label>
+                <input type="number" name="area" placeholder="Area (sq ft)" onChange={handleInputChange} value={formData.area || ''} />
+              </div>
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="projectType">Project Type</label>
-              <select id="projectType" name="projectType" onChange={handleInputChange} value={formData.projectType || ''}>
-                <option value="Historic Interior Renovation">Historic Interior Renovation</option>
-                <option value="Interior Renovation">Interior Renovation</option>
-                <option value="New Construction">New Construction</option>
-                <option value="Schematic Proposal">Schematic Proposal</option>
-                <option value="Renovation">Renovation</option>
-              </select>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="area">Area (sq ft)</label>
-              <input type="number" name="area" placeholder="Area (sq ft)" onChange={handleInputChange} value={formData.area || ''} />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="description">Description</label>
+              <label htmlFor="description">General Description</label>
               <textarea name="description" placeholder="Description" rows={4} cols={40}
                 onChange={handleInputChange} value={formData.description || ''}>
               </textarea>
             </div>
 
+            <div className={styles.formGroup}>
+              <label htmlFor="description">Client Description</label>
+              <textarea name="clientDescription" placeholder="Client Description" rows="3" onChange={handleInputChange} value={formData.clientDescription}></textarea>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="description">Challenge</label>
+              <textarea name="challenge" placeholder="Challenge" rows="3" onChange={handleInputChange} value={formData.challenge}></textarea>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="description">Solution</label>
+              <textarea name="solution" placeholder="Solution" rows="3" onChange={handleInputChange} value={formData.solution}></textarea>
+            </div>
+
+          </div>
+
+          {/* Publications */}
+          <div className={styles.contentSection}>
+            <h3>Publications</h3>
+            {formData.publications.map((pub, index) => (
+              <div key={'publication-' + index} className={styles.arrayItem}>
+                <input
+                  type="text"
+                  placeholder="Publication Title"
+                  value={pub.title}
+                  onChange={(e) => handlePublicationChange(index, 'title', e.target.value)}
+                />
+                <input
+                  type="url"
+                  placeholder="Publication Link"
+                  value={pub.link}
+                  onChange={(e) => handlePublicationChange(index, 'link', e.target.value)}
+                />
+                <input
+                  type="date"
+                  placeholder="Publication Date"
+                  value={pub.date}
+                  onChange={(e) => handlePublicationChange(index, 'date', e.target.value)}
+                />
+                <button type="button" onClick={() => removePublication(index)} className='warn-btn'>Remove</button>
+              </div>
+            ))}
+            <div className={styles.flexRight}>
+              <button type="button" onClick={addPublication} className={styles.iconButton}>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                  <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                </svg>
+                Add Publication</button>
+            </div>
+          </div>
+
+          {/* Teams */}
+          <div className={styles.contentSection}>
+            <h3>Teams</h3>
+            {formData.teams.map((team, index) => (
+              <div key={'team-' + index} className={styles.arrayItem}>
+                <input
+                  type="text"
+                  value={team}
+                  placeholder="Team Member / Role"
+                  onChange={(e) => handleArrayChange('teams', index, e.target.value)}
+                />
+                <button type="button" onClick={() => removeArrayItem('teams', index)} className='warn-btn'>Remove</button>
+              </div>
+            ))}
+            <div className={styles.flexRight}>
+              <button type="button" onClick={() => addArrayItem('teams')} className={styles.iconButton}>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                  <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                </svg>
+                Add Team</button>
+            </div>
           </div>
 
           {/* Dynamic content sections */}
           {formData.content.map((contentItem, index) => (
-            <div key={index} className={styles.contentSection}>
+            <div key={'content-' + index} className={styles.contentSection}>
 
               <div className={styles.flex}>
                 <h3>{capitalize(contentItem.type)} Section</h3>
