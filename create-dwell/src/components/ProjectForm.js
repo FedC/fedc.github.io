@@ -7,6 +7,15 @@ import Checkbox from './Checkbox';
 
 const getBaseName = (fileName) => fileName.replace(/\.[^/.]+$/, ""); // Remove the extension
 
+const teamRoles = [
+  'Engineering (Civil, Landscape, Structural)',
+  'MEP (Mechanical, Electrical, Plumbing)',
+  'Design',
+  'General Contractor',
+  'Photographer',
+  'Cost Eliminator',
+];
+
 const deleteOldImages = async (basePath) => {
   const suffixes = ["_small.jpg", "_medium.jpg", "_large.jpg", "_small.webp", "_medium.webp", "_large.webp"];
   for (const suffix of suffixes) {
@@ -154,6 +163,23 @@ const ProjectForm = ({ onClose, editingProject }) => {
     const newArray = [...formData[arrayName]];
     newArray.splice(index, 1);
     setFormData({ ...formData, [arrayName]: newArray });
+  };
+
+  const handleTeamChange = (index, field, value) => {
+    const updatedTeams = [...formData.teams];
+    updatedTeams[index][field] = value;
+    setFormData({ ...formData, teams: updatedTeams });
+  };
+
+  const addTeam = () => {
+    const newTeam = { name: '', role: '' }; // Default team structure
+    setFormData({ ...formData, teams: [...formData.teams, newTeam] });
+  };
+
+  const removeTeam = (index) => {
+    const updatedTeams = [...formData.teams];
+    updatedTeams.splice(index, 1);
+    setFormData({ ...formData, teams: updatedTeams });
   };
 
   const handlePublicationChange = (index, field, value) => {
@@ -512,15 +538,24 @@ const ProjectForm = ({ onClose, editingProject }) => {
               <div key={'team-' + index} className={styles.arrayItem}>
                 <input
                   type="text"
-                  value={team}
-                  placeholder="Team Member / Role"
-                  onChange={(e) => handleArrayChange('teams', index, e.target.value)}
+                  placeholder="Team Name"
+                  value={team.name}
+                  onChange={(e) => handleTeamChange(index, 'name', e.target.value)}
                 />
-                <button type="button" onClick={() => removeArrayItem('teams', index)} className='warn-btn'>Remove</button>
+                <select
+                  value={team.role}
+                  onChange={(e) => handleTeamChange(index, 'role', e.target.value)}
+                >
+                  <option value="">Select Role</option>
+                  {teamRoles.map((role, i) => (
+                    <option key={i} value={role}>{role}</option>
+                  ))}
+                </select>
+                <button type="button" onClick={() => removeTeam(index)} className='warn-btn'>Remove</button>
               </div>
             ))}
             <div className={styles.flexRight}>
-              <button type="button" onClick={() => addArrayItem('teams')} className={styles.iconButton}>
+              <button type="button" onClick={addTeam} className={styles.iconButton}>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
                   <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
                 </svg>
