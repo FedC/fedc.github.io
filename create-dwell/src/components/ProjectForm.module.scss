@@ -252,6 +252,10 @@ h3 {
   border-radius: 4px;
 }
 
+.contentSection:active {
+  background-color: #ddd;
+}
+
 .contentImageContainer {
   position: relative;
   width: 100%;

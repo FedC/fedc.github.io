@@ -58,6 +58,7 @@
         box-sizing: border-box;
         column-gap: 40px;
         scroll-snap-type: x mandatory;
+        touch-action: none;
 
         .projectContentItem {
           .projectImage {
@@ -279,8 +280,8 @@
 .mark {
   position: fixed;
   width: 100%;
-  bottom: 20%;
-  transform: translateY(-50%);
+  bottom: 10px;
+  transform: translateY(0);
   width: 100vw;
   left: 0;
   z-index: var(--mark-z-index);
