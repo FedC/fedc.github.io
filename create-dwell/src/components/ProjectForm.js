@@ -4,6 +4,35 @@ import { ref, uploadBytes, getDownloadURL, getMetadata, deleteObject } from 'fir
 import { db, storage } from '../js/firebase';
 import * as styles from './ProjectForm.module.scss';
 import Checkbox from './Checkbox';
+import {
+  DndContext,
+  closestCenter,
+  DragOverlay,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable';
+
+import { CSS } from '@dnd-kit/utilities';
+
+const SortableItem = ({ id, children }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition: transition || 'transform 250ms ease',
+    height: document.getElementById('content-item-' + id)?.offsetHeight + 'px',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className={styles.contentSection}>
+      {children}
+    </div>
+  );
+};
 
 const getBaseName = (fileName) => fileName.replace(/\.[^/.]+$/, ""); // Remove the extension
 
@@ -67,7 +96,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
     content: [],
     published: false,
     status: '',
-    yearCompleted: '', 
+    yearCompleted: '',
     clientDescription: '',
     challenge: '',
     solution: '',
@@ -76,8 +105,16 @@ const ProjectForm = ({ onClose, editingProject }) => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [draggingContent, setDraggingContent] = useState(false);
 
-  const globalProjectId = editingProject?.id;
+  const handleDragStart = ({ active }) => {
+    setDraggingContent(active);
+    const index = formData.content.findIndex((item) => item.type === active.type && item.title === active.title);
+    setActiveIndex(index);
+  }
+
+  let globalProjectId = editingProject?.id;
 
   useEffect(() => {
     if (editingProject) {
@@ -108,7 +145,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
       }
 
       // Upload image and get URL
-      imageUrl = await uploadImage(globalProjectId, file);
+      const imageUrl = await uploadImage(globalProjectId, file);
       setFormData({ ...formData, mainImage: imageUrl });
     }
   };
@@ -122,13 +159,6 @@ const ProjectForm = ({ onClose, editingProject }) => {
       const baseName = getBaseName(file.name);
       const basePath = `projects/${projectId}/${baseName}`;
 
-      // Cleanup old assets
-      const mainImage = editingProject?.mainImage;
-      if (mainImage) {
-        const basePath = decodeURIComponent(mainImage.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
-        await deleteOldImages(basePath);
-      }
-
       // Upload the original file to Firebase Storage
       const storageRef = ref(storage, `${basePath}.jpg`);
       const snapshot = await uploadBytes(storageRef, file);
@@ -140,6 +170,14 @@ const ProjectForm = ({ onClose, editingProject }) => {
       const imageUrl = await waitForProcessedFile(largeImagePath);
 
       console.log("Processed large image URL:", imageUrl);
+
+      // Cleanup old assets
+      const mainImage = editingProject?.mainImage;
+      if (mainImage) {
+        const basePath = decodeURIComponent(mainImage.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
+        await deleteOldImages(basePath);
+      }
+
       return imageUrl;
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -187,12 +225,12 @@ const ProjectForm = ({ onClose, editingProject }) => {
     updatedPublications[index][field] = value;
     setFormData({ ...formData, publications: updatedPublications });
   };
-  
+
   const addPublication = () => {
     const newPublication = { title: '', link: '', date: '' }; // Adjust fields as needed
     setFormData({ ...formData, publications: [...formData.publications, newPublication] });
   };
-  
+
   const removePublication = (index) => {
     const updatedPublications = [...formData.publications];
     updatedPublications.splice(index, 1);
@@ -206,6 +244,23 @@ const ProjectForm = ({ onClose, editingProject }) => {
     setFormData({ ...formData, content: newContent });
   };
 
+  const handleDragEnd = ({ active, over }) => {
+    console.log('Drag end:', {active: active, over: over});
+    if (!over) return; // Prevent error if dragging outside droppable area
+  
+    const activeIndex = formData.content.findIndex((item) => item.id === active.id);
+    const overIndex = formData.content.findIndex((item) => item.id === over.id);
+  
+    if (activeIndex !== overIndex) {
+      const reorderedContent = arrayMove(formData.content, activeIndex, overIndex);
+      setFormData((prevData) => ({ ...prevData, content: reorderedContent }));
+      console.log('New order:', reorderedContent);
+    }
+
+    setDraggingContent(false);
+    setActiveIndex(null);
+  };
+
   // Uploads an image to Firebase Storage and updates content section with URL
   const uploadContentImage = async (index, file) => {
     if (!file) return;
@@ -214,14 +269,6 @@ const ProjectForm = ({ onClose, editingProject }) => {
     try {
       const baseName = getBaseName(file.name);
       const basePath = `projects/${formData.title}/content/${baseName}`;
-
-      // Cleanup old assets
-      if (formData.content[index]?.url) {
-        const imageUrl = formData.content[index].url;
-        const oldBaseName = imageUrl.split("_")[0]; // Extract old base name
-        const basePath = decodeURIComponent(imageUrl.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
-        await deleteOldImages(basePath);
-      }
 
       // Upload the original file to Firebase Storage
       const storageRef = ref(storage, `${basePath}.jpg`);
@@ -233,6 +280,14 @@ const ProjectForm = ({ onClose, editingProject }) => {
       // Wait for the "large" version to be processed
       const imageUrl = await waitForProcessedFile(largeImagePath);
       console.log("Processed large image URL:", imageUrl);
+
+      // Cleanup old assets
+      if (formData.content[index]?.url) {
+        const imageUrl = formData.content[index].url;
+        const oldBaseName = imageUrl.split("_")[0]; // Extract old base name
+        const basePath = decodeURIComponent(imageUrl.split("?")[0].split("/o/")[1]).replace(/_large\.jpg$/, "");
+        await deleteOldImages(basePath);
+      }
 
       // Update the content array with the "large" image URL
       const newContent = [...formData.content];
@@ -247,7 +302,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
 
   // Add a new content section based on selected type
   const addContentSection = (type) => {
-    const newContentItem = { type, title: '', text: '', description: '', url: '' };
+    const newContentItem = { type, title: '', text: '', description: '', url: '', featured: false };
     setFormData({ ...formData, content: [...formData.content, newContentItem] });
   };
 
@@ -290,10 +345,18 @@ const ProjectForm = ({ onClose, editingProject }) => {
     e.preventDefault();
     try {
       let projectId = globalProjectId;
+
       // If creating a new project, we must first create a placeholder document to get an ID
       if (!projectId) {
         const projectRef = await addDoc(collection(db, 'projects'), {}); // Placeholder
         projectId = projectRef.id;
+        globalProjectId = projectId;
+
+        // Update the form data with the new ID
+        setFormData((prevData) => ({
+          ...prevData,
+          id: projectId,
+        }));
       }
 
       const projectData = {
@@ -396,10 +459,10 @@ const ProjectForm = ({ onClose, editingProject }) => {
               <div className={styles.formGroup}>
                 <div className={styles.flex}>
                   <label htmlFor="order">Order</label>
-                  <input type="number" name="order" placeholder="Order" onChange={handleInputChange} value={formData.order || 0} className={styles.numberInput}/>
+                  <input type="number" name="order" placeholder="Order" onChange={handleInputChange} value={formData.order || 0} className={styles.numberInput} />
                 </div>
               </div>
-              
+
               <div className={styles.formGroup}>
                 <Checkbox label="Published" checked={!!formData.published} onChange={handleInputChange} name="published" />
               </div>
@@ -499,7 +562,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
           {/* Publications */}
           <div className={styles.contentSection}>
             <h3>Publications</h3>
-            {formData.publications.map((pub, index) => (
+            {formData.publications?.map((pub, index) => (
               <div key={'publication-' + index} className={styles.arrayItem}>
                 <input
                   type="text"
@@ -525,7 +588,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
             <div className={styles.flexRight}>
               <button type="button" onClick={addPublication} className={styles.iconButton}>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-                  <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                  <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
                 </svg>
                 Add Publication</button>
             </div>
@@ -534,7 +597,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
           {/* Teams */}
           <div className={styles.contentSection}>
             <h3>Teams</h3>
-            {formData.teams.map((team, index) => (
+            {formData.teams?.map((team, index) => (
               <div key={'team-' + index} className={styles.arrayItem}>
                 <input
                   type="text"
@@ -548,7 +611,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
                 >
                   <option value="">Select Role</option>
                   {teamRoles.map((role, i) => (
-                    <option key={i} value={role}>{role}</option>
+                    <option key={'role-' + index + i} value={role}>{role}</option>
                   ))}
                 </select>
                 <button type="button" onClick={() => removeTeam(index)} className='warn-btn'>Remove</button>
@@ -557,86 +620,106 @@ const ProjectForm = ({ onClose, editingProject }) => {
             <div className={styles.flexRight}>
               <button type="button" onClick={addTeam} className={styles.iconButton}>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-                  <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                  <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
                 </svg>
                 Add Team</button>
             </div>
           </div>
 
-          {/* Dynamic content sections */}
-          {formData.content.map((contentItem, index) => (
-            <div key={'content-' + index} className={styles.contentSection}>
+          <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+            <SortableContext items={formData.content.map((item) => item.id)} strategy={verticalListSortingStrategy}>
+              {formData.content.map((contentItem, index) => (
+                <SortableItem key={'content-item-' + index} id={'content-item-' + index}>
+                  <div className={styles.flex}>
+                    <h3>{`${contentItem.type.charAt(0).toUpperCase() + contentItem.type.slice(1)} Section`}</h3>
+                    <button
+                      type="button"
+                      className="warn-btn"
+                      onClick={() => {
+                        const newContent = [...formData.content];
+                        newContent.splice(index, 1);
+                        setFormData({ ...formData, content: newContent });
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </div>
 
-              <div className={styles.flex}>
-                <h3>{capitalize(contentItem.type)} Section</h3>
+                  <div className={styles.formGroup}>
+                    <Checkbox
+                      label="Featured"
+                      checked={!!contentItem.featured}
+                      onChange={(e) => handleContentChange(index, 'featured', e.target.checked)}
+                    />
+                  </div>
 
-                <button type="button" className="warn-btn" onClick={() => handleRemoveContentSection(index)}>
-                  Remove
-                </button>
-              </div>
+                  {/* Title (only for text and image types) */}
+                  {(contentItem.type === 'image' || contentItem.type === 'text') && (
+                    <div className={styles.formGroup}>
+                      <label>Image Title</label>
+                      <input
+                        type="text"
+                        placeholder="Title"
+                        value={contentItem.title || ''}
+                        onChange={(e) => handleContentChange(index, 'title', e.target.value)}
+                      />
+                    </div>
+                  )}
 
-              {/* Title (only for text and image types) */}
-              {(contentItem.type === 'image' || contentItem.type === 'text') && (
-                <div className={styles.formGroup}>
-                  <label>Image Title</label>
-                  <input
-                    type="text"
-                    placeholder="Title"
-                    value={contentItem.title || ''}
-                    onChange={(e) => handleContentChange(index, 'title', e.target.value)}
-                  />
-                </div>
-              )}
+                  {/* Description (only for image type) */}
+                  {contentItem.type === 'image' && (
+                    <div className={styles.formGroup}>
+                      <label>
+                        Image Description
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Description"
+                        value={contentItem.description || ''}
+                        onChange={(e) => handleContentChange(index, 'description', e.target.value)}
+                      />
+                    </div>
+                  )}
 
-              {/* Description (only for image type) */}
-              {contentItem.type === 'image' && (
-                <div className={styles.formGroup}>
-                  <label>
-                    Image Description
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Description"
-                    value={contentItem.description || ''}
-                    onChange={(e) => handleContentChange(index, 'description', e.target.value)}
-                  />
-                </div>
-              )}
+                  {/* URL (only for image type) */}
+                  {contentItem.type === 'image' && (
+                    <div className={styles.contentImageContainer}>
+                      <img
+                        id={`content-image-preview-${index}`}
+                        src={contentItem.url instanceof File ? URL.createObjectURL(contentItem.url) : contentItem.url} alt="Upload Image" className={styles.contentImage} />
 
-              {/* URL (only for image type) */}
-              {contentItem.type === 'image' && (
-                <div className={styles.contentImageContainer}>
-                  <img
-                    id={`content-image-preview-${index}`}
-                    src={contentItem.url instanceof File ? URL.createObjectURL(contentItem.url) : contentItem.url} alt="Upload Image" className={styles.contentImage} />
+                      <label htmlFor={`content-image-upload-${index}`} className={styles.uploadLabel}>Upload Image</label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        id={`content-image-upload-${index}`}
+                        onChange={(e) => uploadContentImage(index, e.target.files[0])}
+                      />
+                    </div>
+                  )}
 
-                  <label htmlFor={`content-image-upload-${index}`} className={styles.uploadLabel}>Upload Image</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    id={`content-image-upload-${index}`}
-                    onChange={(e) => uploadContentImage(index, e.target.files[0])}
-                  />
-                </div>
-              )}
-
-              {/* Text (for text and quote types) */}
-              {(contentItem.type === 'text' || contentItem.type === 'quote') && (
-                <div className={styles.formGroup}>
-                  <label>
-                    {contentItem.type === 'text' ? 'Text' : 'Quote'}
-                  </label>
-                  <textarea
-                    placeholder="Text"
-                    value={contentItem.text || ''}
-                    rows={6}
-                    cols={40}
-                    onChange={(e) => handleContentChange(index, 'text', e.target.value)}
-                  ></textarea>
-                </div>
-              )}
-            </div>
-          ))}
+                  {/* Text (for text and quote types) */}
+                  {(contentItem.type === 'text' || contentItem.type === 'quote') && (
+                    <div className={styles.formGroup}>
+                      <label>
+                        {contentItem.type === 'text' ? 'Text' : 'Quote'}
+                      </label>
+                      <textarea
+                        placeholder="Text"
+                        value={contentItem.text || ''}
+                        rows={6}
+                        cols={40}
+                        onChange={(e) => handleContentChange(index, 'text', e.target.value)}
+                      ></textarea>
+                    </div>
+                  )}
+                </SortableItem>
+              ))}
+            </SortableContext>
+            <DragOverlay>{ draggingContent ? <SortableItem id={'drag-overlay-content-' + activeIndex}> <p>
+              Dragging item #{ activeIndex }
+              </p> </SortableItem> : null}</DragOverlay>
+          </DndContext>
 
           <div className={styles.addContentButtons}>
             <button type="button" className="accent-btn" onClick={() => addContentSection('image')}>Add Image Content</button>

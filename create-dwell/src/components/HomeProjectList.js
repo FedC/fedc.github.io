@@ -541,7 +541,10 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
           // do nothing if project is already open
           if (openProjects.includes(projectId)) return;
 
-          toggleProject(projectId);
+          // toggle project if dragged to the left only
+          if (dragDistance < -50) {
+            toggleProject(projectId);
+          }
         },
       });
     });
@@ -593,6 +596,11 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
             //   ease: 'power2.out',
             // });
           },
+          onPress: function (event) {
+            if (event.preventDefault) {
+              event.preventDefault(); // Stop default touch interaction
+            }
+          },
         });
       });
   };
@@ -634,6 +642,15 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
       });
     }
   };
+
+  useEffect(() => {
+    // if any projects are open, update the marquee z-index behind the projects
+    if (openProjects.length) {
+      gsap.set(marqueeRef.current, { zIndex: 1 });
+    } else {
+      gsap.set(marqueeRef.current, { zIndex: 3 });
+    }
+  }, [openProjects]);
 
   // Setup IntersectionObserver
   useEffect(() => {
@@ -797,8 +814,10 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
         <div className={styles.mark__inner} ref={marqueeInnerRef}>
 
           {
-            Array.from({ length: 3 }, () => ['Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning'])
-              .flat()
+            ['Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning', 'spacer',
+              'Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning', 'spacer',
+              'Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning',
+            ]
               .map((item, index) => (
                 item === 'spacer' ?
                   <div key={`spacer-${index}`} className={styles.spacer}></div>
