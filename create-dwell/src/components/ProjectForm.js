@@ -17,15 +17,34 @@ import {
 } from '@dnd-kit/sortable';
 
 import { CSS } from '@dnd-kit/utilities';
+import { on } from 'process';
 
-const SortableItem = ({ id, children }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+const SortableItem = ({ id, overlay, children }) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isOver } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition: transition || 'transform 250ms ease',
-    height: document.getElementById('content-item-' + id)?.offsetHeight + 'px',
+    opacity: isOver ? 0.3 : 1, // Reduce opacity when dragged over
   };
+
+  if (isOver) {
+    style.transform += ' scale(.5)'; // Scale up when dragged over
+  }
+
+  if (typeof overlay !== 'undefined') {
+    const el = document.getElementById('content-item-box-' + overlay);
+    if (el) {
+      style.height = el.offsetHeight + 'px';
+      style.backdropFilter = 'blur(10px)';
+      style.display = 'flex';
+      style.alignItems = 'center';
+      style.justifyContent = 'center';
+      style.color = 'white';
+      style.fontSize = '1.2rem';
+      style.backgroundColor = 'rgba(51, 97, 238, 0.4)';
+    }
+  }
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners} className={styles.contentSection}>
@@ -79,7 +98,7 @@ const waitForProcessedFile = async (filePath) => {
   }
 };
 
-const ProjectForm = ({ onClose, editingProject }) => {
+const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
   const [formData, setFormData] = useState({
     id: '',
     title: '',
@@ -107,10 +126,20 @@ const ProjectForm = ({ onClose, editingProject }) => {
   const [loading, setLoading] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
   const [draggingContent, setDraggingContent] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState(null);
+
+  const handleDragOver = ({ active, over }) => {
+    if (over) {
+      const index = parseInt(over.id.split('-')[2], 10);
+      setHoveredItem(index); // Update the hovered item
+    }
+  };
 
   const handleDragStart = ({ active }) => {
-    setDraggingContent(active);
-    const index = formData.content.findIndex((item) => item.type === active.type && item.title === active.title);
+    const activeId = active.id;
+    const index = parseInt(activeId.split('-')[2], 10);
+    const content = formData.content[index];
+    setDraggingContent(content);
     setActiveIndex(index);
   }
 
@@ -245,16 +274,16 @@ const ProjectForm = ({ onClose, editingProject }) => {
   };
 
   const handleDragEnd = ({ active, over }) => {
-    console.log('Drag end:', {active: active, over: over});
+    console.log('Drag end:', { active: active, over: over });
     if (!over) return; // Prevent error if dragging outside droppable area
-  
-    const activeIndex = formData.content.findIndex((item) => item.id === active.id);
-    const overIndex = formData.content.findIndex((item) => item.id === over.id);
-  
+
+    const activeIndex = parseInt(active.id.split('-')[2], 10);
+    const overIndex = parseInt(over.id.split('-')[2], 10);
+
     if (activeIndex !== overIndex) {
       const reorderedContent = arrayMove(formData.content, activeIndex, overIndex);
       setFormData((prevData) => ({ ...prevData, content: reorderedContent }));
-      console.log('New order:', reorderedContent);
+      handleSubmit();
     }
 
     setDraggingContent(false);
@@ -342,7 +371,7 @@ const ProjectForm = ({ onClose, editingProject }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) { e.preventDefault(); }
     try {
       let projectId = globalProjectId;
 
@@ -373,7 +402,8 @@ const ProjectForm = ({ onClose, editingProject }) => {
       }
 
       // onClose({ updated: !!editingProject, new: !editingProject });
-      alert('Project saved successfully');
+      onUpdateSuccess('Project saved successfully');
+
 
     } catch (error) {
       console.error('Error saving project:', error);
@@ -626,99 +656,107 @@ const ProjectForm = ({ onClose, editingProject }) => {
             </div>
           </div>
 
-          <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+          <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
             <SortableContext items={formData.content.map((item) => item.id)} strategy={verticalListSortingStrategy}>
               {formData.content.map((contentItem, index) => (
-                <SortableItem key={'content-item-' + index} id={'content-item-' + index}>
-                  <div className={styles.flex}>
-                    <h3>{`${contentItem.type.charAt(0).toUpperCase() + contentItem.type.slice(1)} Section`}</h3>
-                    <button
-                      type="button"
-                      className="warn-btn"
-                      onClick={() => {
-                        const newContent = [...formData.content];
-                        newContent.splice(index, 1);
-                        setFormData({ ...formData, content: newContent });
-                      }}
-                    >
-                      Remove
-                    </button>
+                <SortableItem key={'content-item-' + index} id={'content-item-' + index} isOver={hoveredItem === index}>
+                  <div id={'content-item-box-' + index}>
+                    <div className={styles.flex}>
+                      <h3>{`${contentItem.type.charAt(0).toUpperCase() + contentItem.type.slice(1)} Section`}</h3>
+                      <button
+                        type="button"
+                        className="warn-btn"
+                        onClick={() => {
+                          const newContent = [...formData.content];
+                          newContent.splice(index, 1);
+                          setFormData({ ...formData, content: newContent });
+                        }}
+                        onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                      >
+                        Remove
+                      </button>
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <Checkbox
+                        label="Featured"
+                        checked={!!contentItem.featured}
+                        onChange={(e) => handleContentChange(index, 'featured', e.target.checked)}
+                        onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                      />
+                    </div>
+
+                    {/* Title (only for text and image types) */}
+                    {(contentItem.type === 'image' || contentItem.type === 'text') && (
+                      <div className={styles.formGroup}>
+                        <label>Image Title</label>
+                        <input
+                          type="text"
+                          placeholder="Title"
+                          value={contentItem.title || ''}
+                          onChange={(e) => handleContentChange(index, 'title', e.target.value)}
+                          onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                        />
+                      </div>
+                    )}
+
+                    {/* Description (only for image type) */}
+                    {contentItem.type === 'image' && (
+                      <div className={styles.formGroup}>
+                        <label>
+                          Image Description
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Description"
+                          value={contentItem.description || ''}
+                          onChange={(e) => handleContentChange(index, 'description', e.target.value)}
+                          onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                        />
+                      </div>
+                    )}
+
+                    {/* URL (only for image type) */}
+                    {contentItem.type === 'image' && (
+                      <div className={styles.contentImageContainer}>
+                        <img
+                          id={`content-image-preview-${index}`}
+                          src={contentItem.url instanceof File ? URL.createObjectURL(contentItem.url) : contentItem.url} alt="Upload Image" className={styles.contentImage} />
+
+                        <label htmlFor={`content-image-upload-${index}`} className={styles.uploadLabel}>Upload Image</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          id={`content-image-upload-${index}`}
+                          onChange={(e) => uploadContentImage(index, e.target.files[0])}
+                          onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                        />
+                      </div>
+                    )}
+
+                    {/* Text (for text and quote types) */}
+                    {(contentItem.type === 'text' || contentItem.type === 'quote') && (
+                      <div className={styles.formGroup}>
+                        <label>
+                          {contentItem.type === 'text' ? 'Text' : 'Quote'}
+                        </label>
+                        <textarea
+                          placeholder="Text"
+                          value={contentItem.text || ''}
+                          rows={6}
+                          cols={40}
+                          onChange={(e) => handleContentChange(index, 'text', e.target.value)}
+                          onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                        ></textarea>
+                      </div>
+                    )}
                   </div>
-
-                  <div className={styles.formGroup}>
-                    <Checkbox
-                      label="Featured"
-                      checked={!!contentItem.featured}
-                      onChange={(e) => handleContentChange(index, 'featured', e.target.checked)}
-                    />
-                  </div>
-
-                  {/* Title (only for text and image types) */}
-                  {(contentItem.type === 'image' || contentItem.type === 'text') && (
-                    <div className={styles.formGroup}>
-                      <label>Image Title</label>
-                      <input
-                        type="text"
-                        placeholder="Title"
-                        value={contentItem.title || ''}
-                        onChange={(e) => handleContentChange(index, 'title', e.target.value)}
-                      />
-                    </div>
-                  )}
-
-                  {/* Description (only for image type) */}
-                  {contentItem.type === 'image' && (
-                    <div className={styles.formGroup}>
-                      <label>
-                        Image Description
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Description"
-                        value={contentItem.description || ''}
-                        onChange={(e) => handleContentChange(index, 'description', e.target.value)}
-                      />
-                    </div>
-                  )}
-
-                  {/* URL (only for image type) */}
-                  {contentItem.type === 'image' && (
-                    <div className={styles.contentImageContainer}>
-                      <img
-                        id={`content-image-preview-${index}`}
-                        src={contentItem.url instanceof File ? URL.createObjectURL(contentItem.url) : contentItem.url} alt="Upload Image" className={styles.contentImage} />
-
-                      <label htmlFor={`content-image-upload-${index}`} className={styles.uploadLabel}>Upload Image</label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        id={`content-image-upload-${index}`}
-                        onChange={(e) => uploadContentImage(index, e.target.files[0])}
-                      />
-                    </div>
-                  )}
-
-                  {/* Text (for text and quote types) */}
-                  {(contentItem.type === 'text' || contentItem.type === 'quote') && (
-                    <div className={styles.formGroup}>
-                      <label>
-                        {contentItem.type === 'text' ? 'Text' : 'Quote'}
-                      </label>
-                      <textarea
-                        placeholder="Text"
-                        value={contentItem.text || ''}
-                        rows={6}
-                        cols={40}
-                        onChange={(e) => handleContentChange(index, 'text', e.target.value)}
-                      ></textarea>
-                    </div>
-                  )}
                 </SortableItem>
               ))}
             </SortableContext>
-            <DragOverlay>{ draggingContent ? <SortableItem id={'drag-overlay-content-' + activeIndex}> <p>
-              Dragging item #{ activeIndex }
-              </p> </SortableItem> : null}</DragOverlay>
+            <DragOverlay>{draggingContent ? <SortableItem id={'drag-overlay-content-' + activeIndex} overlay={activeIndex}> <p>
+              Dragging item #{activeIndex}
+            </p> </SortableItem> : null}</DragOverlay>
           </DndContext>
 
           <div className={styles.addContentButtons}>

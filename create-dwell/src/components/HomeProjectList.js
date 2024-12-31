@@ -736,7 +736,17 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                         <div className={styles.projectContentItem}>
                           <div className={styles.projectHeader}>
                             <h2>{project.title}</h2>
-                            <p>{project.location}</p>
+                            <p className={styles.projectLocation}>{project.location}</p>
+                            {project.description && (
+                              <div className={styles.projectGeneralDescription}>
+                                <p>{project.description}</p>
+                              </div>
+                            )}
+                            {project.clientDescription && (
+                              <div className={styles.projectGeneralDescription}>
+                                <p>{project.clientDescription}</p>
+                              </div>
+                            )}
                           </div>
                         </div>
 

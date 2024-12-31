@@ -130,6 +130,34 @@
   overflow: hidden;
 }
 
+.projectList .projectItem .projectContent .projectContentHorizontal {
+  background-color: white;
+}
+
+.projectList .projectItem .projectContent .projectContentHorizontal .projectContentItem .projectHeader {
+
+  .projectLocation {
+    color: #5b5750;
+    font-size: 14px;
+    padding-left: 2px;
+  }
+
+  .projectGeneralDescription {
+    max-width: 300px;
+    margin-top: 40px;
+    padding-left: 2px;
+
+    p {
+      font-family: 'Theinhardt', sans-serif;
+      color: #5b5750;
+      font-size: 16px;
+      line-height: 1.5;
+      margin: 0;
+      text-transform: none;;
+    }
+  }
+}
+
 .projectDescription {
   font-size: 28px;
   line-height: 1.5;
