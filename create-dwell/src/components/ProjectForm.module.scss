@@ -172,6 +172,13 @@ h3 {
   column-gap: 10px;
 }
 
+.flexRightCenter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  column-gap: 10px;
+}
+
 .flexSpaceBetween {
   display: flex;
   justify-content: space-between;
@@ -252,10 +259,6 @@ h3 {
   border-radius: 4px;
 }
 
-.contentSection:active {
-  background-color: #ddd;
-}
-
 .contentImageContainer {
   position: relative;
   width: 100%;
@@ -310,4 +313,42 @@ input[type="file"] {
 .flex {
   display: flex;
   justify-content: space-between;
+}
+
+.contentItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+
+  h3 {
+    margin: 0;
+  }
+
+  .dragButton {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    background-color: #f7f7f7;
+    border: 1px solid #ccc;
+  }
+  .dragButton:hover {
+    background-color: #dedede;
+    cursor: grab;
+    svg {
+      fill: #333;
+    }
+  }
+
+  .flexRightCenter {
+    column-gap: 20px;
+  }
+}
+
+.contentItemBody {
+  margin-top: 10px;
+  padding: 0 20px;
 }
