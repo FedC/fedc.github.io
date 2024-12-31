@@ -1,0 +1,52 @@
+.about {
+    padding: 2rem;
+    color: white;
+    font-family: 'Theinhardt', sans-serif;
+    letter-spacing: -0.35px;
+    height: 100%;
+    overflow: auto;
+}
+
+.orangeText {
+    color: #ff6f61;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+
+    h1 {
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 20px;
+        font-family: Poppins, sans-serif;
+        font-size: 38px;
+        line-height: 44px;
+    }
+
+    h1,
+    h2,
+    h3 {
+        color: white;
+        margin-bottom: 1rem;
+        font-family: 'Poiret One', sans-serif;
+        font-weight: bold;
+        letter-spacing: 0.75px;
+    }
+
+    p {
+        margin-bottom: 1rem;
+        line-height: 1.6;
+        font-size: 16px;
+        opacity: 0.9;
+    }
+
+    ul {
+        margin: 1rem 0;
+        padding-left: 1.5rem;
+    }
+
+    li {
+        margin-bottom: 0.5rem;
+    }
+}

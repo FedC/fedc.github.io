@@ -1,13 +1,13 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import * as styles from './Header.module.scss';
 import HalfCircle from './HalfCircle';
+import About from './About';
 
 const Header = ({ onAnimationEnd }) => {
   const navRef = useRef(null);
   const navInnerRef = useRef(null);
   const logoRef = useRef(null);
-  const logoHalfCircle = useRef(null);
 
   const letterRefsCreate = useRef([]);
   const letterRefsDwell = useRef([]);
@@ -18,6 +18,8 @@ const Header = ({ onAnimationEnd }) => {
   const aboutLinkMobileRef = useRef(null);
   const contactLinkRef = useRef(null);
   const contactLinkMobileRef = useRef(null);
+
+  const [isAboutVisible, setIsAboutVisible] = useState(false);
 
   let hasFired = false;
   let entryAnimation = false;
@@ -218,6 +220,90 @@ const Header = ({ onAnimationEnd }) => {
     return () => mm.revert();
   };
 
+  const handleShowAbout = () => {
+    setIsAboutVisible(true);
+
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        isDesktop: "(min-width: 768px)",
+        isMobile: "(max-width: 767px)",
+      },
+      (context) => {
+        const { isMobile } = context.conditions;
+
+        if (isMobile) {
+          gsap.to(navRef.current, {
+            height: '100vh',
+            width: '80vw',
+            duration: 0.8,
+            ease: 'power2.out',
+          });
+        } else {
+          gsap.to(navRef.current, {
+            width: '90vw',
+            duration: 0.8,
+            ease: 'power2.out',
+          });
+        }
+      },
+    );
+  };
+
+  const handleCloseAbout = () => {
+
+    function onComplete() {
+      setIsAboutVisible(false);
+      setTimeout(() => {
+        const mm = gsap.matchMedia();
+        mm.add(
+          {
+            isDesktop: "(min-width: 768px)",
+            isMobile: "(max-width: 767px)",
+          },
+          (context) => {
+            const { isMobile } = context.conditions;
+
+            if (isMobile) {
+              gsap.set(aboutLinkMobileRef.current, { opacity: 0, scale: .8 });
+              gsap.to(aboutLinkMobileRef.current, { scale: 1, opacity: 1, duration: 0.5, ease: 'bounce.out' }, '<');
+            } else {
+              gsap.set(aboutLinkRef.current, { opacity: 0, scale: .8 });
+              gsap.to(aboutLinkRef.current, { scale: 1, opacity: 1, duration: 1, ease: 'bounce.out' }, '<');
+            }
+          });
+      }, 500);
+    }
+
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        isDesktop: "(min-width: 768px)",
+        isMobile: "(max-width: 767px)",
+      },
+      (context) => {
+        const { isMobile } = context.conditions;
+
+        if (isMobile) {
+          gsap.to(navRef.current, {
+            height: '60px',
+            width: '120px',
+            duration: 0.8,
+            ease: 'power2.in',
+            onComplete: onComplete,
+          });
+        } else {
+          gsap.to(navRef.current, {
+            width: '120px',
+            duration: 0.8,
+            ease: 'power2.in',
+            onComplete: onComplete,
+          });
+        }
+      },
+    );
+  };
+
   return (
     <>
       <nav className={styles.nav} id="verticalnav" ref={navRef}>
@@ -235,7 +321,7 @@ const Header = ({ onAnimationEnd }) => {
                 </span>
               ))}
 
-              <HalfCircle ref={logoHalfCircle} />
+              <HalfCircle />
 
               {['D', 'W', 'E', 'L', 'L'].map((letter, index) => (
                 <span
@@ -247,65 +333,47 @@ const Header = ({ onAnimationEnd }) => {
                   {letter}
                 </span>
               ))}
-
             </div>
           </div>
-          {/* <div className="nav__list">
-        <div className="nav__item"><a href="#residential" className="nav__link">Residential</a></div>
-        <div className="nav__item"><a href="#commercial" className="nav__link">Commercial</a></div>
-        <div className="nav__item"><a href="#cultural" className="nav__link">Cultural</a></div>
-        <div className="nav__separation"></div>
-        <div className="nav__item"><a href="#about" className="nav__link">About</a></div>
-        <div className="nav__item"><a href="#contact" className="nav__link">Contact</a></div>
-      </div> */}
-          <div className={styles.nav__list}>
 
-            {/* <button className={styles.nav__hamburger}>
-          <span className={styles.nav__hamburgerLine}></span>
-          <span className={styles.nav__hamburgerLine}></span>
-          <span className={styles.nav__hamburgerLine}></span>
-        </button> */}
-
-            {/* <div className={styles.nav__item}><a href="#residential" className={styles.nav__link}>
-        </a></div> */}
-            {/* <div className={styles.nav__item}><a href="#residential" className={styles.nav__link}></a></div> */}
-            {/* <div className={styles.nav__item}><a href="#commercial" className={styles.nav__link}>Commercial</a></div>
-        <div className={styles.nav__item}><a href="#cultural" className={styles.nav__link}>Cultural</a></div>
-        <div className={styles.nav__item}><a href="#about" className={styles.nav__link}>About</a></div>
-        <div className={styles.nav__item}><a href="#contact" className={styles.nav__link}>Contact</a></div> */}
-
-            <div className={styles.nav__item}>
-              <a href="#about" className={styles.aboutLink}>
-                <div className={styles.aboutCircleDesktop} ref={aboutLinkRef} data-content="About">A</div></a>
+          {isAboutVisible && (
+            <div className={styles.nav__aboutContent}>
+              <button className={styles.closeButton} onClick={handleCloseAbout}>
+                ✕
+              </button>
+              <About />
             </div>
+          )}
+
+          <div className={styles.nav__list}>
+            {!isAboutVisible && (
+              <div className={styles.nav__item}>
+                <a href="#about" className={styles.aboutLink}>
+                  <div className={styles.aboutCircleDesktop} ref={aboutLinkRef} data-content="About" onClick={handleShowAbout}>A</div></a>
+              </div>
+            )}
 
             <div className={styles.nav__item}>
-              <a href="#about" className={styles.aboutLink}>
+              <a href="#contact" className={styles.aboutLink}>
                 <div className={styles.contactCircleDesktop} ref={contactLinkRef} data-content="Contact">C</div></a>
             </div>
           </div>
-
         </div>
       </nav>
+
       <nav className={styles.nav__topbar} id="topbar" ref={topbarRef}>
         <div className={styles.nav__topbarInner}>
-          {/* <a href="tel:+1234567890" className={styles.nav__phone}>+1 234 567 890</a> */}
-          {/* <a href="mailto:carolina@create-dwell.com" className={styles.nav__email}></a> */}
-
-          {/* <div className={styles.nav__separation} ref={(el) => navTopBarEls.current[0] = el }></div> */}
           <a href="#" className={styles.nav__link} ref={(el) => navTopBarEls.current[1] = el}>All</a>
           <a href="#" className={styles.nav__link} ref={(el) => navTopBarEls.current[2] = el}>Residential</a>
           <a href="#" className={styles.nav__link} ref={(el) => navTopBarEls.current[3] = el}>Commercial</a>
-          {/* <a href="#" className={styles.nav__link} ref={(el) => navTopBarEls.current[4] = el }>Cultural</a> */}
-          {/* <a href="#" className={styles.nav__link}>About</a> */}
-          {/* <a href="#" className={styles.nav__link}>Contact</a> */}
         </div>
       </nav>
 
-
-      <a href="#about" className={styles.aboutCircleMobile} ref={aboutLinkMobileRef} data-content="About">
-        <div >A</div>
-      </a>
+      {!isAboutVisible && (
+        <a href="#about" className={styles.aboutCircleMobile} ref={aboutLinkMobileRef} data-content="About" onClick={handleShowAbout}>
+          <div >A</div>
+        </a>
+      )}
 
       <a href="#contact" className={styles.contactCircleMobile} ref={contactLinkMobileRef} data-content="Contact">
         <div >C</div>

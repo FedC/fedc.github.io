@@ -8,6 +8,9 @@ import {
   DndContext,
   closestCenter,
   DragOverlay,
+  useSensor,
+  useSensors,
+  PointerSensor,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -17,7 +20,6 @@ import {
 } from '@dnd-kit/sortable';
 
 import { CSS } from '@dnd-kit/utilities';
-import { on } from 'process';
 
 const SortableItem = ({ id, overlay, children }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isOver } = useSortable({ id });
@@ -99,6 +101,8 @@ const waitForProcessedFile = async (filePath) => {
 };
 
 const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
+  let globalProjectId = editingProject?.id;
+
   const [formData, setFormData] = useState({
     id: '',
     title: '',
@@ -143,7 +147,18 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
     setActiveIndex(index);
   }
 
-  let globalProjectId = editingProject?.id;
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10, // Drag starts only after moving 10px
+      },
+      onStart(event) {
+        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+          event.preventDefault(); // Prevent drag from starting
+        }
+      },
+    }),
+  );
 
   useEffect(() => {
     if (editingProject) {
@@ -656,100 +671,123 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
             </div>
           </div>
 
-          <DndContext collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
+          <DndContext collisionDetection={closestCenter} sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
             <SortableContext items={formData.content.map((item) => item.id)} strategy={verticalListSortingStrategy}>
               {formData.content.map((contentItem, index) => (
                 <SortableItem key={'content-item-' + index} id={'content-item-' + index} isOver={hoveredItem === index}>
                   <div id={'content-item-box-' + index}>
-                    <div className={styles.flex}>
-                      <h3>{`${contentItem.type.charAt(0).toUpperCase() + contentItem.type.slice(1)} Section`}</h3>
-                      <button
-                        type="button"
-                        className="warn-btn"
-                        onClick={() => {
-                          const newContent = [...formData.content];
-                          newContent.splice(index, 1);
-                          setFormData({ ...formData, content: newContent });
-                        }}
-                        onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
-                      >
-                        Remove
+
+                    <div className={styles.contentItemHeader}>
+
+                      <button className={styles.dragButton}>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ccc">
+                        <path d="M480-80 310-250l57-57 73 73v-206H235l73 72-58 58L80-480l169-169 57 57-72 72h206v-206l-73 73-57-57 170-170 170 170-57 57-73-73v206h205l-73-72 58-58 170 170-170 170-57-57 73-73H520v205l72-73 58 58L480-80Z"/>
+                        </svg>
                       </button>
+
+                      <h3>{`${contentItem.type.charAt(0).toUpperCase() + contentItem.type.slice(1)} Section`}</h3>
+
+                      <div className={styles.flexRightCenter}>
+
+                        <Checkbox
+                          label="Featured"
+                          checked={!!contentItem.featured}
+                          onChange={(e) => handleContentChange(index, 'featured', e.target.checked)}
+                          onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                        />
+
+                        <button
+                          type="button"
+                          className="warn-btn"
+                          onClick={() => {
+                            const newContent = [...formData.content];
+                            newContent.splice(index, 1);
+                            setFormData({ ...formData, content: newContent });
+                          }}
+                          onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                            <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                            </svg>
+                        </button>
+                      </div>
+
                     </div>
 
-                    <div className={styles.formGroup}>
-                      <Checkbox
-                        label="Featured"
-                        checked={!!contentItem.featured}
-                        onChange={(e) => handleContentChange(index, 'featured', e.target.checked)}
-                        onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
-                      />
+                    <div 
+                      className={styles.contentItemBody}
+                      onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                      >
+
+                      {/* Title (only for text and image types) */}
+                      {(contentItem.type === 'image' || contentItem.type === 'text') && (
+                        <div className={styles.formGroup}>
+                          <label>Image Title</label>
+                          <input
+                            type="text"
+                            placeholder="Title"
+                            value={contentItem.title || ''}
+                            onChange={(e) => handleContentChange(index, 'title', e.target.value)}
+                            onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                            onKeyboardDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                          />
+                        </div>
+                      )}
+
+                      {/* Description (only for image type) */}
+                      {contentItem.type === 'image' && (
+                        <div className={styles.formGroup}>
+                          <label>
+                            Image Description
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Description"
+                            value={contentItem.description || ''}
+                            onChange={(e) => handleContentChange(index, 'description', e.target.value)}
+                            onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                            onKeyboardDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                          />
+                        </div>
+                      )}
+
+                      {/* URL (only for image type) */}
+                      {contentItem.type === 'image' && (
+                        <div className={styles.contentImageContainer}>
+                          <img
+                            id={`content-image-preview-${index}`}
+                            src={contentItem.url instanceof File ? URL.createObjectURL(contentItem.url) : contentItem.url} alt="Upload Image" className={styles.contentImage} />
+
+                          <label htmlFor={`content-image-upload-${index}`} className={styles.uploadLabel}>Upload Image</label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            id={`content-image-upload-${index}`}
+                            onChange={(e) => uploadContentImage(index, e.target.files[0])}
+                            onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                            onKeyboardDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                          />
+                        </div>
+                      )}
+
+                      {/* Text (for text and quote types) */}
+                      {(contentItem.type === 'text' || contentItem.type === 'quote') && (
+                        <div className={styles.formGroup}>
+                          <label>
+                            {contentItem.type === 'text' ? 'Text' : 'Quote'}
+                          </label>
+                          <textarea
+                            placeholder="Text"
+                            value={contentItem.text || ''}
+                            rows={6}
+                            cols={40}
+                            onChange={(e) => handleContentChange(index, 'text', e.target.value)}
+                            onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                            onKeyboardDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                          ></textarea>
+                        </div>
+                      )}
                     </div>
-
-                    {/* Title (only for text and image types) */}
-                    {(contentItem.type === 'image' || contentItem.type === 'text') && (
-                      <div className={styles.formGroup}>
-                        <label>Image Title</label>
-                        <input
-                          type="text"
-                          placeholder="Title"
-                          value={contentItem.title || ''}
-                          onChange={(e) => handleContentChange(index, 'title', e.target.value)}
-                          onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
-                        />
-                      </div>
-                    )}
-
-                    {/* Description (only for image type) */}
-                    {contentItem.type === 'image' && (
-                      <div className={styles.formGroup}>
-                        <label>
-                          Image Description
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Description"
-                          value={contentItem.description || ''}
-                          onChange={(e) => handleContentChange(index, 'description', e.target.value)}
-                          onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
-                        />
-                      </div>
-                    )}
-
-                    {/* URL (only for image type) */}
-                    {contentItem.type === 'image' && (
-                      <div className={styles.contentImageContainer}>
-                        <img
-                          id={`content-image-preview-${index}`}
-                          src={contentItem.url instanceof File ? URL.createObjectURL(contentItem.url) : contentItem.url} alt="Upload Image" className={styles.contentImage} />
-
-                        <label htmlFor={`content-image-upload-${index}`} className={styles.uploadLabel}>Upload Image</label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          id={`content-image-upload-${index}`}
-                          onChange={(e) => uploadContentImage(index, e.target.files[0])}
-                          onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
-                        />
-                      </div>
-                    )}
-
-                    {/* Text (for text and quote types) */}
-                    {(contentItem.type === 'text' || contentItem.type === 'quote') && (
-                      <div className={styles.formGroup}>
-                        <label>
-                          {contentItem.type === 'text' ? 'Text' : 'Quote'}
-                        </label>
-                        <textarea
-                          placeholder="Text"
-                          value={contentItem.text || ''}
-                          rows={6}
-                          cols={40}
-                          onChange={(e) => handleContentChange(index, 'text', e.target.value)}
-                          onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
-                        ></textarea>
-                      </div>
-                    )}
                   </div>
                 </SortableItem>
               ))}

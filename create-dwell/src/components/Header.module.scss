@@ -429,4 +429,23 @@ a {
 
 }
 
+.nav__aboutContent {
+    padding: 0;
+}
+
+nav .closeButton {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
 @media screen and (min-width: 53em) {}
