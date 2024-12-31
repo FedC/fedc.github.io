@@ -2,6 +2,7 @@ import React from 'react';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../js/firebase';
 import * as styles from './ProjectList.module.scss';
+import Checkbox from './Checkbox';
 
 const ProjectList = ({ projects, onEdit, onUpdate }) => {
 
@@ -56,18 +57,23 @@ const ProjectList = ({ projects, onEdit, onUpdate }) => {
             <tr key={project.id} onClick={() => onEdit(project)} >
               <td>
                 {project.mainImage && (
-                  <img
-                    id="main-image-preview"
-                    src={project.mainImage instanceof File ? URL.createObjectURL(project.mainImage) : getSmallSizeUrl(project.mainImage)}
-                    alt="Main Image"
-                    className={styles.mainImage}
-                  />
+                  <div className={styles.flexCenter}>
+                    <img
+                      id="main-image-preview"
+                      src={project.mainImage instanceof File ? URL.createObjectURL(project.mainImage) : getSmallSizeUrl(project.mainImage)}
+                      alt="Main Image"
+                      className={styles.mainImage}
+                    />
+                  </div>
                 )}
               </td>
               <td>{project.title}</td>
               <td>{project.location}</td>
               <td onClick={(e) => e.stopPropagation()}>
-                {<input type='checkbox' checked={project.published} onChange={(e) => onTogglePublished(e, project)}  /> }
+                <div className={styles.flexCenter}>
+                  {/* {<input type='checkbox' checked={project.published} onChange={(e) => onTogglePublished(e, project)}  /> } */}
+                  <Checkbox label="" checked={project.published} onChange={(e) => onTogglePublished(e, project)} />
+                </div>
               </td>
             </tr>
           ))}

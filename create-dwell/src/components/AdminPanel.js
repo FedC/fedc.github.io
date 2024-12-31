@@ -88,6 +88,10 @@ const AdminPanel = () => {
     showToast('Project updated successfully', 'success');
   };
 
+  const handleUpdateSuccess = (txt) => {
+    showToast(txt || 'Project saved successfully', 'success');
+  };
+
   const closeModal = (options) => {
     setIsModalOpen(false);
     if (options?.updated) {
@@ -136,6 +140,7 @@ const AdminPanel = () => {
                 <ProjectForm
                   onClose={() => navigate('/admin')}
                   editingProject={null}
+                  onUpdateSuccess={handleUpdateSuccess}
                 />
               </div>
             }
@@ -147,6 +152,7 @@ const AdminPanel = () => {
                 <ProjectForm
                   onClose={() => navigate('/admin')}
                   editingProject={editingProject}
+                  onUpdateSuccess={handleUpdateSuccess}
                 />
               </div>
             }

@@ -9,3 +9,14 @@
   object-fit: cover;
   border-radius: 2px;
 }
+
+.flexCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.projectsList tbody td {
+  height: 78px;
+}
