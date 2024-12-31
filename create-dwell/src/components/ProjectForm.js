@@ -177,6 +177,11 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
     });
   };
 
+  const handleInputChangeAndSubmit = (e) => {
+    handleInputChange(e);
+    handleSubmit();
+  };
+
   const handleMainImageFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -288,6 +293,11 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
     setFormData({ ...formData, content: newContent });
   };
 
+  const handleContentChangeAndSubmit = (index, field, value) => {
+    handleContentChange(index, field, value);
+    handleSubmit();
+  };
+
   const handleDragEnd = ({ active, over }) => {
     console.log('Drag end:', { active: active, over: over });
     if (!over) return; // Prevent error if dragging outside droppable area
@@ -337,6 +347,9 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
       const newContent = [...formData.content];
       newContent[index].url = imageUrl;
       setFormData({ ...formData, content: newContent });
+
+      handleSubmit(); // Save the updated content
+
     } catch (error) {
       console.error("Error uploading content image:", error);
     } finally {
@@ -346,7 +359,7 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
 
   // Add a new content section based on selected type
   const addContentSection = (type) => {
-    const newContentItem = { type, title: '', text: '', description: '', url: '', featured: false };
+    const newContentItem = { type, title: '', text: '', description: '', url: '', featured: false, published: false };
     setFormData({ ...formData, content: [...formData.content, newContentItem] });
   };
 
@@ -453,6 +466,20 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
+  const onClickRemoveContentSection = (e, index) => {
+    e.stopPropagation();
+
+    // confirm first
+    if (!window.confirm('Are you sure you want to remove this section?')) {
+      return;
+    }
+
+    const newContent = [...formData.content];
+    newContent.splice(index, 1);
+    setFormData({ ...formData, content: newContent });
+
+  }
+
   return (
     <section className={styles.projectForm}>
       <div className={styles.projectHeader}>
@@ -504,51 +531,51 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
               <div className={styles.formGroup}>
                 <div className={styles.flex}>
                   <label htmlFor="order">Order</label>
-                  <input type="number" name="order" placeholder="Order" onChange={handleInputChange} value={formData.order || 0} className={styles.numberInput} />
+                  <input type="number" name="order" placeholder="Order" onChange={handleInputChange} onBlur={handleSubmit} value={formData.order || 0} className={styles.numberInput} />
                 </div>
               </div>
 
               <div className={styles.formGroup}>
-                <Checkbox label="Published" checked={!!formData.published} onChange={handleInputChange} name="published" />
+                <Checkbox label="Published" checked={!!formData.published} onChange={handleInputChangeAndSubmit} name="published" />
               </div>
             </div>
 
             <div className="grid-two-col">
               <div className={styles.formGroup}>
                 <label htmlFor="title">Title</label>
-                <input type="text" name="title" placeholder="Project Title" onChange={handleInputChange} value={formData.title || ''} />
+                <input type="text" name="title" placeholder="Project Title" onChange={handleInputChange} onBlur={handleSubmit} value={formData.title || ''} />
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor="location">Location</label>
-                <input type="text" name="location" placeholder="Location" onChange={handleInputChange} value={formData.location || ''} />
+                <input type="text" name="location" placeholder="Location" onChange={handleInputChange} onBlur={handleSubmit} value={formData.location || ''} />
               </div>
             </div>
 
             <div className="grid-two-col">
               <div className={styles.formGroup}>
                 <label htmlFor="award">Award</label>
-                <input type="text" name="award" placeholder="Award" onChange={handleInputChange} value={formData.award || ''} />
+                <input type="text" name="award" placeholder="Award" onChange={handleInputChange} onBlur={handleSubmit} value={formData.award || ''} />
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor="photoCredit">Photo Credit</label>
-                <input type="text" name="photoCredit" placeholder="Photo Credit" onChange={handleInputChange} value={formData.photoCredit || ''} />
+                <input type="text" name="photoCredit" placeholder="Photo Credit" onChange={handleInputChange} onBlur={handleSubmit} value={formData.photoCredit || ''} />
               </div>
             </div>
 
             <div className={styles.formGroup}>
               <label htmlFor="role">Role</label>
-              <input type="text" name="role" placeholder="Role" onChange={handleInputChange} value={formData.role || ''} />
+              <input type="text" name="role" placeholder="Role" onChange={handleInputChange} onBlur={handleSubmit} value={formData.role || ''} />
             </div>
 
             <div className={styles.formGroup}>
               <label htmlFor="use">Use (use comma separated for many)</label>
-              <input type="text" name="use" placeholder="Use (comma separated)" onChange={handleInputChange} value={formData.use || ''} />
+              <input type="text" name="use" placeholder="Use (comma separated)" onChange={handleInputChange} onBlur={handleSubmit} value={formData.use || ''} />
             </div>
 
             <div className="grid-two-col">
               <div className={styles.formGroup}>
                 <label htmlFor="projectType">Project Type</label>
-                <select id="projectType" name="projectType" onChange={handleInputChange} value={formData.projectType || ''}>
+                <select id="projectType" name="projectType" onChange={handleInputChangeAndSubmit} value={formData.projectType || ''}>
                   <option value="Historic Interior Renovation">Historic Interior Renovation</option>
                   <option value="Interior Renovation">Interior Renovation</option>
                   <option value="New Construction">New Construction</option>
@@ -559,7 +586,7 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
 
               <div className={styles.formGroup}>
                 <label htmlFor="status">Project Status</label>
-                <select name="status" onChange={handleInputChange} value={formData.status}>
+                <select name="status" onChange={handleInputChangeAndSubmit} value={formData.status}>
                   <option value="">Select Status</option>
                   <option value="Built">Built</option>
                   <option value="Unbuilt">Unbuilt</option>
@@ -571,35 +598,35 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
             <div className="grid-two-col">
               <div className={styles.formGroup}>
                 <label htmlFor="yearCompleted">Year Completed</label>
-                <input type="number" name="yearCompleted" placeholder="Year Completed" onChange={handleInputChange} value={formData.yearCompleted} />
+                <input type="number" name="yearCompleted" placeholder="Year Completed" onChange={handleInputChange} onBlur={handleSubmit} value={formData.yearCompleted} />
               </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="area">Area (sq ft)</label>
-                <input type="number" name="area" placeholder="Area (sq ft)" onChange={handleInputChange} value={formData.area || ''} />
+                <input type="number" name="area" placeholder="Area (sq ft)" onChange={handleInputChange} onBlur={handleSubmit} value={formData.area || ''} />
               </div>
             </div>
 
             <div className={styles.formGroup}>
               <label htmlFor="description">General Description</label>
               <textarea name="description" placeholder="Description" rows={4} cols={40}
-                onChange={handleInputChange} value={formData.description || ''}>
+                onChange={handleInputChange} onBlur={handleSubmit} value={formData.description || ''}>
               </textarea>
             </div>
 
             <div className={styles.formGroup}>
               <label htmlFor="description">Client Description</label>
-              <textarea name="clientDescription" placeholder="Client Description" rows="3" onChange={handleInputChange} value={formData.clientDescription}></textarea>
+              <textarea name="clientDescription" placeholder="Client Description" rows="3" onChange={handleInputChange} onBlur={handleSubmit} value={formData.clientDescription}></textarea>
             </div>
 
             <div className={styles.formGroup}>
               <label htmlFor="description">Challenge</label>
-              <textarea name="challenge" placeholder="Challenge" rows="3" onChange={handleInputChange} value={formData.challenge}></textarea>
+              <textarea name="challenge" placeholder="Challenge" rows="3" onChange={handleInputChange} onBlur={handleSubmit} value={formData.challenge}></textarea>
             </div>
 
             <div className={styles.formGroup}>
               <label htmlFor="description">Solution</label>
-              <textarea name="solution" placeholder="Solution" rows="3" onChange={handleInputChange} value={formData.solution}></textarea>
+              <textarea name="solution" placeholder="Solution" rows="3" onChange={handleInputChange} onBlur={handleSubmit} value={formData.solution}></textarea>
             </div>
 
           </div>
@@ -690,20 +717,23 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
                       <div className={styles.flexRightCenter}>
 
                         <Checkbox
+                          label="Published"
+                          checked={!!contentItem.published}
+                          onChange={(e) => handleContentChangeAndSubmit(index, 'published', e.target.checked)}
+                          onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                        />
+
+                        <Checkbox
                           label="Featured"
                           checked={!!contentItem.featured}
-                          onChange={(e) => handleContentChange(index, 'featured', e.target.checked)}
+                          onChange={(e) => handleContentChangeAndSubmit(index, 'featured', e.target.checked)}
                           onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
                         />
 
                         <button
                           type="button"
                           className="warn-btn"
-                          onClick={() => {
-                            const newContent = [...formData.content];
-                            newContent.splice(index, 1);
-                            setFormData({ ...formData, content: newContent });
-                          }}
+                          onClick={(e) => onClickRemoveContentSection(e, index)}
                           onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
@@ -728,6 +758,7 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
                             placeholder="Title"
                             value={contentItem.title || ''}
                             onChange={(e) => handleContentChange(index, 'title', e.target.value)}
+                            onBlur={handleSubmit}
                             onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
                             onKeyboardDown={(e) => e.stopPropagation()} // Prevent drag interaction
                           />
@@ -745,6 +776,7 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
                             placeholder="Description"
                             value={contentItem.description || ''}
                             onChange={(e) => handleContentChange(index, 'description', e.target.value)}
+                            onBlur={handleSubmit}
                             onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
                             onKeyboardDown={(e) => e.stopPropagation()} // Prevent drag interaction
                           />
@@ -782,6 +814,7 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
                             rows={6}
                             cols={40}
                             onChange={(e) => handleContentChange(index, 'text', e.target.value)}
+                            onBlur={handleSubmit}
                             onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
                             onKeyboardDown={(e) => e.stopPropagation()} // Prevent drag interaction
                           ></textarea>
