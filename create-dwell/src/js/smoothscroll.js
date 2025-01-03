@@ -7,6 +7,9 @@ import Lenis from 'lenis';
 export const initSmoothScrolling = () => {
   // Initialize Lenis for smooth scroll effects. Lerp value controls the smoothness.
   const lenis = new Lenis({ lerp: 1.12 });
+
+  // Expose Lenis instance globally for dynamic control
+  window.lenis = lenis;
   
   // Sync ScrollTrigger with Lenis' scroll updates.
   lenis.on('scroll', ScrollTrigger.update);

@@ -1,4 +1,5 @@
 :root {
+    --cursor-z-index: 10002;
     --toast-z-index: 1000;
     --shadow-z-index: 2001;
     --entry-animation-z-index: 2000;
@@ -63,6 +64,9 @@
     // on mobile screens height is topbar height
     @media screen and (min-width: 53em) {
         height: 100vh;
+        top: 0;
+        bottom:0;
+        position:fixed;
     }
 
     &__topbar {
@@ -430,22 +434,54 @@ a {
 }
 
 .nav__aboutContent {
-    padding: 0;
+    padding-top: 40px;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto; /* Ensure vertical scrolling */
+    position: relative;
+
+    &::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 68px;
+        background-color: #f6ab0b;
+        z-index: 3;
+    }
 }
 
 nav .closeButton {
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    background: transparent;
+    color: #595d70;
+    border-radius: .25rem;
+    justify-content: center;
     align-items: center;
-    padding: 5px;
-    background-color: transparent;
-    border: none;
-    outline: none;
+    width: 2.5em;
+    height: 2.5em;
+    padding: .625em;
+    display: flex;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: var(--cursor-z-index);
+}
+
+nav .closeButton:hover .closeIcon {
+    transform: rotate(45deg);
+}
+
+nav .closeIcon {
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    transition: transform .65s cubic-bezier(.65, .05, 0, 1);
+    position: relative;
+    transform: rotate(-45deg);
+    max-width: none;
+    box-sizing: border-box;
+    vertical-align: middle;
 }
 
 @media screen and (min-width: 53em) {}
