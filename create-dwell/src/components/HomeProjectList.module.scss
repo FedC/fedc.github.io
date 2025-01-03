@@ -186,6 +186,20 @@
   }
 }
 
+@media screen and (max-width: 768px) {
+  .projectList .projectItem .projectContent .projectContentHorizontal .projectContentItem {
+    .projectText,
+    .projectQuote {
+      min-width: calc(var(--grid-max-width-mobile) - 40px);
+      max-width: calc(var(--grid-max-width-mobile) - 40px);
+      font-size: 13px;
+      line-height: 1.4;
+      letter-spacing: -.56px;
+    }
+  }
+  
+}
+
 .mainImageWrapper {
   position: relative;
   overflow: hidden;
@@ -248,13 +262,6 @@
   padding-left: 20px;
   text-align: left;
 }
-
-@media screen and (min-width: 768px) {
-  .projectDescription {
-  }
-  
-}
-
 
 .projectDescriptionIconButton {
   display: none;
