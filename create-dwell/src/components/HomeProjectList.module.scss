@@ -61,6 +61,8 @@
         touch-action: none;
 
         .projectContentItem {
+          position: relative;
+
           .projectImage {
             height: 100%;
             border-radius: 2px;
@@ -78,6 +80,65 @@
             flex-direction: column;
             justify-content: flex-start;
             text-align: left;
+            position: relative;
+
+            .scrollUpButton {
+              position: absolute;
+              top: 10px;
+              right: 0;
+              z-index: 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 40px;
+              height: 40px;
+              appearance: none;
+              -webkit-appearance: none;
+              border: none;
+              cursor: pointer;
+              background-color: #ffffff;
+              border-radius: 50%;
+              box-shadow: 0 3px 7px rgba(47, 47, 47, 0.1);
+              text-transform: lowercase;
+              font-style: italic;
+              font-weight: bold;
+              font-family: monospace;
+
+              svg {
+                fill: var(--color-link);
+              }
+            }
+
+            .scrollDownButton {
+              position: absolute;
+              bottom: 10px;
+              right: 0;
+              z-index: 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 40px;
+              height: 40px;
+              appearance: none;
+              -webkit-appearance: none;
+              border: none;
+              cursor: pointer;
+              background-color: #ffffff;
+              border-radius: 50%;
+              box-shadow: 0 3px 7px rgba(47, 47, 47, 0.1);
+              text-transform: lowercase;
+              font-style: italic;
+              font-weight: bold;
+              font-family: monospace;
+
+              svg {
+                fill: var(--color-link);
+              }
+            }
+
+            .projectHeaderInner {
+              padding: 0;
+            }
 
             h2 {
               margin-bottom: 8px;
@@ -159,7 +220,8 @@
 }
 
 .projectDescription {
-  font-size: 28px;
+  display: none;
+  font-size: 18px;
   line-height: 1.5;
   letter-spacing: -0.35px;
   font-weight: 400;
@@ -170,24 +232,29 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 40%;
 
   transform: translateY(100%);
   opacity: 0;
 
-  background-color: #333853c2;
+  background-color: rgba(246, 171, 11, 0.8);
   -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
-  display: flex;
+  // display: flex;
   justify-content: center;
   align-items: center;
   
-  padding: 20px 40px;
+  padding-bottom: 16px;
   padding-right: 68px;
-  padding-bottom: 68px;
-  text-align: right;
-  padding-left: 20%;
+  padding-left: 20px;
+  text-align: left;
 }
+
+@media screen and (min-width: 768px) {
+  .projectDescription {
+  }
+  
+}
+
 
 .projectDescriptionIconButton {
   display: none;

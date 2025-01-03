@@ -68,6 +68,10 @@ body {
   overflow-x: hidden;
 }
 
+body {
+  overscroll-behavior: contain; /* Prevent scroll chaining */
+}
+
 .font-alt {
   font-family: $font-alt;
 }

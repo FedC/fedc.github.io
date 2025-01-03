@@ -529,7 +529,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
       Draggable.create(scrollRef, {
         type: 'x',
-        bounds: { minX: -50, maxX: 0 }, // Limit the drag to the left
+        bounds: { minX: -50, maxX: 0, maxY: 0, minY: 0 }, // Limit the drag to the left
         inertia: true,
         edgeResistance: 0.5,
         onDragStart: function () {
@@ -580,7 +580,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
         Draggable.create(scrollRef, {
           type: 'x',
-          bounds: { minX: -minX, maxX: 0 },
+          bounds: { minX: -minX, maxX: 0, maxY: 0, minY: 0 },
           inertia: true,
           // edgeResistance: .1,
           onDragEnd: () => {
@@ -619,6 +619,9 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
         opacity: 0,
         duration: 0.5,
         ease: 'power3.out',
+        onComplete: () => {
+          gsap.set(projectDescription, { display: 'none' });
+        },
       });
 
       gsap.to(projectDescriptionButton, {
@@ -632,13 +635,50 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
         opacity: 1,
         duration: 0.5,
         ease: 'power3.out',
-        yoyo: true,
+        onStart: () => {
+          gsap.set(projectDescription, { display: 'block' });
+        },
       });
 
       gsap.to(projectDescriptionButton, {
         scale: 1.1,
         duration: 0.5,
         ease: 'bounce.out',
+      });
+    }
+  };
+
+  const toggleProjectContentDescription = (projectId, contentId, event) => {
+    event.stopPropagation();
+  
+    // Find the correct project and content description
+    const projectRef = projectRefs.current[projectId];
+    const projectContentDescription = projectRef.querySelector(
+      `.${styles.projectDescription}[data-content-id="${contentId}"]`
+    );
+  
+    if (!projectContentDescription) return;
+  
+    // Toggle visibility with GSAP
+    if (projectContentDescription.style.opacity === '1') {
+      gsap.to(projectContentDescription, {
+        y: '100%',
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power3.out',
+        onComplete: () => {
+          gsap.set(projectContentDescription, { display: 'none' });
+        },
+      });
+    } else {
+      gsap.to(projectContentDescription, {
+        y: 0,
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power3.out',
+        onStart: () => {
+          gsap.set(projectContentDescription, { display: 'block' });
+        },
       });
     }
   };
@@ -685,6 +725,52 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
       observerRef.current.disconnect();
     };
   }, [projects]);
+
+  const scrollProjectHeader = (event, projectId) => {
+    const projectHeader = document.querySelector(`#project-${projectId} .${styles.projectHeader}`);
+    const projectHeaderInner = document.querySelector(`#project-${projectId} .${styles.projectHeaderInner}`);
+    const currentTransform = projectHeaderInner.style.transform; // "" or ""translate(0px, -50px)" or "translate(0px, -100px)", etc ..
+    const currentTransformY = currentTransform ? parseInt(currentTransform.split(',')[1].replace('px', '').trim()) : 0;
+    const maxTransformY = projectHeaderInner.clientHeight - projectHeader.clientHeight;
+
+    if (Math.abs(currentTransformY) <= maxTransformY) {
+      gsap.to(projectHeaderInner, {
+        y: currentTransformY - 100,
+        duration: 1,
+        ease: 'power2.out',
+      });
+    }
+  };
+
+  const scrollProjectHeaderUp = (event, projectId) => {
+    const projectHeaderInner = document.querySelector(`#project-${projectId} .${styles.projectHeaderInner}`);
+    const currentTransform = projectHeaderInner.style.transform; // "" or ""translate(0px, -50px)" or "translate(0px, -100px)", etc ..
+    const currentTransformY = currentTransform ? parseInt(currentTransform.split(',')[1].replace('px', '').trim()) : 0;
+
+    if (currentTransformY < 0) {
+      const y = currentTransformY + 100;
+      if (y > 0) {
+        gsap.to(projectHeaderInner, {
+          y: 0,
+          duration: 1,
+          ease: 'power2.out',
+        });
+        return;
+      }
+      gsap.to(projectHeaderInner, {
+        y: currentTransformY + 100,
+        duration: 1,
+        ease: 'power2.out',
+      });
+    }
+  };
+
+  const isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight = (projectId) => {
+    const projectHeader = document.querySelector(`#project-${projectId} .${styles.projectHeader}`);
+    const projectHeaderInner = document.querySelector(`#project-${projectId} .${styles.projectHeaderInner}`);
+    if (!projectHeader || !projectHeaderInner) return false;
+    return projectHeaderInner.clientHeight > projectHeader.clientHeight;
+  };
 
   return (
     <>
@@ -735,17 +821,42 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                       <div className={styles.projectContentHorizontal}>
                         <div className={styles.projectContentItem}>
                           <div className={styles.projectHeader}>
-                            <h2>{project.title}</h2>
-                            <p className={styles.projectLocation}>{project.location}</p>
-                            {project.description && (
-                              <div className={styles.projectGeneralDescription}>
-                                <p>{project.description}</p>
-                              </div>
+
+                            <div className={styles.projectHeaderInner}>
+                              <h2>{project.title}</h2>
+                              <p className={styles.projectLocation}>{project.location}</p>
+                              {project.description && (
+                                <div className={styles.projectGeneralDescription}>
+                                  <p>{project.description}</p>
+                                </div>
+                              )}
+                              {project.clientDescription && (
+                                <div className={styles.projectGeneralDescription}>
+                                  <p>{project.clientDescription}</p>
+                                </div>
+                              )}
+                              {project.challenge && (
+                                <div className={styles.projectGeneralDescription}>
+                                  <p>{project.challenge}</p>
+                                </div>
+                              )}
+                              {project.solution && (
+                                <div className={styles.projectGeneralDescription}>
+                                  <p>{project.solution}</p>
+                                </div>
+                              )}
+                            </div>
+
+                            {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
+                              <button className={styles.scrollUpButton} onClick={(e) => scrollProjectHeaderUp(e, project.id)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b"><path d="M440-160v-487L216-423l-56-57 320-320 320 320-56 57-224-224v487h-80Z" /></svg>
+                              </button>
                             )}
-                            {project.clientDescription && (
-                              <div className={styles.projectGeneralDescription}>
-                                <p>{project.clientDescription}</p>
-                              </div>
+
+                            {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
+                              <button className={styles.scrollDownButton} onClick={(e) => scrollProjectHeader(e, project.id)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b"><path d="M440-800v487L216-537l-56 57 320 320 320-320-56-57-224 224v-487h-80Z" /></svg>
+                              </button>
                             )}
                           </div>
                         </div>
@@ -767,9 +878,30 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                                     src={content.url}
                                     alt={content.title}
                                   />
-                                  {/* <p className={styles.projectImageDescription}>
-                                    {content.description}
-                                  </p> */}
+                                  {content.description && openProjects.includes(project.id) && (
+                                    <>
+                                      <div className={styles.projectDescriptionIconButton}>
+                                        <button
+                                          className={styles.projectDescriptionButton}
+                                          onClick={(e) =>
+                                            toggleProjectContentDescription(project.id, content.id || index, e)
+                                          }
+                                        >
+                                          <span>i</span>
+                                        </button>
+                                      </div>
+                                      <div
+                                        className={styles.projectDescription}
+                                        data-content-id={content.id || index} // Add identifier here as well
+                                        onClick={(e) =>
+                                          toggleProjectContentDescription(project.id, content.id || index, e)
+                                        }
+                                      >
+                                        <p>{content.description}</p>
+                                      </div>
+                                    </>
+                                  )}
+
                                 </div>
                               );
                             } else if (content.type === 'image') {

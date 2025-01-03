@@ -615,17 +615,17 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="description">Client Description</label>
+              <label htmlFor="clientDescription">Client Description</label>
               <textarea name="clientDescription" placeholder="Client Description" rows="3" onChange={handleInputChange} onBlur={handleSubmit} value={formData.clientDescription}></textarea>
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="description">Challenge</label>
+              <label htmlFor="challenge">Challenge</label>
               <textarea name="challenge" placeholder="Challenge" rows="3" onChange={handleInputChange} onBlur={handleSubmit} value={formData.challenge}></textarea>
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="description">Solution</label>
+              <label htmlFor="solution">Solution</label>
               <textarea name="solution" placeholder="Solution" rows="3" onChange={handleInputChange} onBlur={handleSubmit} value={formData.solution}></textarea>
             </div>
 
