@@ -20,3 +20,24 @@
 .projectsList tbody td {
   height: 78px;
 }
+
+button.dragButton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  column-gap: 5px;
+  background-color: #f7f7f7 !important;
+  border: 1px solid #ccc;
+}
+.dragButton:hover {
+  background-color: #dedede;
+  cursor: grab;
+  svg {
+    fill: #333;
+  }
+}
+
+td.orderTd {
+  width: 50px;
+  text-align: center;
+}

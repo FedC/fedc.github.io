@@ -4,6 +4,7 @@ import ToastNotification from './ToastNotification';
 import AdminHeader from './AdminHeader';
 import ProjectForm from './ProjectForm';
 import ProjectList from './ProjectList';
+import AboutForm from './AboutForm';
 import { auth, db } from '../js/firebase';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 
@@ -157,11 +158,19 @@ const AdminPanel = () => {
               </div>
             }
           />
+          <Route
+            path="/about"
+            element={
+              <div className={styles.adminContent}>
+                <AboutForm onUpdateSuccess={handleUpdateSuccess} onClose={() => navigate('/admin')} />
+              </div>
+            }
+          />
           <Route path="/users" element={<div>Users Management</div>} />
           <Route path="/analytics" element={<div>Analytics Overview</div>} />
           <Route path="/settings" element={<div>Settings</div>} />
         </Routes>
-      
+
       </div>
 
       {toasts.map((toast) => (

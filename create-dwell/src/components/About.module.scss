@@ -204,3 +204,33 @@ $circleTopPosition: 50px;
     color: #f6ab0b;
     letter-spacing: 0.75px;
 }
+
+.aboutImageContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+    align-items: center;
+
+    img {
+        width: 100%;
+        border-radius: 8px;
+    }
+}
+
+@media screen and (max-width: 1020px) {
+    .aboutImageContainer {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+        margin: auto;
+
+        // reverse the order of the image and text
+        .aboutImage {
+            order: -1;
+        }
+
+        img {
+            width: 100%;
+        }
+    }
+}

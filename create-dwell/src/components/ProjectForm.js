@@ -58,9 +58,12 @@ const SortableItem = ({ id, overlay, children }) => {
 const getBaseName = (fileName) => fileName.replace(/\.[^/.]+$/, ""); // Remove the extension
 
 const teamRoles = [
-  'Engineering (Civil, Landscape, Structural)',
-  'MEP (Mechanical, Electrical, Plumbing)',
-  'Design',
+  'Engineering',
+  'MEP Engineer', // (Mechanical, Electrical, Plumbing)
+  'Structural Engineer',
+  'Landscape Design',
+  'Civil Engineer',
+  'Interior Design',
   'General Contractor',
   'Photographer',
   'Cost Eliminator',
@@ -131,6 +134,21 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
   const [activeIndex, setActiveIndex] = useState(null);
   const [draggingContent, setDraggingContent] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
+  const [originalData, setOriginalData] = useState(null); // To hold the initial snapshot
+
+  // Load the project data on editing
+  useEffect(() => {
+    if (editingProject) {
+      const snapshot = { ...editingProject };
+      setFormData(snapshot);
+      setOriginalData(snapshot); // Capture the initial snapshot for comparison
+    }
+  }, [editingProject]);
+
+  // Deep comparison utility
+  const isDataChanged = (data1, data2) => {
+    return JSON.stringify(data1) !== JSON.stringify(data2);
+  };
 
   const handleDragOver = ({ active, over }) => {
     if (over) {
@@ -171,32 +189,51 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
+  
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        [name]: type === 'checkbox' ? checked : value,
+      };
+  
+      console.log('Updated FormData:', updatedFormData); // Logs the updated state immediately
+      return updatedFormData;
     });
   };
 
   const handleInputChangeAndSubmit = (e) => {
-    handleInputChange(e);
-    handleSubmit();
+    const { name, value, type, checked } = e.target;
+  
+    setFormData((prevFormData) => {
+      const updatedFormData = {
+        ...prevFormData,
+        [name]: type === 'checkbox' ? checked : value,
+      };
+
+      setTimeout(() => handleSubmit(null, updatedFormData), 0);
+
+      return updatedFormData;
+    });
   };
 
   const handleMainImageFileChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      // Update preview image immediately
-      setFormData({ ...formData, mainImage: file });
-      // If creating a new project, we must first create a placeholder document to get an ID
-      if (!globalProjectId) {
-        const projectRef = await addDoc(collection(db, 'projects'), {}); // Placeholder
-        globalProjectId = projectRef.id;
-      }
-
-      // Upload image and get URL
-      const imageUrl = await uploadImage(globalProjectId, file);
-      setFormData({ ...formData, mainImage: imageUrl });
+    if (!file) return;
+  
+    // Update preview image immediately
+    setFormData((prevFormData) => ({ ...prevFormData, mainImage: file }));
+  
+    // Ensure a placeholder document is created if needed
+    if (!globalProjectId) {
+      const projectRef = await addDoc(collection(db, 'projects'), {}); // Placeholder
+      globalProjectId = projectRef.id;
     }
+  
+    // Upload image and get URL
+    const imageUrl = await uploadImage(globalProjectId, file);
+  
+    // Update formData with the image URL
+    setFormData((prevFormData) => ({ ...prevFormData, mainImage: imageUrl }));
   };
 
   // Helper function to upload image to Firebase Storage and get URL
@@ -237,65 +274,94 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
   };
 
   const handleArrayChange = (arrayName, index, value) => {
-    const newArray = [...formData[arrayName]];
-    newArray[index] = value;
-    setFormData({ ...formData, [arrayName]: newArray });
+    setFormData((prevFormData) => {
+      const newArray = [...prevFormData[arrayName]];
+      newArray[index] = value;
+      return { ...prevFormData, [arrayName]: newArray };
+    });
   };
-
+  
   const addArrayItem = (arrayName, item = '') => {
-    setFormData({ ...formData, [arrayName]: [...formData[arrayName], item] });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [arrayName]: [...prevFormData[arrayName], item],
+    }));
   };
-
+  
   const removeArrayItem = (arrayName, index) => {
-    const newArray = [...formData[arrayName]];
-    newArray.splice(index, 1);
-    setFormData({ ...formData, [arrayName]: newArray });
+    setFormData((prevFormData) => {
+      const newArray = [...prevFormData[arrayName]];
+      newArray.splice(index, 1);
+      return { ...prevFormData, [arrayName]: newArray };
+    });
   };
-
+  
   const handleTeamChange = (index, field, value) => {
-    const updatedTeams = [...formData.teams];
-    updatedTeams[index][field] = value;
-    setFormData({ ...formData, teams: updatedTeams });
+    setFormData((prevFormData) => {
+      const updatedTeams = [...prevFormData.teams];
+      updatedTeams[index][field] = value;
+      return { ...prevFormData, teams: updatedTeams };
+    });
   };
-
+  
   const addTeam = () => {
-    const newTeam = { name: '', role: '' }; // Default team structure
-    setFormData({ ...formData, teams: [...formData.teams, newTeam] });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      teams: [...prevFormData.teams, { name: '', role: '' }],
+    }));
   };
-
+  
   const removeTeam = (index) => {
-    const updatedTeams = [...formData.teams];
-    updatedTeams.splice(index, 1);
-    setFormData({ ...formData, teams: updatedTeams });
+    setFormData((prevFormData) => {
+      const updatedTeams = [...prevFormData.teams];
+      updatedTeams.splice(index, 1);
+      return { ...prevFormData, teams: updatedTeams };
+    });
   };
-
+  
   const handlePublicationChange = (index, field, value) => {
-    const updatedPublications = [...formData.publications];
-    updatedPublications[index][field] = value;
-    setFormData({ ...formData, publications: updatedPublications });
+    setFormData((prevFormData) => {
+      const updatedPublications = [...prevFormData.publications];
+      updatedPublications[index][field] = value;
+      return { ...prevFormData, publications: updatedPublications };
+    });
   };
-
+  
   const addPublication = () => {
-    const newPublication = { title: '', link: '', date: '' }; // Adjust fields as needed
-    setFormData({ ...formData, publications: [...formData.publications, newPublication] });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      publications: [...prevFormData.publications, { title: '', link: '', date: '' }],
+    }));
   };
-
+  
   const removePublication = (index) => {
-    const updatedPublications = [...formData.publications];
-    updatedPublications.splice(index, 1);
-    setFormData({ ...formData, publications: updatedPublications });
+    setFormData((prevFormData) => {
+      const updatedPublications = [...prevFormData.publications];
+      updatedPublications.splice(index, 1);
+      return { ...prevFormData, publications: updatedPublications };
+    });
   };
 
   // Handle dynamic content change
   const handleContentChange = (index, field, value) => {
-    const newContent = [...formData.content];
-    newContent[index][field] = value;
-    setFormData({ ...formData, content: newContent });
+    setFormData((prevFormData) => {
+      const newContent = [...prevFormData.content];
+      newContent[index][field] = value;
+      return { ...prevFormData, content: newContent };
+    });
   };
-
+  
   const handleContentChangeAndSubmit = (index, field, value) => {
-    handleContentChange(index, field, value);
-    handleSubmit();
+    setFormData((prevFormData) => {
+      const newContent = [...prevFormData.content];
+      newContent[index][field] = value;
+      const updatedFormData = { ...prevFormData, content: newContent };
+  
+      // Call handleSubmit after ensuring formData is updated
+      setTimeout(() => handleSubmit(null, updatedFormData), 0);
+  
+      return updatedFormData;
+    });
   };
 
   const handleDragEnd = ({ active, over }) => {
@@ -343,10 +409,12 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
         await deleteOldImages(basePath);
       }
 
-      // Update the content array with the "large" image URL
-      const newContent = [...formData.content];
-      newContent[index].url = imageUrl;
-      setFormData({ ...formData, content: newContent });
+      // Update the content array with the new image URL using the updater function
+      setFormData((prevFormData) => {
+        const updatedContent = [...prevFormData.content];
+        updatedContent[index].url = imageUrl;
+        return { ...prevFormData, content: updatedContent };
+      });
 
       handleSubmit(); // Save the updated content
 
@@ -359,8 +427,20 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
 
   // Add a new content section based on selected type
   const addContentSection = (type) => {
-    const newContentItem = { type, title: '', text: '', description: '', url: '', featured: false, published: false };
-    setFormData({ ...formData, content: [...formData.content, newContentItem] });
+    const newContentItem = { 
+      type, 
+      title: '', 
+      text: '', 
+      description: '', 
+      url: '', 
+      featured: false, 
+      published: false 
+    };
+  
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      content: [...prevFormData.content, newContentItem],
+    }));
   };
 
   const deleteContentImage = async (imageUrl) => {
@@ -386,19 +466,25 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
   };
 
   const handleRemoveContentSection = async (index) => {
-    const contentItem = formData.content[index];
-
-    if (contentItem.type === "image" && contentItem.url) {
-      await deleteContentImage(contentItem.url);
-    }
-
-    // Update the content array after deletion
-    const newContent = [...formData.content];
-    newContent.splice(index, 1);
-    setFormData({ ...formData, content: newContent });
+    setFormData((prevFormData) => {
+      const contentItem = prevFormData.content[index];
+  
+      // Perform async deletion of the image if necessary
+      if (contentItem.type === "image" && contentItem.url) {
+        deleteContentImage(contentItem.url).catch((error) => {
+          console.error("Failed to delete content image:", error);
+        });
+      }
+  
+      // Remove the content section
+      const newContent = [...prevFormData.content];
+      newContent.splice(index, 1);
+  
+      return { ...prevFormData, content: newContent };
+    });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, updatedFormData = null) => {
     if (e) { e.preventDefault(); }
     try {
       let projectId = globalProjectId;
@@ -416,8 +502,17 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
         }));
       }
 
+      const dataToSubmit = updatedFormData || formData;
+
+      // Check if data has changed
+      if (!isDataChanged(dataToSubmit, originalData) && !updatedFormData) {
+        // No changes detected. Skipping submit
+        console.log('No changes detected. Skipping submit');
+        return;
+      }
+
       const projectData = {
-        ...formData,
+        ...dataToSubmit,
       };
 
       if (editingProject) {
@@ -429,9 +524,8 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
         console.log('Project saved', projectData);
       }
 
-      // onClose({ updated: !!editingProject, new: !editingProject });
       onUpdateSuccess('Project saved successfully');
-
+      setOriginalData(dataToSubmit); // Update the original data snapshot
 
     } catch (error) {
       console.error('Error saving project:', error);
@@ -468,17 +562,18 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
 
   const onClickRemoveContentSection = (e, index) => {
     e.stopPropagation();
-
-    // confirm first
+  
+    // Confirm with the user
     if (!window.confirm('Are you sure you want to remove this section?')) {
       return;
     }
-
-    const newContent = [...formData.content];
-    newContent.splice(index, 1);
-    setFormData({ ...formData, content: newContent });
-
-  }
+  
+    setFormData((prevFormData) => {
+      const newContent = [...prevFormData.content];
+      newContent.splice(index, 1); // Remove the specified content section
+      return { ...prevFormData, content: newContent };
+    });
+  };
 
   return (
     <section className={styles.projectForm}>
@@ -760,7 +855,6 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
                             onChange={(e) => handleContentChange(index, 'title', e.target.value)}
                             onBlur={handleSubmit}
                             onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
-                            onKeyboardDown={(e) => e.stopPropagation()} // Prevent drag interaction
                           />
                         </div>
                       )}
@@ -778,7 +872,6 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
                             onChange={(e) => handleContentChange(index, 'description', e.target.value)}
                             onBlur={handleSubmit}
                             onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
-                            onKeyboardDown={(e) => e.stopPropagation()} // Prevent drag interaction
                           />
                         </div>
                       )}
@@ -797,7 +890,6 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
                             id={`content-image-upload-${index}`}
                             onChange={(e) => uploadContentImage(index, e.target.files[0])}
                             onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
-                            onKeyboardDown={(e) => e.stopPropagation()} // Prevent drag interaction
                           />
                         </div>
                       )}
@@ -816,7 +908,6 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
                             onChange={(e) => handleContentChange(index, 'text', e.target.value)}
                             onBlur={handleSubmit}
                             onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
-                            onKeyboardDown={(e) => e.stopPropagation()} // Prevent drag interaction
                           ></textarea>
                         </div>
                       )}

@@ -242,7 +242,6 @@ const Header = ({ onAnimationEnd }) => {
     }
 
     setTimeout(() => {
-      document.body.style.overflow = 'hidden'; // Lock scroll on body
       gsap.set(aboutRef.current, { overflowY: 'auto' }); // Ensure native scroll for About
       gsap.set(aboutRef.current, { opacity: 0 });
       gsap.set(closeButtonRef.current, { opacity: 0 });
@@ -320,8 +319,6 @@ const Header = ({ onAnimationEnd }) => {
       if (window.lenis) {
         initSmoothScrolling();
       }
-
-      document.body.style.overflow = 'auto';
 
       setTimeout(() => {
         const mm = gsap.matchMedia();

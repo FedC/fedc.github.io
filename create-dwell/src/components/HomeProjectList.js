@@ -119,29 +119,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     // const gridItems = Object.values(projectRefs.current); // Collect all grid items
 
     // scaleListItems();
-    // infiniteLoopMarquee();
     animateMarqueeOnScroll();
-  };
-
-  const infiniteLoopMarquee = () => {
-    const marquee = marqueeRef.current;
-    const marqueeInner = marqueeInnerRef.current;
-    const marqueeItems = Array.from(marqueeInner.children);
-    const getMarqueeInnerWidth = () => marqueeInner.scrollWidth;
-    const ensureSufficientWidth = () => {
-      const windowScrollHeight = document.documentElement.scrollHeight;
-      let currentWidth = getMarqueeInnerWidth();
-      while (currentWidth < windowScrollHeight) {
-        const cloneItems = marqueeItems.map((item) => item.cloneNode(true));
-        cloneItems.forEach((clone) => {
-          clone.classList.add('clone');
-          marqueeInner.appendChild(clone);
-        });
-        currentWidth = getMarqueeInnerWidth();
-      }
-    };
-    ensureSufficientWidth();
-    gsap.set(marqueeInner, { x: '100%' });
   };
 
   const animateMarqueeOnScroll = () => {
@@ -596,6 +574,9 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
             //   ease: 'power2.out',
             // });
           },
+          onUpdate: () => {
+            console.log('Dragging');
+          },
           onPress: function (event) {
             if (event.preventDefault) {
               event.preventDefault(); // Stop default touch interaction
@@ -650,15 +631,15 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
   const toggleProjectContentDescription = (projectId, contentId, event) => {
     event.stopPropagation();
-  
+
     // Find the correct project and content description
     const projectRef = projectRefs.current[projectId];
     const projectContentDescription = projectRef.querySelector(
       `.${styles.projectDescription}[data-content-id="${contentId}"]`
     );
-  
+
     if (!projectContentDescription) return;
-  
+
     // Toggle visibility with GSAP
     if (projectContentDescription.style.opacity === '1') {
       gsap.to(projectContentDescription, {
@@ -727,6 +708,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
   }, [projects]);
 
   const scrollProjectHeader = (event, projectId) => {
+    event.stopPropagation();
     const projectHeader = document.querySelector(`#project-${projectId} .${styles.projectHeader}`);
     const projectHeaderInner = document.querySelector(`#project-${projectId} .${styles.projectHeaderInner}`);
     const currentTransform = projectHeaderInner.style.transform; // "" or ""translate(0px, -50px)" or "translate(0px, -100px)", etc ..
@@ -743,6 +725,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
   };
 
   const scrollProjectHeaderUp = (event, projectId) => {
+    event.stopPropagation();
     const projectHeaderInner = document.querySelector(`#project-${projectId} .${styles.projectHeaderInner}`);
     const currentTransform = projectHeaderInner.style.transform; // "" or ""translate(0px, -50px)" or "translate(0px, -100px)", etc ..
     const currentTransformY = currentTransform ? parseInt(currentTransform.split(',')[1].replace('px', '').trim()) : 0;
@@ -772,11 +755,50 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     return projectHeaderInner.clientHeight > projectHeader.clientHeight;
   };
 
+  const formatTextToNumberedList = (text) => {
+    const regex = /\d+\.\s+/g;
+    const firstMatchIndex = text.search(regex);
+
+    let paragraph = text;
+    let listItems = [];
+
+    if (firstMatchIndex !== -1) {
+      paragraph = text.slice(0, firstMatchIndex).trim(); // Extract text before the first numbered item
+      listItems = text.slice(firstMatchIndex).split(regex).filter(Boolean); // Extract numbered items
+    }
+
+    return (
+      <div>
+        {paragraph && <p>{paragraph}</p>}
+        {listItems.length > 0 && (
+          <ol>
+            {listItems.map((item, index) => (
+              <li key={index}>{item.trim()}</li>
+            ))}
+          </ol>
+        )}
+      </div>
+    );
+  };
+
+  const projectHasDescriptions = (project) => {
+    const hasContent = (text) => text?.trim().length > 256;
+  
+    return (
+      hasContent(project.description) ||
+      hasContent(project.clientDescription) ||
+      hasContent(project.challenge) ||
+      hasContent(project.solution)
+    );
+  };
+
   return (
     <>
       <div className={styles.projectList}>
         <div className={styles.projectListVertical} ref={gridRef}>
-          {projects.map(
+          {projects
+          .sort((a, b) => a.order - b.order) // Sort projects by their order
+          .map(
             (project) => {
 
               // Initialize an array for each project's images in `imageRefs`
@@ -799,7 +821,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                       alt={project.title}
                     />
 
-                    {project.description && openProjects.includes(project.id) && (
+                    {/* {project.description && openProjects.includes(project.id) && (
                       <>
                         <div className={styles.projectDescriptionIconButton}>
                           <button className={styles.projectDescriptionButton} onClick={(e) => toggleProjectDescription(project.id, e)}>
@@ -810,7 +832,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                           <p>{project.description}</p>
                         </div>
                       </>
-                    )}
+                    )} */}
 
                     {loadingContentImages.includes(project.id) && (
                       <div className={styles.spinner}></div>)}
@@ -820,42 +842,57 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                     <div className={styles.projectContent}>
                       <div className={styles.projectContentHorizontal}>
                         <div className={styles.projectContentItem}>
-                          <div className={styles.projectHeader}>
+                          <div
+                            className={`${styles.projectHeader} ${ projectHasDescriptions(project)
+                                ? styles.hasAdditionalContent
+                                : ''
+                              }`}
+                          >
+
+                            <div className={styles.projectHeaderTop}>
+                              <h2>{project.title}</h2>
+                              <p className={styles.projectLocation}>{project.location}</p>
+                            </div>
 
                             <div className={styles.projectHeaderInner}>
                               <h2>{project.title}</h2>
                               <p className={styles.projectLocation}>{project.location}</p>
+
                               {project.description && (
                                 <div className={styles.projectGeneralDescription}>
-                                  <p>{project.description}</p>
+                                  {formatTextToNumberedList(project.description)}
                                 </div>
                               )}
                               {project.clientDescription && (
                                 <div className={styles.projectGeneralDescription}>
-                                  <p>{project.clientDescription}</p>
+                                  {formatTextToNumberedList(project.clientDescription)}
                                 </div>
                               )}
                               {project.challenge && (
                                 <div className={styles.projectGeneralDescription}>
-                                  <p>{project.challenge}</p>
+                                  {formatTextToNumberedList(project.challenge)}
                                 </div>
                               )}
                               {project.solution && (
                                 <div className={styles.projectGeneralDescription}>
-                                  <p>{project.solution}</p>
+                                  {formatTextToNumberedList(project.solution)}
                                 </div>
                               )}
                             </div>
 
                             {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
                               <button className={styles.scrollUpButton} onClick={(e) => scrollProjectHeaderUp(e, project.id)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b"><path d="M440-160v-487L216-423l-56-57 320-320 320 320-56 57-224-224v487h-80Z" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
+                                  <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
+                                </svg>
                               </button>
                             )}
 
                             {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
                               <button className={styles.scrollDownButton} onClick={(e) => scrollProjectHeader(e, project.id)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b"><path d="M440-800v487L216-537l-56 57 320 320 320-320-56-57-224 224v-487h-80Z" /></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
+                                  <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+                                </svg>
                               </button>
                             )}
                           </div>
@@ -863,6 +900,9 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
                         {project.content &&
                           project.content.map((content, index) => {
+                            if (!content) return null;
+                            if (!content.published) return null;
+
                             const uniqueKey =
                               content.id || content.url || `${content.type}-${index}`;
 
