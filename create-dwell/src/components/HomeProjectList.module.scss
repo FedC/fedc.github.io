@@ -102,6 +102,10 @@
               background-color: #fdfdfd;
               padding-bottom: 16px;
               z-index: 1;
+
+              @media screen and (max-width: 768px) {
+                display: none;
+              }
             }
 
             .scrollUpButton {
