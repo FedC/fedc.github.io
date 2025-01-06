@@ -783,7 +783,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
   const projectHasDescriptions = (project) => {
     const hasContent = (text) => text?.trim().length > 256;
-  
+
     return (
       hasContent(project.description) ||
       hasContent(project.clientDescription) ||
@@ -797,31 +797,31 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
       <div className={styles.projectList}>
         <div className={styles.projectListVertical} ref={gridRef}>
           {projects
-          .sort((a, b) => a.order - b.order) // Sort projects by their order
-          .map(
-            (project) => {
+            .sort((a, b) => a.order - b.order) // Sort projects by their order
+            .map(
+              (project) => {
 
-              // Initialize an array for each project's images in `imageRefs`
-              if (!imageRefs.current[project.id]) {
-                imageRefs.current[project.id] = [];
-              }
+                // Initialize an array for each project's images in `imageRefs`
+                if (!imageRefs.current[project.id]) {
+                  imageRefs.current[project.id] = [];
+                }
 
-              return project.published && (
-                <div
-                  key={project.id}
-                  className={styles.projectItem}
-                  id={`project-${project.id}`}
-                  ref={(el) => (projectRefs.current[project.id] = el)}
-                  onClick={() => toggleProject(project.id)}
-                >
-                  <div className={styles.mainImageWrapper} ref={(el) => el && imageRefs.current[project.id].push(el)}>
-                    <img
-                      className={styles.projectMainImage}
-                      src={project.mainImage}
-                      alt={project.title}
-                    />
+                return project.published && (
+                  <div
+                    key={project.id}
+                    className={styles.projectItem}
+                    id={`project-${project.id}`}
+                    ref={(el) => (projectRefs.current[project.id] = el)}
+                    onClick={() => toggleProject(project.id)}
+                  >
+                    <div className={styles.mainImageWrapper} ref={(el) => el && imageRefs.current[project.id].push(el)}>
+                      <img
+                        className={styles.projectMainImage}
+                        src={project.mainImage}
+                        alt={project.title}
+                      />
 
-                    {/* {project.description && openProjects.includes(project.id) && (
+                      {/* {project.description && openProjects.includes(project.id) && (
                       <>
                         <div className={styles.projectDescriptionIconButton}>
                           <button className={styles.projectDescriptionButton} onClick={(e) => toggleProjectDescription(project.id, e)}>
@@ -834,161 +834,165 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                       </>
                     )} */}
 
-                    {loadingContentImages.includes(project.id) && (
-                      <div className={styles.spinner}></div>)}
-                  </div>
+                      {loadingContentImages.includes(project.id) && (
+                        <div className={styles.spinner}></div>)}
+                    </div>
 
-                  {openProjects.includes(project.id) && (
-                    <div className={styles.projectContent}>
-                      <div className={styles.projectContentHorizontal}>
-                        <div className={styles.projectContentItem}>
-                          <div
-                            className={`${styles.projectHeader} ${ projectHasDescriptions(project)
+                    {openProjects.includes(project.id) && (
+                      <div className={styles.projectContent}>
+                        <div className={styles.projectContentHorizontal}>
+                          <div className={styles.projectContentItem}>
+                            <div
+                              className={`${styles.projectHeader} ${projectHasDescriptions(project)
                                 ? styles.hasAdditionalContent
                                 : ''
-                              }`}
-                          >
+                                }`}
+                            >
 
-                            <div className={styles.projectHeaderTop}>
-                              <h2>{project.title}</h2>
-                              <p className={styles.projectLocation}>{project.location}</p>
-                            </div>
+                              <div className={styles.projectHeaderTop}>
+                                <h2>{project.title}</h2>
+                                <p className={styles.projectLocation}>{project.location}</p>
+                              </div>
 
-                            <div className={styles.projectHeaderInner}>
-                              <h2>{project.title}</h2>
-                              <p className={styles.projectLocation}>{project.location}</p>
+                              <div className={styles.projectHeaderInner}>
+                                <h2>{project.title}</h2>
+                                <p className={styles.projectLocation}>{project.location}</p>
 
-                              {project.description && (
-                                <div className={styles.projectGeneralDescription}>
-                                  {formatTextToNumberedList(project.description)}
-                                </div>
-                              )}
-                              {project.clientDescription && (
-                                <div className={styles.projectGeneralDescription}>
-                                  {formatTextToNumberedList(project.clientDescription)}
-                                </div>
-                              )}
-                              {project.challenge && (
-                                <div className={styles.projectGeneralDescription}>
-                                  {formatTextToNumberedList(project.challenge)}
-                                </div>
-                              )}
-                              {project.solution && (
-                                <div className={styles.projectGeneralDescription}>
-                                  {formatTextToNumberedList(project.solution)}
-                                </div>
-                              )}
-                            </div>
-
-                            {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
-                              <button className={styles.scrollUpButton} onClick={(e) => scrollProjectHeaderUp(e, project.id)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
-                                  <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
-                                </svg>
-                              </button>
-                            )}
-
-                            {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
-                              <button className={styles.scrollDownButton} onClick={(e) => scrollProjectHeader(e, project.id)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
-                                  <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
-                                </svg>
-                              </button>
-                            )}
-                          </div>
-                        </div>
-
-                        {project.content &&
-                          project.content.map((content, index) => {
-                            if (!content) return null;
-                            if (!content.published) return null;
-
-                            const uniqueKey =
-                              content.id || content.url || `${content.type}-${index}`;
-
-                            if (content.type === 'image' && content.description) {
-                              return (
-                                <div
-                                  key={uniqueKey}
-                                  className={styles.projectContentItem}
-                                  ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
-                                >
-                                  <img
-                                    className={styles.projectImage}
-                                    src={content.url}
-                                    alt={content.title}
-                                  />
-                                  {content.description && openProjects.includes(project.id) && (
-                                    <>
-                                      <div className={styles.projectDescriptionIconButton}>
-                                        <button
-                                          className={styles.projectDescriptionButton}
-                                          onClick={(e) =>
-                                            toggleProjectContentDescription(project.id, content.id || index, e)
-                                          }
-                                        >
-                                          <span>i</span>
-                                        </button>
-                                      </div>
-                                      <div
-                                        className={styles.projectDescription}
-                                        data-content-id={content.id || index} // Add identifier here as well
-                                        onClick={(e) =>
-                                          toggleProjectContentDescription(project.id, content.id || index, e)
-                                        }
-                                      >
-                                        <p>{content.description}</p>
-                                      </div>
-                                    </>
-                                  )}
-
-                                </div>
-                              );
-                            } else if (content.type === 'image') {
-                              return (
-                                <div
-                                  key={uniqueKey}
-                                  className={styles.projectContentItem}
-                                  ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
-                                >
-                                  <img
-                                    className={styles.projectImage}
-                                    src={content.url}
-                                    alt={content.title}
-                                  />
-                                </div>
-                              );
-                            } else if (content.type === 'text') {
-                              return (
-                                <div
-                                  key={uniqueKey}
-                                  className={styles.projectContentItem}
-                                  ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
-                                >
-                                  <div className={styles.projectText}>
-                                    {content.text}
+                                {project.description && (
+                                  <div className={styles.projectGeneralDescription}>
+                                    {formatTextToNumberedList(project.description)}
                                   </div>
-                                </div>
-                              );
-                            } else if (content.type === 'quote') {
-                              return (
-                                <blockquote
-                                  key={uniqueKey}
-                                  className={styles.projectQuote}
-                                >
-                                  {content.text}
-                                </blockquote>
-                              );
-                            }
-                            return null;
-                          })}
+                                )}
+                                {project.clientDescription && (
+                                  <div className={styles.projectGeneralDescription}>
+                                    {formatTextToNumberedList(project.clientDescription)}
+                                  </div>
+                                )}
+                                {project.challenge && (
+                                  <div className={styles.projectGeneralDescription}>
+                                    {formatTextToNumberedList(project.challenge)}
+                                  </div>
+                                )}
+                                {project.solution && (
+                                  <div className={styles.projectGeneralDescription}>
+                                    {formatTextToNumberedList(project.solution)}
+                                  </div>
+                                )}
+                              </div>
+
+                              {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
+                                <button className={styles.scrollUpButton} onClick={(e) => scrollProjectHeaderUp(e, project.id)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
+                                    <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
+                                  </svg>
+                                </button>
+                              )}
+
+                              {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
+                                <button className={styles.scrollDownButton} onClick={(e) => scrollProjectHeader(e, project.id)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
+                                    <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+                                  </svg>
+                                </button>
+                              )}
+                            </div>
+                          </div>
+
+                          {project.content &&
+                            project.content.map((content, index) => {
+                              if (!content) return null;
+                              if (!content.published) return null;
+
+                              const uniqueKey =
+                                content.id || content.url || `${content.type}-${index}`;
+
+                              if (content.type === 'image' && content.description) {
+                                return (
+                                  <div
+                                    key={uniqueKey}
+                                    className={styles.projectContentItem}
+                                    ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
+                                  >
+                                    <div className={styles.projectImageWrapper}>
+                                      <img
+                                        className={styles.projectImage}
+                                        src={content.url}
+                                        alt={content.title}
+                                      />
+                                      {content.description && openProjects.includes(project.id) && (
+                                        <>
+                                          <div className={styles.projectDescriptionIconButton}>
+                                            <button
+                                              className={styles.projectDescriptionButton}
+                                              onClick={(e) =>
+                                                toggleProjectContentDescription(project.id, content.id || index, e)
+                                              }
+                                            >
+                                              <span>i</span>
+                                            </button>
+                                          </div>
+                                          <div
+                                            className={styles.projectDescription}
+                                            data-content-id={content.id || index} // Add identifier here as well
+                                            onClick={(e) =>
+                                              toggleProjectContentDescription(project.id, content.id || index, e)
+                                            }
+                                          >
+                                            <p>{content.description}</p>
+                                          </div>
+                                        </>
+                                      )}
+                                    </div>
+
+                                  </div>
+                                );
+                              } else if (content.type === 'image') {
+                                return (
+                                  <div
+                                    key={uniqueKey}
+                                    className={styles.projectContentItem}
+                                    ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
+                                  >
+                                    <div className={styles.projectImageWrapper}>
+                                      <img
+                                        className={styles.projectImage}
+                                        src={content.url}
+                                        alt={content.title}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              } else if (content.type === 'text') {
+                                return (
+                                  <div
+                                    key={uniqueKey}
+                                    className={styles.projectContentItem}
+                                    ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
+                                  >
+                                    <div className={styles.projectText}>
+                                      {content.text}
+                                    </div>
+                                  </div>
+                                );
+                              } else if (content.type === 'quote') {
+                                return (
+                                  <blockquote
+                                    key={uniqueKey}
+                                    className={styles.projectQuote}
+                                  >
+                                    {content.text}
+                                  </blockquote>
+                                );
+                              }
+                              return null;
+                            })}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              )
-            }
-          )}
+                    )}
+                  </div>
+                )
+              }
+            )}
         </div>
       </div>
 
