@@ -53,12 +53,18 @@
       .projectContentHorizontal {
         display: flex;
         overflow-x: auto;
+        overflow-y: hidden;
         scroll-behavior: smooth;
         height: 100%;
         box-sizing: border-box;
         column-gap: 40px;
         scroll-snap-type: x mandatory;
         touch-action: none;
+
+        @media screen and (max-width: 768px) {
+          column-gap: 20px;
+          
+        }
 
         .projectContentItem {
           position: relative;
@@ -74,7 +80,8 @@
           }
 
           .projectHeader {
-            min-width: calc(var(--grid-max-width) / 2);
+            min-width: calc(calc(var(--grid-max-width) / 2) + 72px);
+            padding-right: 48px;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -82,10 +89,20 @@
             text-align: left;
             position: relative;
 
+            .projectHeaderTop {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              background-color: #fdfdfd;
+              padding-bottom: 16px;
+              z-index: 1;
+            }
+
             .scrollUpButton {
               position: absolute;
               top: 10px;
-              right: 0;
+              right: 3px;
               z-index: 1;
               display: flex;
               align-items: center;
@@ -112,7 +129,7 @@
             .scrollDownButton {
               position: absolute;
               bottom: 10px;
-              right: 0;
+              right: 3px;
               z-index: 1;
               display: flex;
               align-items: center;
@@ -141,18 +158,45 @@
             }
 
             h2 {
-              margin-bottom: 8px;
+              margin-bottom: 2px;
               text-transform: uppercase;
               font-weight: 400;
               color: var(--color-link);
               margin-top: 0;
             }
 
-            p {
+            ol {
+              padding-inline-start: 16px;
+              margin: 0;
+              list-style: none;
+              counter-reset: item;
+            }
+            li {
+              counter-increment: item;
+              margin-bottom: 5px;
+            }
+            li:before {
+              content: counter(item);
+              color: #f6ab0b;
+              text-align: center;
+              border-radius: 100%;
+              margin-right: 8px;
+              display: inline-block;
+              font-size: 12px;
+              line-height: 1.7;
+            }
+
+            p, li {
               margin: 0;
               text-transform: uppercase;
               font-weight: 400;
               font-size: 14px;
+              color: #5b5750;
+              text-transform: none;
+              margin: 0;
+              font-family: Theinhardt, sans-serif;
+              font-size: 16px;
+              line-height: 1.5;
             }
           }
 
@@ -206,15 +250,17 @@
 }
 
 .projectList .projectItem .projectContent .projectContentHorizontal {
-  background-color: white;
+  background-color: #fdfdfd;
 }
 
 .projectList .projectItem .projectContent .projectContentHorizontal .projectContentItem .projectHeader {
+  overflow: hidden;
 
   .projectLocation {
-    color: #5b5750;
-    font-size: 14px;
+    color: #afaba6;
     padding-left: 2px;
+    font-size: 13px;
+    font-weight: 500;
   }
 
   .projectGeneralDescription {
@@ -230,6 +276,15 @@
       margin: 0;
       text-transform: none;;
     }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .projectList .projectItem .projectContent .projectContentHorizontal .projectContentItem .projectHeader.hasAdditionalContent {
+    min-width: calc(var(--grid-max-width) + 72px);
+  }
+  .projectList .projectItem .projectContent .projectContentHorizontal .projectContentItem .projectHeader .projectGeneralDescription {
+    max-width: 100%;
   }
 }
 

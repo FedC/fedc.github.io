@@ -17,29 +17,39 @@ const AdminHeader = () => {
       });
   };
 
+  const isActive = (match, location) => {
+    if (!match) {
+      return false;
+    }
+    if (location.pathname.includes('edit-project') && match === '/admin') {
+      return true;
+    }
+    return match === location.pathname;
+  }
+
   return (
     <header className="header">
       <img src={logo} alt="Logo" width="250" id="logo" />
       <nav className="header-nav">
         <ul>
           <li>
-            <NavLink to="/admin" className={({ isActive }) => (isActive ? 'active' : '')}>
+            <NavLink to="/admin" className={() => (isActive('/admin', window.location) ? 'active' : '')}>
               Projects
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin/users" className={({ isActive }) => (isActive ? 'active' : '')}>
+            <NavLink to="/admin/about" className={() => (isActive('/admin/about', window.location) ? 'active' : '')}>
+              About
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/admin/users" className={() => (isActive('/admin/users', window.location) ? 'active' : '')}>
               Users
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin/analytics" className={({ isActive }) => (isActive ? 'active' : '')}>
+            <NavLink to="/admin/analytics" className={() => (isActive('/admin/analytics', window.location) ? 'active' : '')}>
               Analytics
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/admin/settings" className={({ isActive }) => (isActive ? 'active' : '')}>
-              Settings
             </NavLink>
           </li>
         </ul>
