@@ -34,6 +34,16 @@
         background-color: #fff;
         margin-bottom: 20px;
 
+        .contentItem {
+            display: flex;
+            justify-content: space-between;
+            column-gap: 20px;
+            border-radius: 6px;
+            padding: 0.5rem;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+        }
+
         input[type="text"],
         textarea {
             width: 100%;
@@ -53,7 +63,7 @@
             flex-direction: column;
             gap: 0.5rem;
 
-            div {
+            .bullet {
                 display: flex;
                 align-items: center;
                 gap: 0.5rem;
@@ -64,14 +74,27 @@
 
                 button {
                     padding: 0.5rem 1rem;
-                    background-color: #ff4d4f;
                     color: white;
                     border: none;
                     border-radius: 4px;
                     cursor: pointer;
+                }
+
+                button.warn {
+                    background-color: transparent;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 9px 4px;
+
+                    svg {
+                        fill: #ff4d4f;
+                    }
 
                     &:hover {
-                        background-color: #e04345;
+                        svg {
+                            fill: #e04345;
+                        }
                     }
                 }
             }
@@ -94,15 +117,24 @@
         button {
             align-self: flex-start;
             padding: 0.5rem 1rem;
-            background-color: #ff4d4f;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+        }
+
+        button.warn {
+            background-color: #ff4d4f;
 
             &:hover {
                 background-color: #e04345;
             }
+        }
+
+        .contentActions {
+            display: flex;
+            justify-content: flex-end;
+            column-gap: 10px;
         }
     }
 
@@ -150,44 +182,44 @@
 
 .saveButton,
 .iconButton {
-  display: flex;
-  align-items: center;
-  column-gap: 5px;
-  background-color: var(--color-link);
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    background-color: var(--color-link);
 }
 
 .submitButton {
-  background-color: var(--color-link);
-  margin: 10px 0;
+    background-color: var(--color-link);
+    margin: 10px 0;
 
-  &:hover {
-    background-color: var(--color-link-hover);
-  }
+    &:hover {
+        background-color: var(--color-link-hover);
+    }
 }
 
 .flexRight {
-  display: flex;
-  justify-content: flex-end;
-  column-gap: 10px;
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 10px;
 }
 
 .flexRightCenter {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  column-gap: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    column-gap: 10px;
 }
 
 .flexSpaceBetween {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .flex {
-  display: flex;
-  align-items: center;
-  column-gap: 10px;
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
 }
 
 button.backButton {

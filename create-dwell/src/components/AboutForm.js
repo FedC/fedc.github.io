@@ -37,30 +37,42 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
     setSections(updatedSections);
   };
 
-  const handleAddBullet = (index, bullet) => {
+  const handleContentChange = (sectionIndex, contentIndex, field, value) => {
     const updatedSections = [...sections];
-    updatedSections[index].bullets.push(bullet);
+    updatedSections[sectionIndex].content[contentIndex][field] = value;
     setSections(updatedSections);
   };
 
-  const handleAddParagraph = (index, paragraph) => {
+  const handleAddContent = (sectionIndex, type) => {
     const updatedSections = [...sections];
-    updatedSections[index].paragraphs = [
-      ...(updatedSections[index].paragraphs || []),
-    ];
-    updatedSections[index].paragraphs.push(paragraph);
+    const newContent =
+      type === 'paragraph'
+        ? { type: 'paragraph', text: '' }
+        : { type: 'bullets', bullets: [] };
+    updatedSections[sectionIndex].content.push(newContent);
     setSections(updatedSections);
   };
 
-  const handleRemoveBullet = (sectionIndex, bulletIndex) => {
+  const handleRemoveContent = (sectionIndex, contentIndex) => {
     const updatedSections = [...sections];
-    updatedSections[sectionIndex].bullets.splice(bulletIndex, 1);
+    updatedSections[sectionIndex].content.splice(contentIndex, 1);
+    setSections(updatedSections);
+  };
+
+  const handleAddBullet = (sectionIndex, contentIndex) => {
+    const updatedSections = [...sections];
+    updatedSections[sectionIndex].content[contentIndex].bullets.push('');
+    setSections(updatedSections);
+  };
+
+  const handleRemoveBullet = (sectionIndex, contentIndex, bulletIndex) => {
+    const updatedSections = [...sections];
+    updatedSections[sectionIndex].content[contentIndex].bullets.splice(bulletIndex, 1);
     setSections(updatedSections);
   };
 
   const handleAddSection = () => {
-    setSections([...sections, newSection]);
-    setNewSection({ title: '', subTitle: '', content: '', bullets: [] });
+    setSections([...sections, { title: '', subTitle: '', content: [] }]);
   };
 
   const handleRemoveSection = (index) => {
@@ -194,68 +206,92 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
       </div>
 
       <div className={styles.sections}>
-        {/* <div className={styles.flexRight}>
-          <button onClick={handleAddSection}>Add New Section</button>
-        </div> */}
-        {sections.map((section, index) => (
-          <div key={index} className={styles.section}>
+        {sections.map((section, sectionIndex) => (
+          <div key={sectionIndex} className={styles.section}>
             <input
               type="text"
               placeholder="Title"
               value={section.title}
               onBlur={saveAbout}
-              onChange={(e) => handleSectionChange(index, 'title', e.target.value)}
+              onChange={(e) => handleSectionChange(sectionIndex, 'title', e.target.value)}
             />
             <input
               type="text"
               placeholder="SubTitle"
               value={section.subTitle}
               onBlur={saveAbout}
-              onChange={(e) => handleSectionChange(index, 'subTitle', e.target.value)}
+              onChange={(e) => handleSectionChange(sectionIndex, 'subTitle', e.target.value)}
             />
-            <textarea
-              placeholder="Content"
-              value={section.content}
-              onBlur={saveAbout}
-              onChange={(e) => handleSectionChange(index, 'content', e.target.value)}
-            />
-            <div className={styles.bullets}>
-              {section.bullets.map((bullet, bulletIndex) => (
-                <div key={bulletIndex}>
-                  <input
-                    type="text"
-                    value={bullet}
-                    onBlur={saveAbout}
-                    onChange={(e) => {
-                      const updatedSections = [...sections];
-                      updatedSections[index].bullets[bulletIndex] = e.target.value;
-                      setSections(updatedSections);
-                    }}
-                  />
-                  <button onClick={() => handleRemoveBullet(index, bulletIndex)}>Remove</button>
-                </div>
-              ))}
-              <button onClick={() => handleAddBullet(index, '')}>Add Bullet</button>
-              <button onClick={() => handleAddParagraph(index, '')}>Add Paragraph</button>
-            </div>
 
-            {/* paragraphs */}
-            {section.paragraphs && section.paragraphs.map((paragraph, paragraphIndex) => (
-              <div key={paragraphIndex}>
-                <textarea
-                  placeholder="Paragraph"
-                  value={paragraph}
-                  onBlur={saveAbout}
-                  onChange={(e) => {
-                    const updatedSections = [...sections];
-                    updatedSections[index].paragraphs[paragraphIndex] = e.target.value;
-                    setSections(updatedSections);
-                  }}
-                />
+            {section.content.map((content, contentIndex) => (
+              <div key={contentIndex} className={styles.contentItem}>
+                {content.type === 'paragraph' && (
+                  <textarea
+                    placeholder="Paragraph"
+                    value={content.text}
+                    onBlur={saveAbout}
+                    onChange={(e) =>
+                      handleContentChange(sectionIndex, contentIndex, 'text', e.target.value)
+                    }
+                  />
+                )}
+                {content.type === 'bullets' && (
+                  <div className={styles.bullets}>
+                    {content.bullets.map((bullet, bulletIndex) => (
+                      <div key={bulletIndex} className={styles.bullet}>
+                        <input
+                          type="text"
+                          value={bullet}
+                          onBlur={saveAbout}
+                          onChange={(e) => {
+                            const updatedBullets = [...content.bullets];
+                            updatedBullets[bulletIndex] = e.target.value;
+                            handleContentChange(
+                              sectionIndex,
+                              contentIndex,
+                              'bullets',
+                              updatedBullets
+                            );
+                          }}
+                        />
+                        <button className={styles.warn}
+                          onClick={() =>
+                            handleRemoveBullet(sectionIndex, contentIndex, bulletIndex)
+                          }
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
+                        </button>
+                      </div>
+                    ))}
+                    <button onClick={() => handleAddBullet(sectionIndex, contentIndex)} className={styles.iconButton}>
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                    </button>
+                  </div>
+                )}
+
+                <button className={styles.warn}
+                  onClick={() => handleRemoveContent(sectionIndex, contentIndex)}
+                  title={'Remove ' + content.type === 'paragraph' ? 'paragraph' : 'bullets'}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                    <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                  </svg>
+                </button>
               </div>
             ))}
 
-            {/* <button onClick={() => handleRemoveSection(index)}>Remove Section</button> */}
+            <div className={styles.contentActions}>
+              <button className={styles.iconButton} onClick={() => handleAddContent(sectionIndex, 'paragraph')}>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M360-240v-80h480v80H360Zm0-200v-80h480v80H360ZM120-640v-80h720v80H120Z" /></svg>
+                <span>Add Paragraph</span>
+              </button>
+              <button className={styles.iconButton} onClick={() => handleAddContent(sectionIndex, 'bullets')}>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M360-200v-80h480v80H360Zm0-240v-80h480v80H360Zm0-240v-80h480v80H360ZM200-160q-33 0-56.5-23.5T120-240q0-33 23.5-56.5T200-320q33 0 56.5 23.5T280-240q0 33-23.5 56.5T200-160Zm0-240q-33 0-56.5-23.5T120-480q0-33 23.5-56.5T200-560q33 0 56.5 23.5T280-480q0 33-23.5 56.5T200-400Zm0-240q-33 0-56.5-23.5T120-720q0-33 23.5-56.5T200-800q33 0 56.5 23.5T280-720q0 33-23.5 56.5T200-640Z" /></svg>
+                <span>Add Bullets</span>
+              </button>
+            </div>
+
+            {/* <button className={styles.warn} onClick={() => handleRemoveSection(sectionIndex)}>Remove Section</button> */}
           </div>
         ))}
       </div>
