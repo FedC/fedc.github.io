@@ -54,37 +54,23 @@ const About = () => {
           <div key={index} className={styles.contentSection}>
             <h2 className={styles.h2}>{section.title}</h2>
             <div className={styles.headerContainer}>
-              {section.title.toLowerCase() === 'what' && (
-                <>
-                  <div className={styles.whiteCircle}></div>
-                  <div className={styles.orangeCircle}></div>
-                </>
-              )}
-              {section.title.toLowerCase() === 'why' && <div className={styles.circle}></div>}
-              {section.title.toLowerCase() === 'how' && <div className={styles.orangeCircleBigger}></div>}
+              <div className={styles.circle}></div>
             </div>
             <h3 className={styles.h3}>{section.subTitle}</h3>
-
-            {/* Render content dynamically */}
-            {section.content.map((content, contentIndex) => {
-              if (content.type === 'paragraph') {
-                return (
-                  <p key={contentIndex} className={styles.paragraph}>
-                    {content.text}
-                  </p>
-                );
-              }
-              if (content.type === 'bullets') {
-                return (
-                  <ul key={contentIndex} className={styles.list}>
-                    {content.bullets.map((bullet, bulletIndex) => (
-                      <li key={bulletIndex}>{bullet}</li>
-                    ))}
-                  </ul>
-                );
-              }
-              return null; // Fallback for unknown content types
-            })}
+            <p className={styles.paragraph}>{section.content}</p>
+            {section.bullets && (
+              <ul className={styles.list}>
+                {section.bullets.map((bullet, bulletIndex) => (
+                  <li key={bulletIndex}>{bullet}</li>
+                ))}
+              </ul>
+            )}
+            {section.paragraphs &&
+              section.paragraphs.map((paragraph, paragraphIndex) => (
+                <p key={paragraphIndex} className={styles.paragraph}>
+                  {paragraph}
+                </p>
+              ))}
           </div>
         ))}
       </div>

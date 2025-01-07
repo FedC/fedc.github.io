@@ -1,11 +1,14 @@
 .about {
-    height: auto; /* Allow content to dictate height */
-    overflow-y: visible; /* Use the parent container for scrolling */
+    height: auto;
+    /* Allow content to dictate height */
+    overflow-y: visible;
+    /* Use the parent container for scrolling */
     color: white;
     font-family: 'Theinhardt', sans-serif;
     letter-spacing: -0.35px;
     width: 100%;
     text-align: center;
+    padding-bottom: 100px;
 }
 
 h1.heading {
@@ -144,6 +147,15 @@ $circleTopPosition: 50px;
     z-index: 1;
 }
 
+.orangeCircleBigger {
+    @extend .orangeCircle;
+    width: 60px;
+    height: 60px;
+    top: 42px;
+    left: calc(50% + 11px);
+    opacity: .7;
+}
+
 .bigOrageCircle {
     z-index: 1;
     background-color: #f6ab0b3b;
@@ -183,12 +195,16 @@ $circleTopPosition: 50px;
     font-size: 1rem;
     line-height: 1.6;
     color: #333;
+    z-index: 2;
+    position: relative;
 }
 
 .list {
     list-style-type: none;
     padding: 0;
     margin: 10px 0;
+    z-index: 2;
+    position: relative;
 
     li {
         font-size: 1rem;
@@ -196,13 +212,6 @@ $circleTopPosition: 50px;
         color: #555;
         margin: 5px 0;
     }
-}
-
-.brandName {
-    font-family: 'Poiret One', sans-serif;
-    font-weight: bold;
-    color: #f6ab0b;
-    letter-spacing: 0.75px;
 }
 
 .aboutImageContainer {
