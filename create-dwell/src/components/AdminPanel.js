@@ -5,13 +5,13 @@ import AdminHeader from './AdminHeader';
 import ProjectForm from './ProjectForm';
 import ProjectList from './ProjectList';
 import AboutForm from './AboutForm';
+import FeaturedImages from './FeaturedImages';
 import { auth, db } from '../js/firebase';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
-
 import * as styles from './AdminPanel.module.scss';
-
 import * as adminBaseCss from '../scss/admin-base.scss';
 import * as adminCss from '../scss/admin.scss';
+
 
 const AdminPanel = () => {
   const [user, setUser] = useState(null);
@@ -163,6 +163,14 @@ const AdminPanel = () => {
             element={
               <div className={styles.adminContent}>
                 <AboutForm onUpdateSuccess={handleUpdateSuccess} onClose={() => navigate('/admin')} />
+              </div>
+            }
+          />
+          <Route
+            path="/featured"
+            element={
+              <div className={styles.adminContent}>
+                <FeaturedImages onUpdateSuccess={handleUpdateSuccess} onClose={() => navigate('/admin')} />
               </div>
             }
           />

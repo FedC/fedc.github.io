@@ -43,6 +43,11 @@ const AdminHeader = () => {
             </NavLink>
           </li>
           <li>
+            <NavLink to="/admin/featured" className={() => (isActive('/admin/featured', window.location) ? 'active' : '')}>
+              Featured
+            </NavLink>
+          </li>
+          <li>
             <NavLink to="/admin/users" className={() => (isActive('/admin/users', window.location) ? 'active' : '')}>
               Users
             </NavLink>
