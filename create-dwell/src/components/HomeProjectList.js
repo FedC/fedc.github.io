@@ -8,6 +8,7 @@ import * as styles from './HomeProjectList.module.scss';
 const HomeProjectList = ({ projects, headerAnimationComplete }) => {
   const [openProjects, setOpenProjects] = useState([]);
   const [loadingContentImages, setLoadingContentImages] = useState([]);
+  const [imageAspectRatios, setImageAspectRatios] = useState({});
   const gridRef = useRef(null);
   const projectRefs = useRef({});
   const marqueeRef = useRef(null);
@@ -44,6 +45,41 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
       setupDraggableToToggleProject();
     }
   }, [headerAnimationComplete]);
+
+  useEffect(() => {
+    const calculateAspectRatios = async () => {
+      if (!projects) return;
+
+      const aspectRatios = {};
+      for (const project of projects) {
+        for (const content of project.content || []) {
+          if (content.type === 'image') {
+            const img = new Image();
+            img.src = content.url;
+
+            await new Promise((resolve) => {
+              img.onload = () => {
+                const aspectRatio = img.naturalWidth / img.naturalHeight;
+                aspectRatios[content.url] = aspectRatio;
+                resolve();
+              };
+              img.onerror = resolve; // Ignore errors
+            });
+          }
+        }
+      }
+
+      setImageAspectRatios(aspectRatios);
+    };
+
+    calculateAspectRatios();
+  }, [projects]);
+
+  const getAspectRatioClass = (ratio) => {
+    if (ratio > 1.1) return styles.aspectLandscape; // Landscape
+    if (ratio < 0.9) return styles.aspectPortrait;  // Portrait
+    return styles.aspectSquare;                    // Square
+  };
 
   useEffect(() => {
     const loadResources = async () => {
@@ -329,6 +365,10 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     if (contentRef && projectRef) {
       setLoadingContentImages((prev) => [...prev, projectId]);
 
+      setTimeout(() => {
+        gsap.set(contentSelector, { opacity: 0 });
+      }, 0);
+
       ScrollTrigger.disable();
 
       setTimeout(() => {
@@ -342,7 +382,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
             const { isDesktop, isMobile } = context.conditions;
 
             const tl = gsap.timeline();
-
 
             tl.to(mainImageSelector, {
               filter: 'brightness(0.5)',
@@ -396,20 +435,23 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                 updatedMainImageWidth = updatedMainImage ? updatedMainImage.clientWidth : 0;
                 updatedMainImageHeight = updatedMainImage ? updatedMainImage.clientHeight : 0;
 
+                gsap.set(contentSelector, { opacity: 0 });
+
                 await preloadImages(`#project-${projectId} img`);
-                gsap.set(`#project-${projectId} .${styles.projectContent}`, { x: updatedMainImageWidth, opacity: 0 });
+
+                gsap.set(contentSelector, { x: updatedMainImageWidth, opacity: 0 });
                 gsap.set(`#project-${projectId}`, { overflow: 'visible' });
                 gsap.set(contentSelector, { x: updatedMainImageWidth, opacity: 0 });
                 gsap.set(projectRef.querySelector(`.${styles.projectDescriptionIconButton}`), { display: 'flex' });
 
                 tl.fromTo(contentSelector, {
-                  duration: 0.5,
+                  duration: 1,
                   opacity: 0,
                 }, {
                   opacity: 1,
                   ease: 'ease.out',
                 });
-                tl.delay(0.25);
+                // tl.delay(0.25);
                 tl.to(projectRef,
                   {
                     x: -contentFirstMoveX,
@@ -435,8 +477,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                       //   gsap.set(spinner, { x: contentX - updatedMainImageWidth });
                       // }
                     },
-                  },
-                );
+                  }, '<');
 
                 const projectContent = document.querySelector(`#project-${projectId} .${styles.projectContent}`);
 
@@ -907,13 +948,18 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                                 content.id || content.url || `${content.type}-${index}`;
 
                               if (content.type === 'image' && content.description) {
+                                const aspectRatio = imageAspectRatios[content.url];
+                                const aspectClass = getAspectRatioClass(aspectRatio);
+                                const inlineStyles = aspectRatio ? { aspectRatio: aspectRatio } : {};
+
                                 return (
                                   <div
                                     key={uniqueKey}
-                                    className={styles.projectContentItem}
+                                    data-aspect-ratio={aspectRatio}
+                                    className={`${styles.projectContentItem} ${aspectClass}`}
                                     ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
                                   >
-                                    <div className={styles.projectImageWrapper}>
+                                    <div className={styles.projectImageWrapper} style={inlineStyles}>
                                       <img
                                         className={styles.projectImage}
                                         src={content.url}
@@ -947,13 +993,18 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                                   </div>
                                 );
                               } else if (content.type === 'image') {
+                                const aspectRatio = imageAspectRatios[content.url];
+                                const aspectClass = getAspectRatioClass(aspectRatio);
+                                const inlineStyles = aspectRatio ? { aspectRatio: aspectRatio } : {};
+
                                 return (
                                   <div
                                     key={uniqueKey}
-                                    className={styles.projectContentItem}
+                                    data-aspect-ratio={aspectRatio}
+                                    className={`${styles.projectContentItem} ${aspectClass}`}
                                     ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
                                   >
-                                    <div className={styles.projectImageWrapper}>
+                                    <div className={styles.projectImageWrapper} style={inlineStyles}>
                                       <img
                                         className={styles.projectImage}
                                         src={content.url}
