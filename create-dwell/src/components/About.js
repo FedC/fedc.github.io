@@ -54,14 +54,7 @@ const About = () => {
           <div key={index} className={styles.contentSection}>
             <h2 className={styles.h2}>{section.title}</h2>
             <div className={styles.headerContainer}>
-              {section.title.toLowerCase() === 'what' && (
-                <>
-                  <div className={styles.whiteCircle}></div>
-                  <div className={styles.orangeCircle}></div>
-                </>
-              )}
-              {section.title.toLowerCase() === 'why' && <div className={styles.circle}></div>}
-              {section.title.toLowerCase() === 'how' && <div className={styles.orangeCircleBigger}></div>}
+              <img src={section.imageUrl} alt={section.title} />
             </div>
             <h3 className={styles.h3}>{section.subTitle}</h3>
 

@@ -338,9 +338,11 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
   const toggleProject = async (projectId) => {
     await scrollToProject(projectId);
 
-    if (openProjects.includes(projectId)) {
-      return;
-    }
+    if (openProjects.includes(projectId)) return;
+
+    const projectRef = projectRefs.current[projectId];
+
+    if (!projectRef) return;
 
     setOpenProjects([...openProjects, projectId]);
 
@@ -348,10 +350,8 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     const contentSelector = `#project-${projectId} .${styles.projectContent}`;
     const mainImageWrapper = `#project-${projectId} .${styles.mainImageWrapper}`;
     const mainImageSelector = `#project-${projectId} .${styles.projectMainImage}`;
-    const contentRef = projectRefs.current[projectId];
-    const projectRef = projectRefs.current[projectId];
-
     const mainImage = projectRef.querySelector(`.${styles.projectMainImage}`);
+
     gsap.set(mainImageSelector, {
       willChange: 'width, height', // Hint the browser to prepare for these changes
     });
@@ -362,171 +362,161 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     let updatedMainImageWidth = 0; // To store the updated width
     let updatedMainImageHeight = 0; // To store the updated height
 
-    if (contentRef && projectRef) {
-      setLoadingContentImages((prev) => [...prev, projectId]);
+    setLoadingContentImages((prev) => [...prev, projectId]);
 
-      setTimeout(() => {
-        gsap.set(contentSelector, { opacity: 0 });
-      }, 0);
+    setTimeout(() => {
+      gsap.set(contentSelector, { opacity: 0, x: '100vw' });
 
       ScrollTrigger.disable();
 
-      setTimeout(() => {
-        const mm = gsap.matchMedia();
-        mm.add(
-          {
-            isDesktop: "(min-width: 768px)", // Desktop logic
-            isMobile: "(max-width: 767px)", // Mobile logic
-          },
-          (context) => {
-            const { isDesktop, isMobile } = context.conditions;
+      const mm = gsap.matchMedia();
+      mm.add(
+        {
+          isDesktop: "(min-width: 768px)", // Desktop logic
+          isMobile: "(max-width: 767px)", // Mobile logic
+        },
+        (context) => {
+          const { isDesktop, isMobile } = context.conditions;
 
-            const tl = gsap.timeline();
+          const tl = gsap.timeline();
 
-            tl.to(mainImageSelector, {
-              filter: 'brightness(0.5)',
-              duration: 0.5,
-              ease: 'ease.out',
-            }, '<');
+          tl.to(mainImageSelector, {
+            filter: 'brightness(0.5)',
+            duration: 0.5,
+            ease: 'ease.out',
+          }, '<');
 
-            tl.to(gridRef.current, {
-              scale: 1,
-              duration: 0.5,
-              ease: 'ease.out',
-            }, '<');
+          tl.to(gridRef.current, {
+            scale: 1,
+            duration: 0.5,
+            ease: 'ease.out',
+          }, '<');
 
-            tl.to(`#project-${projectId}`, {
-              y: 0,
-              scale: 1,
-              duration: 0.5,
-              ease: 'ease.out',
-            }, '<');
+          tl.to(`#project-${projectId}`, {
+            y: 0,
+            scale: 1,
+            duration: 0.5,
+            ease: 'ease.out',
+          }, '<');
 
-            gsap.set(contentSelector, { opacity: 0 });
-            const maxWidth = isMobile ? window.innerWidth * 0.98 : window.innerWidth * 0.75; // 75vw on desktop and 98vw on mobile
-            const maxHeight = window.innerHeight * 0.75; // 75vh
-            const mainImageWidth = mainImage ? mainImage.clientWidth : 0;
-            const mainImageHeight = mainImage ? mainImage.clientHeight : 0;
-            const aspectRatio = mainImageWidth / mainImageHeight;
-            let targetWidth = maxWidth;
-            let targetHeight = maxWidth / aspectRatio;
+          const maxWidth = isMobile ? window.innerWidth * 0.98 : window.innerWidth * 0.75; // 75vw on desktop and 98vw on mobile
+          const maxHeight = window.innerHeight * 0.75; // 75vh
+          const mainImageWidth = mainImage ? mainImage.clientWidth : 0;
+          const mainImageHeight = mainImage ? mainImage.clientHeight : 0;
+          const aspectRatio = mainImageWidth / mainImageHeight;
+          let targetWidth = maxWidth;
+          let targetHeight = maxWidth / aspectRatio;
 
-            if (targetHeight > maxHeight) {
-              targetHeight = maxHeight;
-              targetWidth = maxHeight * aspectRatio;
-            }
+          if (targetHeight > maxHeight) {
+            targetHeight = maxHeight;
+            targetWidth = maxHeight * aspectRatio;
+          }
 
-            // Use transform: scale for smoother animation
-            const scaleX = targetWidth / mainImageWidth;
-            const scaleY = targetHeight / mainImageHeight;
-            const scale = Math.min(scaleX, scaleY);
+          // Use transform: scale for smoother animation
+          const scaleX = targetWidth / mainImageWidth;
+          const scaleY = targetHeight / mainImageHeight;
+          const scale = Math.min(scaleX, scaleY);
 
-            // gsap.set(mainImageSelector, { maxWidth: '100%' });
+          tl.fromTo(mainImageSelector, {
+            width: mainImageWidth,
+          }, {
+            width: targetWidth,
+            maxWidth: `${targetWidth}px`,
+            duration: 0.5,
+            ease: 'ease.out',
+            onComplete: async () => {
+              const updatedMainImage = projectRef.querySelector(`.${styles.projectMainImage}`);
+              updatedMainImageWidth = updatedMainImage ? updatedMainImage.clientWidth : 0;
+              updatedMainImageHeight = updatedMainImage ? updatedMainImage.clientHeight : 0;
 
-            tl.fromTo(mainImageSelector, {
-              width: mainImageWidth,
-            }, {
-              width: targetWidth,
-              maxWidth: `${targetWidth}px`,
-              duration: 0.5,
-              ease: 'ease.out',
-              onComplete: async () => {
-                const updatedMainImage = projectRef.querySelector(`.${styles.projectMainImage}`);
-                updatedMainImageWidth = updatedMainImage ? updatedMainImage.clientWidth : 0;
-                updatedMainImageHeight = updatedMainImage ? updatedMainImage.clientHeight : 0;
+              await preloadImages(`#project-${projectId} img`);
 
-                gsap.set(contentSelector, { opacity: 0 });
+              gsap.set(contentSelector, { x: updatedMainImageWidth, opacity: 0 });
+              gsap.set(`#project-${projectId}`, { overflow: 'visible' });
+              gsap.set(projectRef.querySelector(`.${styles.projectDescriptionIconButton}`), { display: 'flex' });
 
-                await preloadImages(`#project-${projectId} img`);
-
-                gsap.set(contentSelector, { x: updatedMainImageWidth, opacity: 0 });
-                gsap.set(`#project-${projectId}`, { overflow: 'visible' });
-                gsap.set(contentSelector, { x: updatedMainImageWidth, opacity: 0 });
-                gsap.set(projectRef.querySelector(`.${styles.projectDescriptionIconButton}`), { display: 'flex' });
-
-                tl.fromTo(contentSelector, {
-                  duration: 1,
-                  opacity: 0,
-                }, {
-                  opacity: 1,
-                  ease: 'ease.out',
-                });
-                // tl.delay(0.25);
-                tl.to(projectRef,
-                  {
-                    x: -contentFirstMoveX,
-                    ease: 'power2.out',
-                    duration: 0.5,
-                    onComplete: () => {
-                      tl.to(mainImageSelector, {
-                        filter: 'brightness(1)',
-                        duration: 0.1,
-                        ease: 'ease.out',
-                      });
-                      setLoadingContentImages((prev) => prev.filter((id) => id !== projectId));
-                      ScrollTrigger.enable();
-                      ScrollTrigger.refresh();
-                    },
-                    onUpdate: () => {
-                      // // Dynamically calculate the x position of the main image
-                      // const contentX = gsap.getProperty(contentSelector, 'x'); // Content's current x position
-                      // // gsap.set(mainImageSelector, { x: contentX - updatedMainImageWidth }); // Position main image accordingly
-                      // gsap.set(mainImageWrapper, { x: contentX - updatedMainImageWidth }); // Position main image wrapper accordingly
-                      // const spinner = projectRef.querySelector(`.${styles.spinner}`);
-                      // if (spinner) {
-                      //   gsap.set(spinner, { x: contentX - updatedMainImageWidth });
-                      // }
-                    },
-                  }, '<');
-
-                const projectContent = document.querySelector(`#project-${projectId} .${styles.projectContent}`);
-
-                scrollToProject(projectId);
-                ScrollTrigger.refresh();
-                setupDraggable(projectId);
-
-                function handleScroll(e) {
-                  const scrollingSideWays = Math.abs(e.deltaX) > Math.abs(e.deltaY);
-                  if (!scrollingSideWays) {
-                    e.preventDefault();
-                    return;
-                  }
-
-                  gsap.to(
-                    gridRef.current,
-                    {
-                      scale: 1,
-                      duration: 0.5,
+              tl.fromTo(contentSelector, {
+                duration: 1,
+                opacity: 0,
+              }, {
+                opacity: 1,
+                ease: 'ease.out',
+              });
+              // tl.delay(0.25);
+              tl.to(projectRef,
+                {
+                  x: -contentFirstMoveX,
+                  ease: 'power2.out',
+                  duration: 0.5,
+                  onComplete: () => {
+                    tl.to(mainImageSelector, {
+                      filter: 'brightness(1)',
+                      duration: 0.1,
                       ease: 'ease.out',
-                    },
-                  );
+                    });
+                    setLoadingContentImages((prev) => prev.filter((id) => id !== projectId));
+                    ScrollTrigger.enable();
+                    ScrollTrigger.refresh();
+                  },
+                  onUpdate: () => {
+                    // // Dynamically calculate the x position of the main image
+                    // const contentX = gsap.getProperty(contentSelector, 'x'); // Content's current x position
+                    // // gsap.set(mainImageSelector, { x: contentX - updatedMainImageWidth }); // Position main image accordingly
+                    // gsap.set(mainImageWrapper, { x: contentX - updatedMainImageWidth }); // Position main image wrapper accordingly
+                    // const spinner = projectRef.querySelector(`.${styles.spinner}`);
+                    // if (spinner) {
+                    //   gsap.set(spinner, { x: contentX - updatedMainImageWidth });
+                    // }
+                  },
+                }, '<');
 
-                  const deltaX = e.deltaX;
-                  let contentX = gsap.getProperty(projectRef, 'x');
-                  contentX -= deltaX * 5.5; // Adjust scroll speed (0.5 is a multiplier)
+              const projectContent = document.querySelector(`#project-${projectId} .${styles.projectContent}`);
 
-                  // Set new x position with bounds checking
-                  // const mainImageWrapperEl =  projectRef.querySelector(`.${styles.mainImageWrapper}`);
-                  // const mainIMageWrapperRect = mainImageWrapperEl.getBoundingClientRect();
-                  const maxScroll = isMobile ? projectContent.offsetWidth + 20 : projectContent.offsetWidth;
-                  contentX = Math.max(-maxScroll, Math.min(0, contentX));
-                  // console.log('contentX', contentX);
+              scrollToProject(projectId);
+              ScrollTrigger.refresh();
+              setupDraggable(projectId);
 
-                  gsap.to(projectRef, {
-                    x: contentX,
-                    duration: 0.1,
-                    ease: 'power2.out',
-                  });
+              function handleScroll(e) {
+                const scrollingSideWays = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+                if (!scrollingSideWays) {
+                  e.preventDefault();
+                  return;
                 }
 
-                projectRef.addEventListener('wheel', handleScroll, { passive: false });
-              },
-            });
+                gsap.to(
+                  gridRef.current,
+                  {
+                    scale: 1,
+                    duration: 0.5,
+                    ease: 'ease.out',
+                  },
+                );
 
+                const deltaX = e.deltaX;
+                let contentX = gsap.getProperty(projectRef, 'x');
+                contentX -= deltaX * 5.5; // Adjust scroll speed (0.5 is a multiplier)
+
+                // Set new x position with bounds checking
+                // const mainImageWrapperEl =  projectRef.querySelector(`.${styles.mainImageWrapper}`);
+                // const mainIMageWrapperRect = mainImageWrapperEl.getBoundingClientRect();
+                const maxScroll = isMobile ? projectContent.offsetWidth + 20 : projectContent.offsetWidth;
+                contentX = Math.max(-maxScroll, Math.min(0, contentX));
+                // console.log('contentX', contentX);
+
+                gsap.to(projectRef, {
+                  x: contentX,
+                  duration: 0.1,
+                  ease: 'power2.out',
+                });
+              }
+
+              projectRef.addEventListener('wheel', handleScroll, { passive: false });
+            },
           });
 
-      }, 0);
-    }
+      });
+
+    }, 100);
 
     return () => {
       projectRef.removeEventListener('wheel', handleScroll);
@@ -569,13 +559,22 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     });
   };
 
+  const waitUntilElementExists = (selector, callback) => {
+    const el = document.querySelector(selector);
+    if (el) {
+      callback(el);
+    } else {
+      setTimeout(() => {
+        waitUntilElementExists(selector, callback);
+      }, 100);
+    }
+  };
+
   const setupDraggable = (projectId) => {
     const scrollRef = projectRefs.current[projectId];
     if (!scrollRef) return;
     const items = scrollRef.querySelectorAll(`.${styles.projectContentItem}`);
     const snappoints = Array.from(items).map((item) => -item.offsetLeft);
-
-    // console.log('snappoints', snappoints);
 
     const mm = gsap.matchMedia();
 
@@ -590,6 +589,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
         // get width of the project content and scrollRef width
         const gridItemWidth = scrollRef.clientWidth;
         const projectContent = scrollRef.querySelector(`.${styles.projectContent}`);
+
         const projectContentWidth = projectContent.offsetWidth;
         const totalWidth = projectContentWidth + gridItemWidth;
         let minX = (totalWidth - window.innerWidth / 2) - (gridItemWidth / 2) + 24;
@@ -950,7 +950,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                               if (content.type === 'image' && content.description) {
                                 const aspectRatio = imageAspectRatios[content.url];
                                 const aspectClass = getAspectRatioClass(aspectRatio);
-                                const inlineStyles = aspectRatio ? { aspectRatio: aspectRatio } : {};
 
                                 return (
                                   <div
@@ -959,7 +958,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                                     className={`${styles.projectContentItem} ${aspectClass}`}
                                     ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
                                   >
-                                    <div className={styles.projectImageWrapper} style={inlineStyles}>
+                                    <div className={styles.projectImageWrapper}>
                                       <img
                                         className={styles.projectImage}
                                         src={content.url}
@@ -995,7 +994,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                               } else if (content.type === 'image') {
                                 const aspectRatio = imageAspectRatios[content.url];
                                 const aspectClass = getAspectRatioClass(aspectRatio);
-                                const inlineStyles = aspectRatio ? { aspectRatio: aspectRatio } : {};
 
                                 return (
                                   <div
@@ -1004,7 +1002,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                                     className={`${styles.projectContentItem} ${aspectClass}`}
                                     ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
                                   >
-                                    <div className={styles.projectImageWrapper} style={inlineStyles}>
+                                    <div className={styles.projectImageWrapper}>
                                       <img
                                         className={styles.projectImage}
                                         src={content.url}
