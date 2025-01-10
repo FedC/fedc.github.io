@@ -3,7 +3,45 @@ import { db, storage } from '../js/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as styles from './AboutForm.module.scss';
-import { title } from 'process';
+import {
+  DndContext,
+  closestCenter,
+  DragOverlay,
+  useSensor,
+  useSensors,
+  PointerSensor,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+const SortableContent = ({ id, children }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+
+  const transformString = CSS.Transform.toString(transform) || '';
+
+  // Safely extract translate3d part
+  const match = transformString.match(/translate3d\(([^)]+)\)/);
+  const translate3d = match ? match[0] : ''; // Use the entire match if found, otherwise fallback to an empty string
+
+  console.log(translate3d); // Debugging log
+
+  const style = {
+    transform: translate3d, // Use translate3d part only
+    transition: transition || 'transform 250ms ease',
+    zIndex: 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className={styles.sortableContent}>
+      {children}
+    </div>
+  );
+};
 
 const AboutForm = ({ onUpdateSuccess, onClose }) => {
   const [sections, setSections] = useState([]);
@@ -13,6 +51,15 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
   const [title, setTitle] = useState('');
   const [newSection, setNewSection] = useState({ title: '', subTitle: '', content: '', bullets: [] });
   const [loading, setLoading] = useState(false);
+  const [draggingSection, setDraggingSection] = useState(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    })
+  );
 
   useEffect(() => {
     const fetchAbout = async () => {
@@ -31,6 +78,20 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
     fetchAbout();
   }, []);
 
+  const handleDragEndContent = (sectionIndex, { active, over }) => {
+    if (!over || active.id === over.id) return;
+
+    const updatedSections = [...sections];
+    const contentArray = updatedSections[sectionIndex].content;
+
+    const oldIndex = contentArray.findIndex((item) => item.id === active.id);
+    const newIndex = contentArray.findIndex((item) => item.id === over.id);
+    updatedSections[sectionIndex].content = arrayMove(contentArray, oldIndex, newIndex);
+
+    setSections(updatedSections);
+    saveAbout();
+  };
+
   const handleSectionChange = (index, field, value) => {
     const updatedSections = [...sections];
     updatedSections[index][field] = value;
@@ -41,16 +102,18 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
     const updatedSections = [...sections];
     updatedSections[sectionIndex].content[contentIndex][field] = value;
     setSections(updatedSections);
+    saveAbout();
   };
 
   const handleAddContent = (sectionIndex, type) => {
     const updatedSections = [...sections];
     const newContent =
       type === 'paragraph'
-        ? { type: 'paragraph', text: '' }
-        : { type: 'bullets', bullets: [] };
+        ? { type: 'paragraph', text: '', id: `p-${Date.now()}` }
+        : { type: 'bullets', bullets: [], id: `b-${Date.now()}` };
     updatedSections[sectionIndex].content.push(newContent);
     setSections(updatedSections);
+    saveAbout();
   };
 
   const handleRemoveContent = (sectionIndex, contentIndex) => {
@@ -161,10 +224,47 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
       console.error('No image URL available. Please upload an image.');
       return;
     }
-
+  
     setLoading(true);
+  
     try {
-      await setDoc(doc(db, 'about', 'main'), { sections, imageUrl, aboutText, title, description });
+      // Remove undefined values from sections
+      const sanitizedSections = sections.map((section) => {
+        const sanitizedContent = section.content.map((content) => ({
+          ...content,
+          bullets: content.bullets || [], // Ensure bullets is an array
+          text: content.text || '', // Ensure text is a string
+        }));
+  
+        const data = {
+          ...section,
+          content: sanitizedContent, // Replace with sanitized content
+          imageUrl: section.imageUrl || '', // Ensure imageUrl is a string
+        };
+        delete data.image;
+        return data;
+      });
+
+      console.log('Sanitized Data:', {
+        sections: sanitizedSections,
+        imageUrl,
+        aboutText,
+        title,
+        description,
+      });
+  
+      await setDoc(
+        doc(db, 'about', 'main'),
+        {
+          sections: sanitizedSections,
+          imageUrl,
+          aboutText: aboutText || '', // Ensure aboutText is a string
+          title: title || '', // Ensure title is a string
+          description: description || '', // Ensure description is a string
+        },
+        { merge: true }
+      );
+  
       console.log('About content saved successfully');
       onUpdateSuccess('About content saved successfully');
     } catch (error) {
@@ -172,6 +272,60 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSectionImageFileChange = async (e, sectionIndex) => {
+    const file = e.target.files[0];
+    if (!file) return;
+  
+    // Update preview image immediately
+    const updatedSections = [...sections];
+    updatedSections[sectionIndex].image = file; // Only for preview
+    setSections(updatedSections);
+  
+    // Upload image and get URL
+    const imageUrl = await uploadSectionImage(sectionIndex, file);
+  
+    // Update section with the final image URL
+    updatedSections[sectionIndex].imageUrl = imageUrl; // URL for Firestore
+    updatedSections[sectionIndex].image = undefined; // Remove File object
+    setSections(updatedSections);
+  
+    saveAbout();
+  };
+
+  // Helper function to upload image to Firebase Storage and get URL
+  const uploadSectionImage = async (sectionIndex, file) => {
+    if (!file) return;
+
+    setLoading(true); // Start loading
+    try {
+      const baseName = getBaseName(file.name);
+      const basePath = `about/sections/${baseName}`;
+
+      // Upload the original file to Firebase Storage
+      const storageRef = ref(storage, `${basePath}.jpg`);
+      await uploadBytes(storageRef, file);
+
+      // Construct the "medium" size path
+      const mediumImagePath = `${basePath}_medium.jpg`;
+
+      // Wait for the "medium" version to be processed
+      const imageUrl = await waitForProcessedFile(mediumImagePath);
+
+      console.log(`Processed medium image URL for section ${sectionIndex}:`, imageUrl);
+      return imageUrl;
+    } catch (error) {
+      console.error("Error uploading image for section:", error);
+      throw error;
+    } finally {
+      setLoading(false); // End loading
+    }
+  };
+
+  // Helper function to extract base name from a file
+  const getBaseName = (fileName) => {
+    return fileName.replace(/\.[^/.]+$/, ""); // Remove file extension
   };
 
   const onClickClose = () => {
@@ -215,6 +369,24 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
               onBlur={saveAbout}
               onChange={(e) => handleSectionChange(sectionIndex, 'title', e.target.value)}
             />
+
+            {/* Image Upload for Section */}
+            <div className={styles.imageUpload}>
+              {section.imageUrl ? (
+                <img
+                  src={section.imageUrl instanceof File ? URL.createObjectURL(section.imageUrl) : section.imageUrl}
+                  alt={`Section ${sectionIndex} Image`}
+                  className={styles.sectionImage}
+                />
+              ) : (
+                <span>No image uploaded</span>
+              )}
+
+              <label htmlFor={`section-image-upload-${sectionIndex}`} className={styles.uploadLabel}>Upload Image</label>
+              <input type="file" name="mainImage" id={`section-image-upload-${sectionIndex}`}
+                onChange={(e) => handleSectionImageFileChange(e, sectionIndex)} />
+            </div>
+
             <input
               type="text"
               placeholder="SubTitle"
@@ -223,62 +395,84 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
               onChange={(e) => handleSectionChange(sectionIndex, 'subTitle', e.target.value)}
             />
 
-            {section.content.map((content, contentIndex) => (
-              <div key={contentIndex} className={styles.contentItem}>
-                {content.type === 'paragraph' && (
-                  <textarea
-                    placeholder="Paragraph"
-                    value={content.text}
-                    onBlur={saveAbout}
-                    onChange={(e) =>
-                      handleContentChange(sectionIndex, contentIndex, 'text', e.target.value)
-                    }
-                  />
-                )}
-                {content.type === 'bullets' && (
-                  <div className={styles.bullets}>
-                    {content.bullets.map((bullet, bulletIndex) => (
-                      <div key={bulletIndex} className={styles.bullet}>
-                        <input
-                          type="text"
-                          value={bullet}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={(event) => handleDragEndContent(sectionIndex, event)}
+            >
+              <SortableContext
+                items={section.content.map((content) => content.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {section.content.map((content, contentIndex) => (
+                  <SortableContent key={content.id} id={content.id}>
+                    <div className={styles.contentItem}>
+                      {content.type === 'paragraph' && (
+                        <textarea
+                          placeholder="Paragraph"
+                          value={content.text}
                           onBlur={saveAbout}
-                          onChange={(e) => {
-                            const updatedBullets = [...content.bullets];
-                            updatedBullets[bulletIndex] = e.target.value;
-                            handleContentChange(
-                              sectionIndex,
-                              contentIndex,
-                              'bullets',
-                              updatedBullets
-                            );
-                          }}
-                        />
-                        <button className={styles.warn}
-                          onClick={() =>
-                            handleRemoveBullet(sectionIndex, contentIndex, bulletIndex)
+                          onChange={(e) =>
+                            handleContentChange(sectionIndex, contentIndex, 'text', e.target.value)
                           }
+                        />
+                      )}
+                      {content.type === 'bullets' && (
+                        <div className={styles.bullets}>
+                          {content.bullets.map((bullet, bulletIndex) => (
+                            <div key={bulletIndex} className={styles.bullet}>
+                              <input
+                                type="text"
+                                value={bullet}
+                                onBlur={saveAbout}
+                                onChange={(e) => {
+                                  const updatedBullets = [...content.bullets];
+                                  updatedBullets[bulletIndex] = e.target.value;
+                                  handleContentChange(
+                                    sectionIndex,
+                                    contentIndex,
+                                    'bullets',
+                                    updatedBullets
+                                  );
+                                }}
+                              />
+                              <button className={styles.warn}
+                                onClick={() =>
+                                  handleRemoveBullet(sectionIndex, contentIndex, bulletIndex)
+                                }
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
+                              </button>
+                            </div>
+                          ))}
+                          <button onClick={() => handleAddBullet(sectionIndex, contentIndex)} className={styles.iconButton}>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg>
+                          </button>
+                        </div>
+                      )}
+
+                      <div className={styles.flexRight}>
+                        <button className={styles.warn}
+                          onClick={() => handleRemoveContent(sectionIndex, contentIndex)}
+                          title={'Remove ' + content.type === 'paragraph' ? 'paragraph' : 'bullets'}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                            <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                          </svg>
+                        </button>
+
+                        <button className={styles.dragButton}>
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ccc">
+                            <path d="M480-80 310-250l57-57 73 73v-206H235l73 72-58 58L80-480l169-169 57 57-72 72h206v-206l-73 73-57-57 170-170 170 170-57 57-73-73v206h205l-73-72 58-58 170 170-170 170-57-57 73-73H520v205l72-73 58 58L480-80Z" />
+                          </svg>
                         </button>
                       </div>
-                    ))}
-                    <button onClick={() => handleAddBullet(sectionIndex, contentIndex)} className={styles.iconButton}>
-                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
-                    </button>
-                  </div>
-                )}
 
-                <button className={styles.warn}
-                  onClick={() => handleRemoveContent(sectionIndex, contentIndex)}
-                  title={'Remove ' + content.type === 'paragraph' ? 'paragraph' : 'bullets'}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-                    <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
-                  </svg>
-                </button>
-              </div>
-            ))}
+                    </div>
+                  </SortableContent>
+                ))}
+              </SortableContext>
+            </DndContext>
 
             <div className={styles.contentActions}>
               <button className={styles.iconButton} onClick={() => handleAddContent(sectionIndex, 'paragraph')}>
