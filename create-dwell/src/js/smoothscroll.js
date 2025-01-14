@@ -9,6 +9,9 @@ export const initSmoothScrolling = () => {
   const lenis = new Lenis({ lerp: 1.12 });
 
   // Expose Lenis instance globally for dynamic control
+  if (window.lenis) {
+    window.lenis.destroy();
+  }
   window.lenis = lenis;
   
   // Sync ScrollTrigger with Lenis' scroll updates.

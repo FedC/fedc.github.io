@@ -6,6 +6,7 @@ import { preloadImages } from '../js/utils';
 import * as styles from './HomeProjectList.module.scss';
 
 const HomeProjectList = ({ projects, headerAnimationComplete }) => {
+  const listRef = useRef(null);
   const [openProjects, setOpenProjects] = useState([]);
   const [loadingContentImages, setLoadingContentImages] = useState([]);
   const [imageAspectRatios, setImageAspectRatios] = useState({});
@@ -835,7 +836,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
   return (
     <>
-      <div className={styles.projectList}>
+      <div className={styles.projectList} ref={listRef}>
         <div className={styles.projectListVertical} ref={gridRef}>
           {projects
             .sort((a, b) => a.order - b.order) // Sort projects by their order
