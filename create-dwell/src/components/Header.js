@@ -238,34 +238,34 @@ const Header = ({ onAnimationEnd }) => {
 
     // Disable Lenis for smooth scrolling
     if (window.lenis) {
+      window.lenis.stop();
       window.lenis.destroy();
     }
 
     setTimeout(() => {
-      gsap.set(aboutRef.current, { overflowY: 'auto' }); // Ensure native scroll for About
       gsap.set(aboutRef.current, { opacity: 0 });
       gsap.set(closeButtonRef.current, { opacity: 0 });
       gsap.set(navListRef.current, {
         display: 'none',
       });
-      gsap.set(document.querySelector('main'), {
-        height: '100vh',
-        overflow: 'hidden',
-      });
-    }, 0);
+    });
 
     setTimeout(() => {
-      const tl = gsap.timeline();
+      gsap.set(aboutRef.current, { overflowY: 'auto' }); // Ensure native scroll for About
+    }, 100);
 
-      const mm = gsap.matchMedia();
-      mm.add(
-        {
-          isDesktop: "(min-width: 768px)",
-          isMobile: "(max-width: 767px)",
-        },
-        (context) => {
-          const { isMobile } = context.conditions;
+    const tl = gsap.timeline();
 
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        isDesktop: "(min-width: 768px)",
+        isMobile: "(max-width: 767px)",
+      },
+      (context) => {
+        const { isMobile } = context.conditions;
+
+        setTimeout(() => {
           if (isMobile) {
             tl.to(navRef.current, {
               height: '100vh',
@@ -303,9 +303,11 @@ const Header = ({ onAnimationEnd }) => {
             duration: 0.2,
             ease: 'power2.out',
           }, '<');
-        },
-      );
-    }, 100);
+
+        }, 200);
+
+      },
+    );
   };
 
   const handleCloseAbout = () => {
@@ -320,21 +322,26 @@ const Header = ({ onAnimationEnd }) => {
         initSmoothScrolling();
       }
 
-      setTimeout(() => {
-        const mm = gsap.matchMedia();
-        mm.add(
-          {
-            isDesktop: "(min-width: 768px)",
-            isMobile: "(max-width: 767px)",
-          },
-          (context) => {
-            const { isMobile } = context.conditions;
 
+      const mm = gsap.matchMedia();
+      mm.add(
+        {
+          isDesktop: "(min-width: 768px)",
+          isMobile: "(max-width: 767px)",
+        },
+        (context) => {
+          const { isMobile } = context.conditions;
+
+          if (isMobile) {
+            gsap.set(aboutLinkMobileRef.current, { opacity: .9, scale: .8 });
+          } else {
+            gsap.set(aboutLinkRef.current, { opacity: .9, scale: .8 });
+          }
+
+          setTimeout(() => {
             if (isMobile) {
-              gsap.set(aboutLinkMobileRef.current, { opacity: 0, scale: .8 });
               gsap.to(aboutLinkMobileRef.current, { scale: 1, opacity: 1, duration: 0.5, ease: 'bounce.out' }, '<');
             } else {
-              gsap.set(aboutLinkRef.current, { opacity: 0, scale: .8 });
               gsap.to(aboutLinkRef.current, { scale: 1, opacity: 1, duration: 1, ease: 'bounce.out' }, '<');
             }
 
@@ -354,12 +361,8 @@ const Header = ({ onAnimationEnd }) => {
             gsap.set(navListRef.current, {
               display: 'flex',
             });
-            gsap.set(document.querySelector('main'), {
-              height: 'auto',
-              overflow: 'auto',
-            });
-          });
-      }, 100);
+          }, 100);
+        });
     }
 
     const mm = gsap.matchMedia();
@@ -423,7 +426,7 @@ const Header = ({ onAnimationEnd }) => {
 
           {isAboutVisible && (
             <button className={styles.closeButton} onClick={handleCloseAbout} ref={closeButtonRef}>
-              <svg className={styles.closeIcon} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+              <svg className={styles.closeIcon} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
             </button>
           )}
 
@@ -465,13 +468,16 @@ const Header = ({ onAnimationEnd }) => {
             {!isAboutVisible && (
               <div className={styles.nav__item}>
                 <a href="#about" className={styles.aboutLink}>
-                  <div className={styles.aboutCircleDesktop} ref={aboutLinkRef} data-content="About" onClick={handleShowAbout}>A</div></a>
+                  <div className={styles.aboutCircleDesktop} ref={aboutLinkRef} data-content="About" onClick={handleShowAbout}>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(246, 171, 11)"><path d="M360-320q33 0 56.5-23.5T440-400q0-33-23.5-56.5T360-480q-33 0-56.5 23.5T280-400q0 33 23.5 56.5T360-320Zm240 0q33 0 56.5-23.5T680-400q0-33-23.5-56.5T600-480q-33 0-56.5 23.5T520-400q0 33 23.5 56.5T600-320ZM480-520q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520Zm0 440q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
+                  </div></a>
               </div>
             )}
 
             <div className={styles.nav__item}>
               <a href="#contact" className={styles.aboutLink}>
-                <div className={styles.contactCircleDesktop} ref={contactLinkRef} data-content="Contact">C</div></a>
+                <div className={styles.contactCircleDesktop} ref={contactLinkRef} data-content="Contact">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(246, 171, 11)"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480v58q0 59-40.5 100.5T740-280q-35 0-66-15t-52-43q-29 29-65.5 43.5T480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480v58q0 26 17 44t43 18q26 0 43-18t17-44v-58q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93h200v80H480Zm0-280q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Z" /></svg></div></a>
             </div>
           </div>
         </div>
@@ -487,12 +493,16 @@ const Header = ({ onAnimationEnd }) => {
 
       {!isAboutVisible && (
         <a href="#about" className={styles.aboutCircleMobile} ref={aboutLinkMobileRef} data-content="About" onClick={handleShowAbout}>
-          <div >A</div>
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M360-320q33 0 56.5-23.5T440-400q0-33-23.5-56.5T360-480q-33 0-56.5 23.5T280-400q0 33 23.5 56.5T360-320Zm240 0q33 0 56.5-23.5T680-400q0-33-23.5-56.5T600-480q-33 0-56.5 23.5T520-400q0 33 23.5 56.5T600-320ZM480-520q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520Zm0 440q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
+          </div>
         </a>
       )}
 
       <a href="#contact" className={styles.contactCircleMobile} ref={contactLinkMobileRef} data-content="Contact">
-        <div >C</div>
+        <div >
+          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480v58q0 59-40.5 100.5T740-280q-35 0-66-15t-52-43q-29 29-65.5 43.5T480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480v58q0 26 17 44t43 18q26 0 43-18t17-44v-58q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93h200v80H480Zm0-280q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Z" /></svg>
+        </div>
       </a>
 
     </>

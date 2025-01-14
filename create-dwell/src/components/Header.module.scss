@@ -8,24 +8,22 @@
     --frame-z-index: 600;
 }
 
-@mixin button-styles($name, $offset) {
+@mixin button-styles($name, $size) {
     .#{$name} {
         position: absolute;
-        left: $offset;
-        right: $offset;
         z-index: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 40px;
-        height: 40px;
+        width: $size;
+        height: $size;
         appearance: none;
         -webkit-appearance: none;
         border: none;
         cursor: pointer;
         background-color: #ffffff;
         border-radius: 50%;
-        box-shadow: 0 3px 7px rgba(47, 47, 47, 0.1);
+        box-shadow: 0 3px 7px rgba(47, 47, 47, 0.3);
         font-style: italic;
         font-weight: bold;
         font-family: monospace;
@@ -241,8 +239,8 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 48px;
-    height: 48px;
+    width: 62px;
+    height: 62px;
     border-radius: 50%;
     background-color: rgba(255, 255, 255, .86);
     color: var(--color-link);
@@ -312,6 +310,36 @@ a {
 .aboutCircleMobile {
     @extend .circleHover;
     position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 48px;
+    height: 48px;
+    z-index: var(--nav-z-index);
+    background-color: rgb(246, 171, 11, .8);
+    -webkit-backdrop-filter: blur(1px);
+    backdrop-filter: blur(1px);
+    color: white;
+    box-shadow: 0 3px 7px rgba(47, 47, 47, 0.1);
+
+    &::before {
+        background-color: white;
+    }
+
+    &::after {
+        color: var(--color-link);
+    }
+
+
+    svg {
+        transform: translateY(3px);
+    }
+}
+
+.contactCircleMobile {
+    @extend .circleHover;
+    width: 62px;
+    height: 62px;
+    position: fixed;
     bottom: 5px;
     left: 8px;
     z-index: var(--nav-z-index);
@@ -328,28 +356,9 @@ a {
     &::after {
         color: var(--color-link);
     }
-}
 
-.contactCircleMobile {
-    @extend .circleHover;
-    width: 62px;
-    height: 62px;
-    position: fixed;
-    top: 5px;
-    right: 8px;
-    z-index: var(--nav-z-index);
-    background-color: rgb(246, 171, 11, .8);
-    -webkit-backdrop-filter: blur(1px);
-    backdrop-filter: blur(1px);
-    color: white;
-    box-shadow: 0 3px 7px rgba(47, 47, 47, 0.1);
-
-    &::before {
-        background-color: white;
-    }
-
-    &::after {
-        color: var(--color-link);
+    svg {
+        transform: translateY(3px);
     }
 }
 
@@ -483,9 +492,20 @@ a {
 
 
 nav {
-    @include button-styles(closeButton, 20px);
+    @include button-styles(closeButton, 68px);
    .closeButton {
         z-index: var(--cursor-z-index);
+        top: 70px;
+        right: -34px;
+    }
+
+    @media screen and (max-width: 768px) {
+        .closeButton {
+            right: 10px;
+            top: 10px;
+            width: 48px;
+            height: 48px;
+        }
     }
 
    .closeIcon {

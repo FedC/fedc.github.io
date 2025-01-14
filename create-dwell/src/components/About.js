@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../js/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import * as styles from './About.module.scss';
+import { gsap } from 'gsap';
 
 const About = () => {
   const aboutRef = useRef(null);
@@ -11,6 +12,7 @@ const About = () => {
   const [sections, setSections] = useState([]);
   const [aboutText, setAboutText] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [activeSection, setActiveSection] = useState(null);
 
   useEffect(() => {
     const fetchAbout = async () => {
@@ -22,11 +24,32 @@ const About = () => {
         setSections(data.sections || []);
         setAboutText(data.aboutText || '');
         setImageUrl(data.imageUrl || '');
+
+        setTimeout(() => {
+          animateSectionsStagger();
+        }, 500);
       }
     };
 
     fetchAbout();
   }, []);
+
+  const animateSectionsStagger = () => {
+    gsap.fromTo(
+      aboutRef.current.querySelectorAll(`.${styles.contentSection}`),
+      {
+        autoAlpha: 0,
+        y: 50,
+      },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.5,
+        stagger: 0.2,
+      }
+    );
+  };
+
 
   const renderHighlightText = (text) => {
     return text.split(' ').map((word, index) => {
@@ -41,6 +64,24 @@ const About = () => {
     });
   };
 
+  const revealContent = (index) => () => {
+    setActiveSection(index);
+  }
+
+  const toggleContent = (index) => (e) => {
+    e.stopPropagation();
+    if (activeSection === index) {
+      setActiveSection(null);
+    } else {
+      setActiveSection(index);
+    }
+  }
+
+  const closeContent = (e) => {
+    e.stopPropagation();
+    setActiveSection(null);
+  }
+
   return (
     <section className={styles.about} ref={aboutRef}>
       <div className={styles.container}>
@@ -49,35 +90,46 @@ const About = () => {
         <p className={styles.aboutParagraph}>{description}</p>
       </div>
 
-      <div className={styles.gridContainer}>
+      <div className={`${styles.gridContainer} ${activeSection !== null ? styles.oneColumn : ''}`}>
         {sections.map((section, index) => (
-          <div key={index} className={styles.contentSection}>
-            <h2 className={styles.h2}>{section.title}</h2>
-            <div className={styles.headerContainer}>
+          <div key={index} className={`${styles.contentSection} ${activeSection === index ? styles.active : ''}
+            ${activeSection !== null && activeSection !== index ? styles.inactive : ''}`}>
+
+            {activeSection === index && (
+              <button className={styles.closeButton} onClick={(e) => closeContent(e)}>
+                <svg className={styles.closeIcon} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m136-80-56-56 264-264H160v-80h320v320h-80v-184L136-80Zm344-400v-320h80v184l264-264 56 56-264 264h184v80H480Z" /></svg>
+              </button>
+            )}
+
+            <div className={styles.headerContainer} onClick={toggleContent(index)}>
+              <h2 className={styles.h2}>{section.title}</h2>
               <img src={section.imageUrl} alt={section.title} />
             </div>
-            <h3 className={styles.h3}>{section.subTitle}</h3>
 
-            {/* Render content dynamically */}
-            {section.content.map((content, contentIndex) => {
-              if (content.type === 'paragraph') {
-                return (
-                  <p key={contentIndex} className={styles.paragraph}>
-                    {content.text}
-                  </p>
-                );
-              }
-              if (content.type === 'bullets') {
-                return (
-                  <ul key={contentIndex} className={styles.list}>
-                    {content.bullets.map((bullet, bulletIndex) => (
-                      <li key={bulletIndex}>{bullet}</li>
-                    ))}
-                  </ul>
-                );
-              }
-              return null; // Fallback for unknown content types
-            })}
+            {activeSection === index && (
+              <div className={styles.content}>
+                {/* Render content dynamically */}
+                {section.content.map((content, contentIndex) => {
+                  if (content.type === 'paragraph') {
+                    return (
+                      <p key={contentIndex} className={styles.paragraph}>
+                        {content.text}
+                      </p>
+                    );
+                  }
+                  if (content.type === 'bullets') {
+                    return (
+                      <ul key={contentIndex} className={styles.list}>
+                        {content.bullets.map((bullet, bulletIndex) => (
+                          <li key={bulletIndex}>{bullet}</li>
+                        ))}
+                      </ul>
+                    );
+                  }
+                  return null; // Fallback for unknown content types
+                })}
+              </div>
+            )}
           </div>
         ))}
       </div>
