@@ -178,11 +178,15 @@ button.dragButton:hover {
 
 
 .sortableContent {
-    cursor: grab;
 
-    &:active {
-        cursor: grabbing;
+    .contentInner {
+        cursor: grab;
+
+        &:active {
+            cursor: grabbing;
+        }
     }
+
 }
 
 .aboutHeader {
