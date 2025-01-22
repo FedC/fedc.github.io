@@ -7,6 +7,7 @@ import * as styles from './HomeProjectList.module.scss';
 
 const HomeProjectList = ({ projects, headerAnimationComplete }) => {
   const listRef = useRef(null);
+  const footerRef = useRef(null);
   const [openProjects, setOpenProjects] = useState([]);
   const [loadingContentImages, setLoadingContentImages] = useState([]);
   const [imageAspectRatios, setImageAspectRatios] = useState({});
@@ -44,6 +45,8 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
       // Set up the draggable effect for the project list
       setupDraggableToToggleProject();
+
+      setupFooterAnimation();
     }
   }, [headerAnimationComplete]);
 
@@ -75,6 +78,52 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
     calculateAspectRatios();
   }, [projects]);
+
+  const setupFooterAnimation = () => {
+    const footerItems = footerRef.current.querySelectorAll(`.${styles.footerInner} > div`);
+
+    gsap.fromTo(
+      footerRef.current,
+      {
+        opacity: 0,
+        y: -50,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: 'top bottom', // Animation starts when footer is just about to enter the viewport
+          end: 'center bottom', // Animation ends when the footer's center is in the viewport
+          scrub: true, // Makes the animation smoother as the user scrolls
+          toggleActions: 'play none none none', // Play once
+        },
+      }
+    );
+
+    // Stagger animation for child elements
+    gsap.fromTo(
+      footerItems,
+      {
+        opacity: 0,
+        y: 20,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: 'top bottom',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+  };
 
   const getAspectRatioClass = (ratio) => {
     if (ratio > 1.1) return styles.aspectLandscape; // Landscape
@@ -108,6 +157,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     await preloadImages(`.${styles.projectMainImage}`);
 
     gsap.set(gridRef.current, { y: '100vh' });
+    gsap.set(footerRef.current, { opacity: 0 });
 
     gsap.to(gridRef.current, {
       y: 0,
@@ -135,16 +185,11 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
       },
     });
 
-    // repeat the items in the grid to create a seamless loop
-    const grid = gridRef.current;
-    const gridItems = Array.from(grid.querySelectorAll('.projectItem'));
-    const gridItemsLength = gridItems.length;
-    const cloneItems = gridItems.map((item) => item.cloneNode(true));
-    cloneItems.forEach((clone, index) => {
-      clone.classList.add('clone');
-      clone.dataset.projectId = gridItems[index % gridItemsLength].dataset.projectId;
-      grid.appendChild(clone);
-    });
+    gsap.to(footerRef.current, {
+      opacity: 1,
+      duration: 2,
+      ease: 'ease',
+    }, '<');
 
     window.addEventListener('wheel', (e) => {
       const scrollingSideWays = Math.abs(e.deltaX) > Math.abs(e.deltaY);
@@ -155,7 +200,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
     // const gridItems = Object.values(projectRefs.current); // Collect all grid items
 
-    // scaleListItems();
     animateMarqueeOnScroll();
   };
 
@@ -178,48 +222,20 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     );
   };
 
-  const scaleListItems = () => {
-    const listItems = Object.values(projectRefs.current);
-    const listItemsArray = Array.from(listItems);
-    listItemsArray.forEach((box, index) => {
-      const projectId = box.dataset.projectId;
-      if (openProjects.includes(projectId)) {
-        return;
-      }
-
-      gsap.to(box, {
-        scrollTrigger: {
-          trigger: box,
-          start: "bottom center",
-          end: "bottom top",
-          scrub: true,
-        },
-        scale: .9,
-        duration: 0.5,
-        ease: 'sine',
+  const resetScale = () => {
+    const gridElement = gridRef.current;
+    if (gridElement) {
+      gsap.to(gridElement, {
+        scale: 1,
+        duration: 3,
+        ease: 'ease',
       });
-
-      gsap.fromTo(box, {
-        scale: .9,
-      },
-        {
-          scrollTrigger: {
-            trigger: box,
-            start: "top bottom",
-            end: "center center",
-            scrub: true,
-          },
-          scale: 1,
-          duration: 0.5,
-          ease: 'sine',
-        });
-    });
+    }
   };
 
   const updateVelocityScale = (velocity) => {
     const gridElement = gridRef.current;
     if (!gridElement) return;
-    // console.log('velocity', velocity);
 
     const gridItems = Object.values(projectRefs.current);
     if (!gridItems.length) return;
@@ -234,7 +250,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     );
 
     if (previousScale.current !== calcScale) {
-      const scaleDirection = calcScale > previousScale.current ? 1 : -1;
       let scale = Math.max(
         Math.min(calcScale, maxScaleOffset),
         minimumScaleOffset
@@ -246,7 +261,12 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
         transformOrigin: 'center center',
         ease: 'power2.out',
         overwrite: true,
-        // onComplete: snapToGrid,
+        onComplete: () => {
+          const isTweening = gsap.isTweening();
+          if (!isTweening) {
+            resetScale();
+          }
+        },
         snap: {
           snapTo: 1,
           duration: { min: 0.2, max: 3 }, // the snap animation should be at least 0.2 seconds, but no more than 3 seconds (determined by velocity)
@@ -258,6 +278,34 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
       previousScale.current = calcScale;
     }
   };
+
+  const getClosestProjectItemToCenter = () => {
+    const windowCenterX = window.innerWidth / 2;
+    const windowCenterY = window.innerHeight / 2;
+
+    let closestElement = null;
+    let closestDistance = Infinity;
+
+    const elements = document.querySelectorAll(`.${styles.projectItem}`); // Select all elements
+
+    elements.forEach(element => {
+      const rect = element.getBoundingClientRect();
+      const elementCenterX = rect.left + rect.width / 2;
+      const elementCenterY = rect.top + rect.height / 2;
+
+      const distance = Math.sqrt(
+        Math.pow(elementCenterX - windowCenterX, 2) +
+        Math.pow(elementCenterY - windowCenterY, 2)
+      );
+
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestElement = element;
+      }
+    });
+
+    return closestElement;
+  }
 
   let proxy = { y: 0 };
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -434,7 +482,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
               gsap.set(contentSelector, { x: updatedMainImageWidth, opacity: 0 });
               gsap.set(`#project-${projectId}`, { overflow: 'visible' });
-              gsap.set(projectRef.querySelector(`.${styles.projectDescriptionIconButton}`), { display: 'flex' });
+              gsap.set(projectRef.querySelectorAll(`.${styles.projectDescriptionIconButton}`), { display: 'flex' });
 
               tl.fromTo(contentSelector, {
                 duration: 1,
@@ -515,7 +563,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
             },
           });
 
-      });
+        });
 
     }, 100);
 
@@ -834,6 +882,11 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     );
   };
 
+  const prettySqft = (sqft) => {
+    if (!sqft) return '';
+    return `${sqft.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} sqft`;
+  }
+
   return (
     <>
       <div className={styles.projectList} ref={listRef}>
@@ -856,14 +909,15 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                     ref={(el) => (projectRefs.current[project.id] = el)}
                     onClick={() => toggleProject(project.id)}
                   >
-                    <div className={styles.mainImageWrapper} ref={(el) => el && imageRefs.current[project.id].push(el)}>
-                      <img
-                        className={styles.projectMainImage}
-                        src={project.mainImage}
-                        alt={project.title}
-                      />
+                    <div className={styles.projectItemInner}>
+                      <div className={styles.mainImageWrapper} ref={(el) => el && imageRefs.current[project.id].push(el)}>
+                        <img
+                          className={styles.projectMainImage}
+                          src={project.mainImage}
+                          alt={project.title}
+                        />
 
-                      {/* {project.description && openProjects.includes(project.id) && (
+                        {/* {project.description && openProjects.includes(project.id) && (
                       <>
                         <div className={styles.projectDescriptionIconButton}>
                           <button className={styles.projectDescriptionButton} onClick={(e) => toggleProjectDescription(project.id, e)}>
@@ -876,8 +930,15 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                       </>
                     )} */}
 
-                      {loadingContentImages.includes(project.id) && (
-                        <div className={styles.spinner}></div>)}
+                        {loadingContentImages.includes(project.id) && (
+                          <div className={styles.spinner}></div>)}
+                      </div>
+
+                      {(!openProjects.includes(project.id) && !loadingContentImages.includes(project.id)) && (
+                        <div className={styles.projectTitle}>
+                          <h2>{project.title}</h2>
+                        </div>
+                      )}
                     </div>
 
                     {openProjects.includes(project.id) && (
@@ -894,11 +955,17 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                               <div className={styles.projectHeaderTop}>
                                 <h2>{project.title}</h2>
                                 <p className={styles.projectLocation}>{project.location}</p>
+                                {project.type && <p className={styles.type}>{project.type}</p>}
+                                {project.status && <p className={styles.status}>{project.status}</p>}
+                                {project.area && <p className={styles.area}>{prettySqft(project.area)}</p>}
                               </div>
 
                               <div className={styles.projectHeaderInner}>
                                 <h2>{project.title}</h2>
                                 <p className={styles.projectLocation}>{project.location}</p>
+                                {project.type && <p className={styles.type}>{project.type}</p>}
+                                {project.status && <p className={styles.status}>{project.status}</p>}
+                                {project.area && <p className={styles.area}>{prettySqft(project.area)}</p>}
 
                                 {project.description && (
                                   <div className={styles.projectGeneralDescription}>
@@ -965,7 +1032,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                                         src={content.url}
                                         alt={content.title}
                                       />
-                                      {content.description && openProjects.includes(project.id) && (
+                                      {(content.description && openProjects.includes(project.id)) && (
                                         <>
                                           <div className={styles.projectDescriptionIconButton}>
                                             <button
@@ -1036,6 +1103,46 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                               }
                               return null;
                             })}
+
+                          {/* add publications as content items: { title: '', link: '', date: '', imageUrl: '' } */}
+                          {project.publications && project.publications.length > 0 && (
+                            project.publications.map((publication, index) => (
+                              <div key={'publication_' + index} className={`${styles.projectContentItem} ${styles.projectPublicationItem}`}>
+                                
+
+                                <a href={publication.link} target="_blank" rel="noopener noreferrer">
+                                  <button className={styles.projectPublicationButton}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z" /></svg>
+                                  </button>
+                                </a>
+
+                                <div className={styles.projectPublication}>
+                                  <img src={publication.imageUrl} alt={publication.title} />
+                                </div>
+
+                                <div className={styles.projectPublicationDescription}>
+                                  <a href={publication.link} target="_blank" rel="noopener noreferrer">
+                                    <h3>{publication.title}</h3>
+                                  </a>
+                                  <p>{publication.date}</p>
+                                </div>
+                              </div>
+                            ))
+                          )}
+
+
+                          {/* add last section of content for project.teams: Team (discipline listed first and company names second) */}
+                          {project.teams && project.teams.length > 0 && (
+                            <div className={styles.projectContentItem}>
+                              <div className={styles.projectTeamText}>
+                                {project.teams.map((team, index) => (
+                                  <p key={'team_' + index}>
+                                    {team.role} - {team.name}
+                                  </p>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
@@ -1068,6 +1175,47 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
           <span>Planning</span> */}
         </div>
       </div>
+
+      <footer className={styles.footer} ref={footerRef}>
+        {/* carolina@create-dwell.com  |  954 210 0862   |  AR91865 + ID6603 
+        LinkedIn ©2025 by Carolina Wiebe PA, LEED AP BD+C */}
+
+        <div className={styles.footerTop}>
+          {
+            ['Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning']
+              .map((item, index) => (
+                item === 'spacer' ?
+                  <div key={`spacer-${index}`} className={styles.spacer}></div>
+                  :
+                  <span key={`item-${index}`}>{item}</span>
+              ))}
+        </div>
+
+        <div className={styles.footerInner}>
+
+          <div className={styles.footerLeft}>
+            <p>
+              <a href="mailto:carolina@create-dwell.com">carolina@create-dwell.com</a>
+              <span className={styles.spacer}></span>
+              <a href="tel:9542100862">954 210 0862</a>
+              <span className={styles.spacer}></span>
+              AR91865 + ID6603
+            </p>
+          </div>
+
+          <div className={styles.footerRight}>
+            <p>
+              ©2025 by Carolina Wiebe PA, LEED AP BD+C
+            </p>
+          </div>
+        </div>
+
+        <div className={styles.footerBottom}>
+          <small>
+            Built by <a target="_blank" href="https://okcd.io">okcd.io</a>
+          </small>
+        </div>
+      </footer>
     </>
   );
 };

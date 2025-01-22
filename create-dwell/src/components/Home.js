@@ -64,7 +64,7 @@ const Home = () => {
 
   return (
     <>
-      <Header onAnimationEnd={onHeaderAnimationEnd} />
+      <Header onAnimationEnd={onHeaderAnimationEnd} projects={projects} />
       <main className={styles.pageWrapper}>
         <section className="grid-container">
           {/* <ProjectGrid

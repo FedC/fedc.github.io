@@ -59,11 +59,15 @@ const getBaseName = (fileName) => fileName.replace(/\.[^/.]+$/, ""); // Remove t
 
 const teamRoles = [
   'Engineering',
-  'MEP Engineer', // (Mechanical, Electrical, Plumbing)
+  'MEP Engineers', // (Mechanical, Electrical, Plumbing)
+  'Electrical Engineer',
+  'Mechanical Engineer',
+  'Plumbing Engineer',
   'Structural Engineer',
-  'Landscape Design',
+  'Landscape Architect',
+  'Landscape Design & Contractor',
   'Civil Engineer',
-  'Interior Design',
+  'Interior Designer',
   'General Contractor',
   'Photographer',
   'Cost Eliminator',
@@ -298,7 +302,7 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
 
   const handleTeamChange = (index, field, value) => {
     setFormData((prevFormData) => {
-      const updatedTeams = [...prevFormData.teams];
+      const updatedTeams = [...(prevFormData.teams || [])];
       updatedTeams[index][field] = value;
       return { ...prevFormData, teams: updatedTeams };
     });
@@ -307,13 +311,13 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
   const addTeam = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
-      teams: [...prevFormData.teams, { name: '', role: '' }],
+      teams: [...(prevFormData.teams || []), { name: '', role: '' }],
     }));
   };
 
   const removeTeam = (index) => {
     setFormData((prevFormData) => {
-      const updatedTeams = [...prevFormData.teams];
+      const updatedTeams = [...(prevFormData.teams || [])];
       updatedTeams.splice(index, 1);
       return { ...prevFormData, teams: updatedTeams };
     });
@@ -321,7 +325,7 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
 
   const handlePublicationChange = (index, field, value) => {
     setFormData((prevFormData) => {
-      const updatedPublications = [...prevFormData.publications];
+      const updatedPublications = [...(prevFormData.publications || [])];
       updatedPublications[index][field] = value;
       return { ...prevFormData, publications: updatedPublications };
     });
@@ -330,16 +334,54 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
   const addPublication = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
-      publications: [...prevFormData.publications, { title: '', link: '', date: '' }],
+      publications: [...(prevFormData.publications || []), { title: '', link: '', date: '', imageUrl: '' }],
     }));
   };
 
   const removePublication = (index) => {
     setFormData((prevFormData) => {
-      const updatedPublications = [...prevFormData.publications];
+      const updatedPublications = [...(prevFormData.publications || [])];
       updatedPublications.splice(index, 1);
       return { ...prevFormData, publications: updatedPublications };
     });
+  };
+
+  const uploadPublicationImage = async (index, file) => {
+    if (!file) return;
+
+    setLoading(true); // Start loading
+
+    try {
+      const baseName = getBaseName(file.name);
+      const basePath = `projects/${formData.id}/publications/${baseName}`;
+
+      // Upload the original file to Firebase Storage
+      const storageRef = ref(storage, `${basePath}.jpg`);
+      const snapshot = await uploadBytes(storageRef, file);
+
+      // Construct the "large" size path
+      const largeImagePath = `${basePath}_large.jpg`;
+
+      // Wait for the "large" version to be processed
+      const imageUrl = await waitForProcessedFile(largeImagePath);
+      console.log("Processed large image URL:", imageUrl);
+
+      // Update the publications array with the new image URL using the updater function
+      setFormData((prevFormData) => {
+        const updatedPublications = [...(prevFormData.publications || [])];
+        updatedPublications[index].imageUrl = imageUrl;
+        return { ...prevFormData, publications: updatedPublications };
+      });
+
+      console.log('Updated FormData:', formData); // Logs the updated state immediately
+
+      setTimeout(() => handleSubmit(null, formData), 0);
+
+    } catch (error) {
+      console.error("Error uploading publication image:", error);
+    } finally {
+      setLoading(false); // End loading
+    }
   };
 
   // Handle dynamic content change
@@ -503,6 +545,7 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
       }
 
       const dataToSubmit = updatedFormData || formData;
+      debugger;
 
       // Check if data has changed
       if (!isDataChanged(dataToSubmit, originalData) && !updatedFormData) {
@@ -731,6 +774,21 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
             <h3>Publications</h3>
             {formData.publications?.map((pub, index) => (
               <div key={'publication-' + index} className={styles.arrayItem}>
+                <div className={`${styles.contentImageContainer} ${pub.imageUrl ? styles.hasImage : styles.noImage}`}>
+                  <img
+                    id={`content-image-preview-${index}`}
+                    src={pub.imageUrl instanceof File ? URL.createObjectURL(pub.imageUrl) : pub.imageUrl} className={styles.contentImage} />
+
+                  <label htmlFor={`publication-image-upload-${index}`} className={styles.uploadLabel}>Upload Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id={`publication-image-upload-${index}`}
+                    onChange={(e) => uploadPublicationImage(index, e.target.files[0])}
+                    onPointerDown={(e) => e.stopPropagation()} // Prevent drag interaction
+                  />
+                </div>
+
                 <input
                   type="text"
                   placeholder="Publication Title"
@@ -766,12 +824,6 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
             <h3>Teams</h3>
             {formData.teams?.map((team, index) => (
               <div key={'team-' + index} className={styles.arrayItem}>
-                <input
-                  type="text"
-                  placeholder="Team Name"
-                  value={team.name}
-                  onChange={(e) => handleTeamChange(index, 'name', e.target.value)}
-                />
                 <select
                   value={team.role}
                   onChange={(e) => handleTeamChange(index, 'role', e.target.value)}
@@ -781,6 +833,12 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
                     <option key={'role-' + index + i} value={role}>{role}</option>
                   ))}
                 </select>
+                <input
+                  type="text"
+                  placeholder="Team Name"
+                  value={team.name}
+                  onChange={(e) => handleTeamChange(index, 'name', e.target.value)}
+                />
                 <button type="button" onClick={() => removeTeam(index)} className='warn-btn'>Remove</button>
               </div>
             ))}

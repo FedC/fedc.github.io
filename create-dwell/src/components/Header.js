@@ -3,13 +3,15 @@ import { gsap } from 'gsap';
 import * as styles from './Header.module.scss';
 import HalfCircle from './HalfCircle';
 import About from './About';
+import Contact from './Contact';
 import { initSmoothScrolling } from '../js/smoothscroll';
 
-const Header = ({ onAnimationEnd }) => {
+const Header = ({ onAnimationEnd, projects }) => {
   const navRef = useRef(null);
   const navInnerRef = useRef(null);
   const navListRef = useRef(null);
   const logoRef = useRef(null);
+  const contactRef = useRef(null);
 
   const letterRefsCreate = useRef([]);
   const letterRefsDwell = useRef([]);
@@ -22,8 +24,10 @@ const Header = ({ onAnimationEnd }) => {
   const contactLinkMobileRef = useRef(null);
   const aboutRef = useRef(null);
   const closeButtonRef = useRef(null);
+  const closeButtonMobileRef = useRef(null);
 
   const [isAboutVisible, setIsAboutVisible] = useState(false);
+  const [isContactVisible, setIsContactVisible] = useState(false);
 
   let hasFired = false;
   let entryAnimation = false;
@@ -197,6 +201,14 @@ const Header = ({ onAnimationEnd }) => {
     });
   }, [isAboutVisible]);
 
+  useEffect(() => {
+    document.addEventListener('click', (e) => {
+      if (isContactVisible && contactRef.current && !contactRef.current.contains(e.target)) {
+        closeContact();
+      }
+    });
+  }, [isContactVisible]);
+
   const setElementsVisibility = () => {
     const mm = gsap.matchMedia();
     mm.add(
@@ -234,20 +246,23 @@ const Header = ({ onAnimationEnd }) => {
 
   const handleShowAbout = (e) => {
     e.stopPropagation();
+    closeContact(true);
     setIsAboutVisible(true);
 
     // Disable Lenis for smooth scrolling
     if (window.lenis) {
-      window.lenis.stop();
       window.lenis.destroy();
     }
+
+    gsap.set(navListRef.current, { opacity: 0 });
 
     setTimeout(() => {
       gsap.set(aboutRef.current, { opacity: 0 });
       gsap.set(closeButtonRef.current, { opacity: 0 });
-      gsap.set(navListRef.current, {
-        display: 'none',
-      });
+      gsap.set(closeButtonMobileRef.current, { opacity: 0 });
+      // gsap.set(navListRef.current, {
+      //   display: 'none',
+      // });
     });
 
     setTimeout(() => {
@@ -266,6 +281,7 @@ const Header = ({ onAnimationEnd }) => {
         const { isMobile } = context.conditions;
 
         setTimeout(() => {
+
           if (isMobile) {
             tl.to(navRef.current, {
               height: '100vh',
@@ -273,12 +289,22 @@ const Header = ({ onAnimationEnd }) => {
               duration: 0.4,
               ease: 'power2.out',
             });
+            tl.to(closeButtonMobileRef.current, {
+              opacity: 1,
+              duration: 0.2,
+              ease: 'power2.out',
+            }, '<');
             tl.to(logoRef.current, {
               opacity: 0,
               duration: 0.8,
               ease: 'power2.out',
             }, '<');
           } else {
+            tl.to(closeButtonRef.current, {
+              opacity: 1,
+              duration: 0.2,
+              ease: 'power2.out',
+            }, '<');
             tl.to(navRef.current, {
               width: '90vw',
               duration: 0.8,
@@ -286,23 +312,24 @@ const Header = ({ onAnimationEnd }) => {
             });
           }
 
-          tl.to(contactLinkMobileRef.current, {
-            opacity: 0,
-            scale: .2,
-            duration: 0.2,
-            ease: 'power2.out',
-          }, '<');
+          // tl.to(contactLinkMobileRef.current, {
+          //   opacity: 0,
+          //   scale: .2,
+          //   duration: 0.2,
+          //   ease: 'power2.out',
+          // }, '<');
 
           tl.to(aboutRef.current, {
             opacity: 1,
             duration: 0.2,
             ease: 'power2.out',
           });
-          tl.to(closeButtonRef.current, {
+
+          tl.to(navListRef.current, {
             opacity: 1,
             duration: 0.2,
             ease: 'power2.out',
-          }, '<');
+          });
 
         }, 200);
 
@@ -310,7 +337,7 @@ const Header = ({ onAnimationEnd }) => {
     );
   };
 
-  const handleCloseAbout = () => {
+  const handleCloseAbout = (preventLenis) => {
 
     const tl = gsap.timeline();
 
@@ -318,10 +345,9 @@ const Header = ({ onAnimationEnd }) => {
       setIsAboutVisible(false);
 
       // Enable Lenis for smooth scrolling
-      if (window.lenis) {
+      if (window.lenis && !preventLenis) {
         initSmoothScrolling();
       }
-
 
       const mm = gsap.matchMedia();
       mm.add(
@@ -351,16 +377,16 @@ const Header = ({ onAnimationEnd }) => {
               ease: 'power2.out',
             }, '<');
 
-            gsap.to(contactLinkMobileRef.current, {
-              opacity: 1,
-              scale: 1,
-              duration: 0.5,
-              ease: 'bounce.out',
-            }, '<');
+            // gsap.to(contactLinkMobileRef.current, {
+            //   opacity: 1,
+            //   scale: 1,
+            //   duration: 0.5,
+            //   ease: 'bounce.out',
+            // }, '<');
 
-            gsap.set(navListRef.current, {
-              display: 'flex',
-            });
+            // gsap.set(navListRef.current, {
+            //   display: 'flex',
+            // });
           }, 100);
         });
     }
@@ -380,11 +406,185 @@ const Header = ({ onAnimationEnd }) => {
           ease: 'power2.out',
         });
 
-        tl.to(closeButtonRef.current, {
+        if (isMobile) {
+          tl.to(navRef.current, {
+            height: '60px',
+            width: '120px',
+            duration: 0.6,
+            ease: 'ease.out',
+            onComplete: onComplete,
+          }, '<');
+          tl.to(closeButtonMobileRef.current, {
+            opacity: 0,
+            duration: 0.2,
+            ease: 'power2.out',
+          }, '<');
+        } else {
+          tl.to(navRef.current, {
+            width: '120px',
+            duration: 0.6,
+            ease: 'ease.out',
+            onComplete: onComplete,
+          }, '<');
+          tl.to(closeButtonRef.current, {
+            opacity: 0,
+            duration: 0.2,
+            ease: 'power2.out',
+          }, '<');
+        }
+
+
+      },
+    );
+  };
+
+  // useEffect(() => {
+  //   // close about when resizing
+  //   function closeAbout(e) {
+  //     if (isAboutVisible) {
+  //       e.preventDefault();
+  //       handleCloseAbout();
+  //     }
+  //   }
+
+  //   window.addEventListener('resize', closeAbout);
+  //   return () => window.removeEventListener('resize', closeAbout);
+  // });
+
+  const handleShowContact = (e) => {
+    e.stopPropagation();
+    handleCloseAbout(true);
+    setIsContactVisible(true);
+
+    // Disable Lenis for smooth scrolling
+    if (window.lenis) {
+      window.lenis.destroy();
+    }
+
+    gsap.set(navListRef.current, { opacity: 0 });
+
+    setTimeout(() => {
+      gsap.set(contactRef.current, { opacity: 0 });
+    });
+
+    setTimeout(() => {
+      gsap.set(contactRef.current, { overflowY: 'auto' }); // Ensure native scroll for Contact
+    }, 100);
+
+    const tl = gsap.timeline();
+
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        isDesktop: "(min-width: 768px)",
+        isMobile: "(max-width: 767px)",
+      },
+      (context) => {
+        const { isMobile } = context.conditions;
+
+        setTimeout(() => {
+          if (isMobile) {
+            tl.to(navRef.current, {
+              height: '100vh',
+              width: '100vw',
+              duration: 0.4,
+              ease: 'power2.out',
+            });
+            tl.to(closeButtonMobileRef.current, {
+              opacity: 1,
+              duration: 0.2,
+              ease: 'power2.out',
+            }, '<');
+            tl.to(logoRef.current, {
+              opacity: 0,
+              duration: 0.8,
+              ease: 'power2.out',
+            }, '<');
+          } else {
+            tl.to(closeButtonRef.current, {
+              opacity: 1,
+              duration: 0.2,
+              ease: 'power2.out',
+            }, '<');
+            tl.to(navRef.current, {
+              width: '90vw',
+              duration: 0.8,
+              ease: 'power2.out',
+            });
+          }
+
+          tl.to(contactRef.current, {
+            opacity: 1,
+            duration: 0.2,
+            ease: 'power2.out',
+          });
+
+          tl.to(navListRef.current, {
+            opacity: 1,
+            duration: 0.2,
+            ease: 'power2.out',
+          });
+        }, 200);
+      },
+    );
+  };
+
+  const closeContact = (preventLenis) => {
+    const tl = gsap.timeline();
+
+    function onComplete() {
+      setIsContactVisible(false);
+
+      // Enable Lenis for smooth scrolling
+      if (window.lenis && !preventLenis) {
+        initSmoothScrolling();
+      }
+
+      const mm = gsap.matchMedia();
+      mm.add(
+        {
+          isDesktop: "(min-width: 768px)",
+          isMobile: "(max-width: 767px)",
+        },
+        (context) => {
+          const { isMobile } = context.conditions;
+
+          if (isMobile) {
+            gsap.set(contactLinkMobileRef.current, { opacity: .9, scale: .8 });
+          } else {
+            gsap.set(contactLinkRef.current, { opacity: .9, scale: .8 });
+          }
+
+          setTimeout(() => {
+            if (isMobile) {
+              gsap.to(contactLinkMobileRef.current, { scale: 1, opacity: 1, duration: 0.5, ease: 'bounce.out' }, '<');
+            } else {
+              gsap.to(contactLinkRef.current, { scale: 1, opacity: 1, duration: 1, ease: 'bounce.out' }, '<');
+            }
+
+            tl.to(logoRef.current, {
+              opacity: 1,
+              duration: 0.8,
+              ease: 'power2.out',
+            }, '<');
+          }, 100);
+        });
+    }
+
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        isDesktop: "(min-width: 768px)",
+        isMobile: "(max-width: 767px)",
+      },
+      (context) => {
+        const { isMobile } = context.conditions;
+
+        tl.to(contactRef.current, {
           opacity: 0,
           duration: 0.2,
           ease: 'power2.out',
-        }, '<');
+        });
 
         if (isMobile) {
           tl.to(navRef.current, {
@@ -394,6 +594,11 @@ const Header = ({ onAnimationEnd }) => {
             ease: 'ease.out',
             onComplete: onComplete,
           }, '<');
+          tl.to(closeButtonMobileRef.current, {
+            opacity: 0,
+            duration: 0.2,
+            ease: 'power2.out',
+          }, '<');
         } else {
           tl.to(navRef.current, {
             width: '120px',
@@ -401,34 +606,27 @@ const Header = ({ onAnimationEnd }) => {
             ease: 'ease.out',
             onComplete: onComplete,
           }, '<');
+          tl.to(closeButtonRef.current, {
+            opacity: 0,
+            duration: 0.2,
+            ease: 'power2.out',
+          }, '<');
         }
-      },
-    );
-  };
-
-  useEffect(() => {
-    // close about when resizing
-    function closeAbout(e) {
-      if (isAboutVisible) {
-        e.preventDefault();
-        handleCloseAbout();
       }
-    }
-
-    window.addEventListener('resize', closeAbout);
-    return () => window.removeEventListener('resize', closeAbout);
-  });
+    );
+  }
 
   return (
     <>
       <nav className={styles.nav} id="verticalnav" ref={navRef}>
-        <div className={styles.nav__inner} ref={navInnerRef}>
 
-          {isAboutVisible && (
-            <button className={styles.closeButton} onClick={handleCloseAbout} ref={closeButtonRef}>
-              <svg className={styles.closeIcon} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
-            </button>
-          )}
+        {isAboutVisible && (
+          <button className={`${styles.closeButton} ${styles.closeButtonMobile}`} onClick={handleCloseAbout} ref={closeButtonMobileRef}>
+            <svg className={styles.closeIcon} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
+          </button>
+        )}
+
+        <div className={styles.nav__inner} ref={navInnerRef}>
 
           <div className={styles.nav__logo}>
             <div ref={logoRef} className={styles.logoSvg}>
@@ -442,9 +640,7 @@ const Header = ({ onAnimationEnd }) => {
                   {letter}
                 </span>
               ))}
-
               <HalfCircle />
-
               {['D', 'W', 'E', 'L', 'L'].map((letter, index) => (
                 <span
                   key={`dwell-${letter}-${index}`}
@@ -458,28 +654,58 @@ const Header = ({ onAnimationEnd }) => {
             </div>
           </div>
 
-          {isAboutVisible && (
-            <div className={styles.nav__aboutContent} ref={aboutRef}>
-              <About />
-            </div>
-          )}
+          <div className={`${styles.nav__content} ${isAboutVisible || isContactVisible ? styles.nav__contentAboutVisible : ''}`}>
 
-          <div className={styles.nav__list} ref={navListRef}>
-            {!isAboutVisible && (
-              <div className={styles.nav__item}>
-                <a href="#about" className={styles.aboutLink}>
-                  <div className={styles.aboutCircleDesktop} ref={aboutLinkRef} data-content="About" onClick={handleShowAbout}>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(246, 171, 11)"><path d="M360-320q33 0 56.5-23.5T440-400q0-33-23.5-56.5T360-480q-33 0-56.5 23.5T280-400q0 33 23.5 56.5T360-320Zm240 0q33 0 56.5-23.5T680-400q0-33-23.5-56.5T600-480q-33 0-56.5 23.5T520-400q0 33 23.5 56.5T600-320ZM480-520q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520Zm0 440q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
-                  </div></a>
+            {isAboutVisible && (
+              <div className={`${styles.nav__aboutContent} js-about-scroll-container`} ref={aboutRef}>
+                <About parentScroller={aboutRef.current} />
               </div>
             )}
 
-            <div className={styles.nav__item}>
-              <a href="#contact" className={styles.aboutLink}>
-                <div className={styles.contactCircleDesktop} ref={contactLinkRef} data-content="Contact">
-                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(246, 171, 11)"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480v58q0 59-40.5 100.5T740-280q-35 0-66-15t-52-43q-29 29-65.5 43.5T480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480v58q0 26 17 44t43 18q26 0 43-18t17-44v-58q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93h200v80H480Zm0-280q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Z" /></svg></div></a>
+            {isContactVisible && (
+              <div className={`${styles.nav__contactContent} js-contact-scroll-container`} ref={contactRef}>
+                <Contact parentScroller={contactRef.current} projects={projects} />
+              </div>
+            )}
+
+            <div className={styles.nav__list} ref={navListRef}>
+              {!isAboutVisible && (
+                <div className={styles.nav__item}>
+                  <a href="#about" className={styles.aboutLink}>
+                    <div className={styles.aboutCircleDesktop} ref={aboutLinkRef} data-content="About" onClick={handleShowAbout}>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="32px" fill="rgb(246, 171, 11)"><path d="M0-240v-63q0-43 44-70t116-27q13 0 25 .5t23 2.5q-14 21-21 44t-7 48v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-26-6.5-49T754-397q11-2 22.5-2.5t23.5-.5q72 0 116 26.5t44 70.5v63H780Zm-455-80h311q-10-20-55.5-35T480-370q-55 0-100.5 15T325-320ZM160-440q-33 0-56.5-23.5T80-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T160-440Zm640 0q-33 0-56.5-23.5T720-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T800-440Zm-320-40q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm0-80q17 0 28.5-11.5T520-600q0-17-11.5-28.5T480-640q-17 0-28.5 11.5T440-600q0 17 11.5 28.5T480-560Zm1 240Zm-1-280Z" /></svg>
+                    </div></a>
+                </div>
+              )}
+
+              {isAboutVisible && (
+                <div className={styles.nav__item}>
+                  <button className={styles.closeButton} onClick={handleCloseAbout} ref={closeButtonRef}>
+                    <svg className={styles.closeIcon} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
+                  </button>
+                </div>
+              )}
+
+              {isContactVisible && (
+                <div className={styles.nav__item}>
+                  <button className={styles.closeButton} onClick={closeContact} ref={closeButtonRef}>
+                    <svg className={styles.closeIcon} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
+                  </button>
+                </div>
+              )}
+
+              {!isContactVisible && (
+                <div className={styles.nav__item}>
+                  <a href="#contact" className={styles.aboutLink}>
+                    <div className={styles.contactCircleDesktop} ref={contactLinkRef} data-content="Contact" onClick={handleShowContact}>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="34px" fill="rgb(246, 171, 11)"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z" /></svg>
+                    </div></a>
+                </div>
+              )}
             </div>
+
           </div>
+
         </div>
       </nav>
 
@@ -494,16 +720,22 @@ const Header = ({ onAnimationEnd }) => {
       {!isAboutVisible && (
         <a href="#about" className={styles.aboutCircleMobile} ref={aboutLinkMobileRef} data-content="About" onClick={handleShowAbout}>
           <div>
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M360-320q33 0 56.5-23.5T440-400q0-33-23.5-56.5T360-480q-33 0-56.5 23.5T280-400q0 33 23.5 56.5T360-320Zm240 0q33 0 56.5-23.5T680-400q0-33-23.5-56.5T600-480q-33 0-56.5 23.5T520-400q0 33 23.5 56.5T600-320ZM480-520q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520Zm0 440q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" /></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="32px" fill="white"><path d="M0-240v-63q0-43 44-70t116-27q13 0 25 .5t23 2.5q-14 21-21 44t-7 48v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Zm540 0v-65q0-26-6.5-49T754-397q11-2 22.5-2.5t23.5-.5q72 0 116 26.5t44 70.5v63H780Zm-455-80h311q-10-20-55.5-35T480-370q-55 0-100.5 15T325-320ZM160-440q-33 0-56.5-23.5T80-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T160-440Zm640 0q-33 0-56.5-23.5T720-520q0-34 23.5-57t56.5-23q34 0 57 23t23 57q0 33-23 56.5T800-440Zm-320-40q-50 0-85-35t-35-85q0-51 35-85.5t85-34.5q51 0 85.5 34.5T600-600q0 50-34.5 85T480-480Zm0-80q17 0 28.5-11.5T520-600q0-17-11.5-28.5T480-640q-17 0-28.5 11.5T440-600q0 17 11.5 28.5T480-560Zm1 240Zm-1-280Z" /></svg>
           </div>
         </a>
       )}
 
-      <a href="#contact" className={styles.contactCircleMobile} ref={contactLinkMobileRef} data-content="Contact">
-        <div >
-          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480v58q0 59-40.5 100.5T740-280q-35 0-66-15t-52-43q-29 29-65.5 43.5T480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480v58q0 26 17 44t43 18q26 0 43-18t17-44v-58q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93h200v80H480Zm0-280q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Z" /></svg>
-        </div>
-      </a>
+      {!isContactVisible && (
+        <a href="#contact"
+          className={`${styles.contactCircleMobile} ${isAboutVisible || isContactVisible ? styles.contactCircleMobileWhite : ''}`}
+          ref={contactLinkMobileRef}
+          data-content="Contact"
+          onClick={handleShowContact}>
+          <div >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="34px" fill="white"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z" /></svg>
+          </div>
+        </a>
+      )}
 
     </>
   );

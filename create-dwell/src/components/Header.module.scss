@@ -8,9 +8,8 @@
     --frame-z-index: 600;
 }
 
-@mixin button-styles($name, $size) {
+@mixin circle-button($name, $size) {
     .#{$name} {
-        position: absolute;
         z-index: 1;
         display: flex;
         align-items: center;
@@ -23,10 +22,11 @@
         cursor: pointer;
         background-color: #ffffff;
         border-radius: 50%;
-        box-shadow: 0 3px 7px rgba(47, 47, 47, 0.3);
+        // box-shadow: 0 3px 7px rgba(47, 47, 47, 0.3);
         font-style: italic;
         font-weight: bold;
         font-family: monospace;
+        margin: auto;
 
         svg {
             fill: var(--color-link);
@@ -161,6 +161,10 @@
         width: 100%;
         height: 100%;
         margin: 0 auto 0;
+
+        @media screen and (max-width: 767px) {
+            display: none;
+        }
     }
 
     &__item {
@@ -231,6 +235,7 @@
 }
 
 .aboutLink,
+.contactLink,
 a {
     text-decoration: none;
 }
@@ -239,10 +244,10 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 62px;
-    height: 62px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, .86);
+    background-color: rgba(255, 255, 255, 1);
     color: var(--color-link);
     font-size: 22px;
     font-weight: 300;
@@ -310,7 +315,7 @@ a {
 .aboutCircleMobile {
     @extend .circleHover;
     position: fixed;
-    top: 10px;
+    top: 8px;
     right: 10px;
     width: 48px;
     height: 48px;
@@ -337,11 +342,11 @@ a {
 
 .contactCircleMobile {
     @extend .circleHover;
-    width: 62px;
-    height: 62px;
+    // width: 62px;
+    // height: 62px;
     position: fixed;
-    bottom: 5px;
-    left: 8px;
+    bottom: 10px;
+    left: 10px;
     z-index: var(--nav-z-index);
     background-color: rgb(246, 171, 11, .8);
     -webkit-backdrop-filter: blur(1px);
@@ -360,16 +365,35 @@ a {
     svg {
         transform: translateY(3px);
     }
+
+    &.contactCircleMobileWhite {
+        background-color: white;
+        color: var(--color-link);
+
+        &::before {
+            background-color: var(--color-link);
+        }
+
+        &::after {
+            color: white;
+        }
+
+        svg {
+            fill: var(--color-link);
+        }
+    }
 }
 
 .aboutCircleDesktop {
     @extend .circleHover;
+    width: 48px;
+    height: 48px;
 }
 
 .contactCircleDesktop {
     @extend .circleHover;
-    width: 68px;
-    height: 68px;
+    // width: 68px;
+    // height: 68px;
 }
 
 @media screen and (min-width: 768px) {
@@ -386,6 +410,22 @@ a {
     .aboutCircleDesktop,
     .contactCircleDesktop {
         display: none;
+    }
+}
+
+.nav__content {
+    height: 100%;
+
+    &.nav__contentAboutVisible {
+        display: grid;
+        grid-template-columns: 1fr 84px;
+        width: 100%;
+    }
+
+    @media screen and (max-width: 767px) {
+        &.nav__contentAboutVisible {
+            grid-template-columns: 1fr;
+        }
     }
 }
 
@@ -490,19 +530,36 @@ a {
     }
 }
 
+.nav__contactContent {
+    @extend .nav__aboutContent;
+}
+
 
 nav {
-    @include button-styles(closeButton, 68px);
+    @include circle-button(closeButton, 48px);
    .closeButton {
         z-index: var(--cursor-z-index);
-        top: 70px;
-        right: -34px;
+        // top: 70px;
+        // right: -34px;
+    }
+
+    @include circle-button(closeButtonMobile, 48px);
+
+    .closeButtonMobile {
+        z-index: var(--cursor-z-index);
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        display: none;
+    }
+
+    .closeButton svg {
+        width: 32px;
     }
 
     @media screen and (max-width: 768px) {
         .closeButton {
-            right: 10px;
-            top: 10px;
+            display: block;
             width: 48px;
             height: 48px;
         }

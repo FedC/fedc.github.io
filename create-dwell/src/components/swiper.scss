@@ -1,0 +1,129 @@
+.swiper {
+  width: 100%;
+  height: auto;
+  padding: 50px 0 80px 0;
+}
+
+.swiper-wrapper {
+  // align-items: center;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+
+  @media (max-width: 600px) {
+    padding: 20px;
+  }
+
+  @media (max-width: 1024px) {
+    padding: 30px;
+  }
+}
+
+.swiper-pagination-bullet {
+  background: #473d27;
+  opacity: 0.7;
+}
+
+.swiper-pagination-bullet-active {
+  background: #473d27;
+  opacity: 1;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  position: absolute;
+  bottom: 20px; /* Position at bottom */
+  top: auto;  /* Reset top position */
+  transform: translateX(-50%);
+  color: #473d27; /* Custom color */
+  font-size: 24px; /* Adjust size */
+  z-index: 10;
+}
+
+.swiper-button-prev {
+  left: 45%;  /* Centering left arrow */
+}
+
+.swiper-button-next {
+  left: 55%;  /* Centering right arrow */
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 20px; /* Adjust arrow size */
+}
+
+@media (max-width: 768px) {
+  .swiper-button-prev {
+    left: 40%;
+  }
+  .swiper-button-next {
+    left: 60%;
+  }
+}
+
+.swiper-prev-top, .swiper-next-top,
+.swiper-prev-bottom, .swiper-next-bottom {
+  border: 1px solid white;
+  padding: 6px 30px;
+  font-size: 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  background-color: transparent;
+  transition: background 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    transform: translate3d(0, 100%, 0);
+    transition: transform 0.4s cubic-bezier(.165,.84,.44,1), opacity 0.4s cubic-bezier(.165,.84,.44,1);
+    z-index: 1;
+  }
+
+  svg {
+    fill: white;
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.swiper-prev-top:hover, .swiper-next-top:hover,
+.swiper-prev-bottom:hover, .swiper-next-bottom:hover {
+
+  svg {
+    fill: var(--color-link);
+  }
+
+  &::after {
+    background-color: white;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.swiper-prev-bottom svg,
+.swiper-prev-top svg {
+  transform: translate3d(5px, 3px, 0);
+}
+
+.swiper-next-bottom svg,
+.swiper-next-top svg {
+  transform: translate3d(1px, 3px, 0);
+}
+
+.swiper-button-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

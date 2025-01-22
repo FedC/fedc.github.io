@@ -28,9 +28,14 @@
     font-style: italic;
     font-weight: bold;
     font-family: monospace;
+    transition: all .2s ease-in-out;
 
     svg {
       fill: var(--color-link);
+    }
+
+    &:hover {
+      transform: scale(1.1);
     }
   }
 }
@@ -40,7 +45,7 @@
   height: 100%;
   overflow: hidden;
   padding-top: 100px;
-  padding-bottom: 10vh;
+  padding-bottom: 50px;
   position: relative;
   z-index: var(--grid-z-index);
 
@@ -59,7 +64,30 @@
     cursor: pointer;
     display: flex;
     position: relative;
-    overflow: hidden;
+    // overflow: hidden;
+
+    .projectItemInner {
+      position: relative;
+
+      .projectTitle {
+        position: absolute;
+        top: 0;
+        left: calc(100% + 24px);
+        max-width: calc(var(--grid-max-width));
+        width: 100%;
+        text-align: left;
+        
+        h2 {
+          font-family: Theinhardt, sans-serif;
+          font-size: 1.5em;
+          font-weight: 400;
+          text-transform: uppercase;
+          color: var(--color-link);
+          margin-top: 0;
+          margin-bottom: 2px;
+        }
+      }
+    }
 
     .projectMainImage {
       width: 100%;
@@ -261,6 +289,23 @@
             text-align: center;
           }
 
+          .projectTeamText {
+            font-size: 16px;
+            line-height: 1.5;
+            min-width: calc(var(--grid-max-width) - 80px);
+            height: 100%;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+
+            p {
+              margin-top: 0;
+              color: #4f4c4a;
+            }
+          }
+
           .projectQuote {
             font-size: 20px;
             font-style: italic;
@@ -330,6 +375,27 @@
   overflow: hidden;
 
   .projectLocation {
+    color: #afaba6;
+    padding-left: 2px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .status {
+    color: #afaba6;
+    padding-left: 2px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .type {
+    color: #afaba6;
+    padding-left: 2px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .area {
     color: #afaba6;
     padding-left: 2px;
     font-size: 13px;
@@ -427,6 +493,70 @@
   }
 }
 
+
+.projectPublicationItem {
+  position: relative;
+
+  .projectPublicationDescription {
+    width: 100%;
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 20px;
+    background-color: rgba(246, 171, 11, 0.8);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+
+    a {
+      color: white;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    h3 {
+      font-size: 18px;
+      font-weight: 400;
+      font-family: 'Theinhardt', sans-serif;
+      color: white;
+      margin-bottom: 0;
+    }
+
+    p {
+      font-size: 11px;
+      font-weight: bold;
+      color: white;
+      margin-top: 10px;
+    }
+  }
+
+}
+@include button-styles(projectPublicationButton, 10px, bottom);
+
+.projectPublicationButton {
+  right: 10px;
+  width: 48px;
+  height: 48px;
+}
+
+.projectPublication {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: auto;
+    // position: absolute;
+    // top: 0;
+    // left: 0;
+  }
+}
+
+
+
 /* add --grid-max-width-mobile */
 @media screen and (max-width: 53em) {
 	.projectList .projectItem .projectMainImage {
@@ -520,7 +650,7 @@
   pointer-events: none;
 }
 
-.spacer {
+.mark .spacer {
   width: 20px;
   height: 20px;
   background-color: var(--color-link-transparent);
@@ -578,5 +708,120 @@
 
   &:hover {
     color: rgb(171, 171, 171);
+  }
+}
+
+
+.footer {
+  position: relative;
+  opacity: 0;
+
+  .spacer {
+    width: 10px;
+    height: 10px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color-link);
+    background-color: transparent;
+    border-radius: 50%;
+    position: relative;
+    transform: translateY(5px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin: auto 20px;
+  }
+
+  .footerTop {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 46px;
+    font-family: 'Poiret One', sans-serif;
+    color: #5b5750;
+
+    @media screen and (min-width: 768px) {
+    }
+
+    @media screen and (max-width: 768px) {
+      font-size: 16px;
+    }
+  }
+
+  .footerInner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+    margin: 250px 0 20px;
+
+    @media screen and (max-width: 768px) {
+      grid-template-columns: 1fr;
+      margin: 100px 0 20px;
+    }
+
+    @media screen and (min-width: 768px) {
+    }
+
+    // at around 1270px width, the grid should be 1 column
+    @media screen and (max-width: 1270px) {
+      grid-template-columns: 1fr;
+    }
+
+    .spacer {
+      display: inline-block;
+      transform: translateY(0);
+      width: 8px;
+      height: 8px;
+    }
+
+    p {
+      text-align: justify;
+      font-family: 'Poiret One', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.5;
+      color: #5b5750;
+
+      @media screen and (max-width: 768px) {
+        text-align: center;
+      }
+    }
+
+    a {
+      color: #4b3a18;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .footerLeft {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .footerRight {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .footerBottom {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 20px 20px;
+
+    small { 
+      font-size: 12px;
+      color: #5b5750;
+      font-family: 'Poiret One', sans-serif;
+    }
   }
 }
