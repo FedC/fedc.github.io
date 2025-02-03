@@ -934,11 +934,11 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                           <div className={styles.spinner}></div>)}
                       </div>
 
-                      {(!openProjects.includes(project.id) && !loadingContentImages.includes(project.id)) && (
+                      {/* {(!openProjects.includes(project.id) && !loadingContentImages.includes(project.id)) && (
                         <div className={styles.projectTitle}>
                           <h2>{project.title}</h2>
                         </div>
-                      )}
+                      )} */}
                     </div>
 
                     {openProjects.includes(project.id) && (
