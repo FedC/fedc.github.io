@@ -19,11 +19,11 @@
 	<main>
 		<div class="frame">
 			<div class="frame__title-wrap">
-				<h1 class="frame__title">Federico Commisso | Web Developer</h1>
+				<h1 class="frame__title">Okcd.io</h1>
 			</div>
 			<nav class="frame__links">
-				<a href="#about" class="page-link">About</a>
-				<a href="#work" class="page-link">Work</a>
+				<!-- <a href="#about" class="page-link">About</a> -->
+				<!-- <a href="#work" class="page-link">Work</a> -->
 				<a href="#contact" class="page-link">Contact</a>
 			</nav>
 		</div>
@@ -40,14 +40,14 @@
 							</p>
 						</div>
 						<p class="section__paragraph">
-							Hi! I'm a passionate web developer with a background in computer science,
+							<!-- Hi! I'm a passionate web developer with a background in computer science,
 							experienced in building scalable applications at startups
 							such as Squeeze.com and Cloud.com.
-							<br /><br />
+							<br /><br /> -->
 							<a href="#contact" class="section__button page-link">Let's Connect</a>
 						</p>
 					</section>
-					<section class="section" id="about">
+					<!-- <section class="section" id="about">
 						<div class="section__title">
 							<h1 class="section__title-number">02</h1>
 							<h2 class="section__title-text">About Me</h2>
@@ -63,10 +63,10 @@
 							turning innovative ideas into functional,
 							beautiful web applications.
 						</p>
-					</section>
-					<section class="section" id="work">
+					</section> -->
+					<!-- <section class="section" id="work">
 						<div class="section__title">
-							<h1 class="section__title-number">03</h1>
+							<h1 class="section__title-number">02</h1>
 							<h2 class="section__title-text">Work</h2>
 						</div>
 						<div class="section__paragraph">
@@ -91,14 +91,14 @@
 								<a href="https://cloud.com/" target="_blank" class="section__link">Cloud.com</a>
 							</div>
 						</div>
-					</section>
+					</section> -->
 					<section class="section" id="contact">
 						<div class="section__title">
-							<h1 class="section__title-number">04</h1>
+							<h1 class="section__title-number">03</h1>
 							<h2 class="section__title-text">Contact</h2>
 						</div>
 						<p class="section__paragraph">
-							I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
+							Let's build something together!
 						</p>
 
 						<form action="https://formspree.io/f/xpwzwrev" method="POST" id="contact-form">
@@ -200,7 +200,7 @@
 				</div>
 			</div>
 			<div class="layout__line"></div>
-			<div class="layout__footer"><a class="layout__footer-link" href="https://fedc.github.io/">2024 &copy; Federico
+			<div class="layout__footer"><a class="layout__footer-link" href="https://fedc.github.io/"><span id="footer-year">2025</span> &copy; Federico
 					Commisso</a></div>
 		</div>
 	</main>
@@ -214,6 +214,10 @@
 		gtag('js', new Date());
 
 		gtag('config', 'G-KZHL6J943T');
+
+		document.addEventListener('DOMContentLoaded', function () {
+			document.getElementById('footer-year').textContent = new Date().getFullYear();
+		});
 	</script>
 </body>
 
