@@ -147,7 +147,7 @@
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-        padding: 16px;
+        padding: 0 16px;
         position: relative;
         width: 100%;
         height: 100%;
@@ -236,6 +236,7 @@
 
 .aboutLink,
 .contactLink,
+.servicesLink,
 a {
     text-decoration: none;
 }
@@ -244,8 +245,8 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 48px;
-    height: 48px;
+    width: 62px;
+    height: 62px;
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 1);
     color: var(--color-link);
@@ -259,12 +260,18 @@ a {
     z-index: 1;
     overflow: hidden;
     opacity: 0;
-    // box-shadow: 0 3px 7px rgba(47, 47, 47, 0.1);
+    border: 2px solid white;
+    box-shadow: 0 3px 7px rgba(47, 47, 47, 0.1);
     // -webkit-backdrop-filter: blur(6px);
     // backdrop-filter: blur(6px);
 }
 
-.circleHover:hover {
+.circleHover:hover,
+.circleHover.active,
+.homeCicleDesktop.active,
+.aboutCircleDesktop.active,
+.contactCircleDesktop.active,
+.servicesCircleDesktop.active {
     cursor: pointer;
 
     &::before {
@@ -295,6 +302,7 @@ a {
     text-decoration: none;
     color: white;
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    z-index: 10002;
 }
 
 .circleHover::before {
@@ -306,10 +314,9 @@ a {
     height: 100%;
     border-radius: 50%;
     background-color: rgb(246, 171, 11, 1);
-    z-index: -1;
+    z-index: 10001;
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
     transform: translate3d(0, 100%, 0);
-    // box-shadow: 0 3px 7px rgba(47, 47, 47, 0.1);
 }
 
 .aboutCircleMobile {
@@ -384,22 +391,62 @@ a {
     }
 }
 
-.aboutCircleDesktop {
+.servicesCiricleMobile {
     @extend .circleHover;
-    width: 48px;
-    height: 48px;
+    // width: 62px;
+    // height: 62px;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: var(--nav-z-index);
+    background-color: rgb(246, 171, 11, .8);
+    -webkit-backdrop-filter: blur(1px);
+    backdrop-filter: blur(1px);
+    color: white;
+    box-shadow: 0 3px 7px rgba(47, 47, 47, 0.1);
+
+    &::before {
+        background-color: white;
+    }
+
+    &::after {
+        color: var(--color-link);
+    }
+
+    svg {
+        transform: translateY(3px);
+    }
+
+    &.servicesCircleMobileWhite {
+        background-color: white;
+        color: var(--color-link);
+
+        &::before {
+            background-color: var(--color-link);
+        }
+
+        &::after {
+            color: white;
+        }
+
+        svg {
+            fill: var(--color-link);
+        }
+    }
 }
 
-.contactCircleDesktop {
+.homeCicleDesktop,
+.aboutCircleDesktop,
+.contactCircleDesktop,
+.servicesCircleDesktop {
     @extend .circleHover;
-    // width: 68px;
-    // height: 68px;
 }
 
 @media screen and (min-width: 768px) {
 
     .aboutCircleMobile,
-    .contactCircleMobile {
+    .contactCircleMobile,
+    .servicesCiricleMobile {
         display: none;
     }
 }
@@ -408,22 +455,25 @@ a {
 @media screen and (max-width: 767px) {
 
     .aboutCircleDesktop,
-    .contactCircleDesktop {
+    .contactCircleDesktop,
+    .servicesCircleDesktop {
         display: none;
     }
 }
 
 .nav__content {
     height: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
 
-    &.nav__contentAboutVisible {
+    &.nav__contentVisible {
         display: grid;
         grid-template-columns: 1fr 84px;
         width: 100%;
     }
 
     @media screen and (max-width: 767px) {
-        &.nav__contentAboutVisible {
+        &.nav__contentVisible {
             grid-template-columns: 1fr;
         }
     }
@@ -510,33 +560,20 @@ a {
 
 }
 
-.nav__aboutContent {
-    padding-top: 40px;
+.nav__scrollContent {
     width: 100%;
     height: 100%;
     overflow-y: auto;
-    /* Ensure vertical scrolling */
+    background-color: rgb(251, 228, 183);
     position: relative;
-    margin-right: -82px;
-    border: 1px solid red;
-    transform: translate3d(100px, 0, 0);
 
-    &::after {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 68px;
-        background-color: #f6ab0b;
-        z-index: 3;
+    @media screen and (min-width: 768px) {
+        margin-top: -20px;
+        margin-left: -20px;
+        padding-top: 40px;
+        height: calc(100vh + 20px);
     }
 }
-
-.nav__contactContent {
-    @extend .nav__aboutContent;
-}
-
 
 nav {
     @include circle-button(closeButton, 48px);

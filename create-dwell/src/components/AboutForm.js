@@ -115,6 +115,7 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
     const newContent =
       type === 'paragraph'
         ? { type: 'paragraph', text: '', id: `p-${Date.now()}` }
+        : type === 'subtitle' ? { type: 'subtitle', text: '', id: `s-${Date.now()}` }
         : { type: 'bullets', bullets: [], id: `b-${Date.now()}` };
     updatedSections[sectionIndex].content.push(newContent);
     setSections(updatedSections);
@@ -140,7 +141,9 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
   };
 
   const handleAddSection = () => {
-    setSections([...sections, { title: '', subTitle: '', content: [] }]);
+    const updatedSections = [...sections];
+    updatedSections.push({ title: '', subTitle: '', content: [], imageUrl: '' });
+    setSections(updatedSections);
   };
 
   const handleRemoveSection = (index) => {
@@ -422,6 +425,10 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
                           }
                         />
                       )}
+                      {content.type === 'subtitle' && (
+                        <input type="text" value={content.text} onBlur={saveAbout}
+                          onChange={(e) => handleContentChange(sectionIndex, contentIndex, 'text', e.target.value)} />
+                      )}
                       {content.type === 'bullets' && (
                         <div className={styles.bullets}>
                           {content.bullets.map((bullet, bulletIndex) => (
@@ -474,6 +481,10 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
             </DndContext>
 
             <div className={styles.contentActions}>
+              <button className={styles.iconButton} onClick={() => handleAddContent(sectionIndex, 'subtitle')}>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M360-240v-80h480v80H360Zm0-200v-80h480v80H360ZM120-640v-80h720v80H120Z" /></svg>
+                <span>Add Subtitle</span>
+              </button>
               <button className={styles.iconButton} onClick={() => handleAddContent(sectionIndex, 'paragraph')}>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M360-240v-80h480v80H360Zm0-200v-80h480v80H360ZM120-640v-80h720v80H120Z" /></svg>
                 <span>Add Paragraph</span>
@@ -485,6 +496,9 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
             </div>
 
             {/* <button className={styles.warn} onClick={() => handleRemoveSection(sectionIndex)}>Remove Section</button> */}
+            {/* handleAddSection */}
+            <button className={styles.iconButton} onClick={() => handleAddSection()}>Add Section</button>
+            
           </div>
         ))}
       </div>

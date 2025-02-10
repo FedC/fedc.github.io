@@ -77,11 +77,11 @@ const Contact = ({ parentScroller, projects }) => {
         We would love to hear from you! Please fill out the form below and we will get back to you as soon as possible.
       </p>
 
-      <div className={styles.featuredImages}>
+      {/* <div className={styles.featuredImages}>
         {featuredItems.map((item, index) => (
           <img key={index} src={item.imageUrl} alt="Featured" />
         ))}
-      </div>
+      </div> */}
 
       <form onSubmit={handleSubmit} className={styles.contactForm} autoComplete="off">
         <div className={styles.formGroup}>

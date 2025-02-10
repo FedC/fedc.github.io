@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
 import 'swiper/css/navigation';
 import { db } from '../js/firebase';
@@ -8,11 +6,11 @@ import { doc, getDoc } from 'firebase/firestore';
 import { gsap } from 'gsap';
 
 import * as styles from './About.module.scss';
-import './swiper.scss';
+// import SwiperSection from './SwiperSection';
+import AboutSections from './AboutSections';
 
-const About = ({ parentScroller }) => {
+const About = ({ parentScroller, openServices }) => {
   const aboutRef = useRef(null);
-  const sectionsRef = useRef(null);
   const animatedContentRef = useRef(null);
 
   const [title, setTitle] = useState('');
@@ -21,8 +19,6 @@ const About = ({ parentScroller }) => {
   const [aboutText, setAboutText] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [activeSection, setActiveSection] = useState('');
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [swiperInstance, setSwiperInstance] = useState(null);
 
   useEffect(() => {
     const fetchAbout = async () => {
@@ -172,86 +168,8 @@ const About = ({ parentScroller }) => {
         <p className={styles.aboutParagraph}>{renderHighlightAbout(description)}</p>
       </div>
 
-      <div className={styles.sectionsContainer} ref={sectionsRef}>
-        <Swiper
-          spaceBetween={30}
-          slidesPerView={1}
-          navigation={{
-            nextEl: '.swiper-next-top, .swiper-next-bottom',
-            prevEl: '.swiper-prev-top, .swiper-prev-bottom',
-          }}
-          modules={[Navigation]}
-          grabCursor={true}
-          centeredSlides={true}
-          speed={700}
-          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-          onSwiper={(swiper) => setSwiperInstance(swiper)}  // Get the swiper instance
-          breakpoints={{
-            // Small screens (up to 620px)
-            620: {
-              slidesPerView: 1,
-              spaceBetween: 30,
-            },
-            // Medium screens (up to 1024px)
-            768: {
-              slidesPerView: 1,
-              spaceBetween: 50,
-            },
-            // Large screens (1025px and above)
-            1024: {
-              slidesPerView: 2,
-              spaceBetween: 100,
-            }
-          }}
-        >
-          {sections.map((section, index) => (
-            <SwiperSlide key={index} onClick={() => handleSlideClick(index)}>
-
-              <div className={`${styles.contentSection} ${index === activeIndex ? styles.active : ''}`} >
-                <div>
-                  <h2>{section.title}</h2>
-                  <div className={styles.contentSectionImageContainer}>
-                    <img src={section.imageUrl} alt={section.title} className={styles.sectionImage} />
-
-                    {(section.title === 'Service' || section.title === 'Process') && (
-                      <button className={styles.imageInfoIcon} onClick={() => setActiveSection(section)}>
-                        <span>i</span>
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                <div className={styles.contentSectionText}>
-                  <div className={styles.content}>
-                    {section.content.map((content, i) => {
-                      if (content.type === 'paragraph') return <p className={styles.paragraph} key={'p_' + index + '_' + i}>{content.text}</p>;
-                      if (content.type === 'bullets') return <ul className={styles.list} key={'ul_' + index + '_' + i}>{content.bullets.map((b, j) => <li key={'bullet_' + index + '_' + j}>{renderHighlightPrepositions(b)}</li>)}</ul>;
-                      return null;
-                    })}
-                  </div>
-                </div>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-
-        <div className={styles.navigationContainer}>
-          <div className="swiper-prev-top">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" /></svg>
-          </div>
-          <div className="swiper-next-top">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" /></svg>
-          </div>
-        </div>
-        <div className={styles.navigationContainerBottom}>
-          <div className="swiper-prev-bottom">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" /></svg>
-          </div>
-          <div className="swiper-next-bottom">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" /></svg>
-          </div>
-        </div>
-      </div>
+      {/* <SwiperSection sections={sections} /> */}
+      < AboutSections sections={sections} openServices={openServices} />
 
       {activeSection && (
         <div className={styles.activeSection}>
