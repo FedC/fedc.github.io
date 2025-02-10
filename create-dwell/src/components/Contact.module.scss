@@ -7,24 +7,24 @@
 .contactContainer {
   padding: 40px;
   text-align: center;
-  color: white;
+  color: var(--dark-orange-text);
+
+  h2 {
+    font-family: 'Poiret One', sans-serif;
+    font-size: 32px;
+    margin-bottom: 10px;
+  }
+  
+  p {
+    font-size: 18px;
+    color: var(--dark-orange-text);
+    margin-bottom: 30px;
+  }
 
   form {
     max-width: 600px;
     margin: 0 auto;
   }
-}
-
-h2 {
-  font-family: 'Poiret One', sans-serif;
-  font-size: 32px;
-  margin-bottom: 10px;
-}
-
-p {
-  font-size: 18px;
-  color: white;
-  margin-bottom: 30px;
 }
 
 .contactForm {
@@ -37,7 +37,7 @@ p {
   text-align: left;
 
   label {
-    font-weight: bold;
+    font-weight: 400;
     font-size: 16px;
     margin-bottom: 5px;
     display: block;
@@ -47,9 +47,9 @@ p {
   textarea {
     width: 100%;
     padding: 12px;
-    border: 2px solid #ddd;
-    background-color: transparent;
-    color: #333;
+    border: 2px solid var(--dark-orange-text);
+    background-color: white;
+    color: var(--dark-orange-text);
     border-radius: 5px;
     font-size: 16px;
     outline: none;
@@ -64,7 +64,7 @@ p {
     }
 
     &:autofill {
-      background-color: transparent;
+      background-color: white;
     }
   }
 }
