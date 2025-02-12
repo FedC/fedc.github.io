@@ -12,7 +12,7 @@ import About from './About';
 import Contact from './Contact';
 import Services from './Services';
 
-const Header = ({ onAnimationEnd, projects }) => {
+const Header = ({ onAnimationEnd, projects, resetProjects }) => {
 
   const orange = 'rgb(246, 171, 11)';
 
@@ -255,12 +255,12 @@ const Header = ({ onAnimationEnd, projects }) => {
 
     if (isAboutVisible) {
       handleCloseAbout(true);
-    }
-    if (isContactVisible) {
+    } else if (isContactVisible) {
       closeContact(true);
-    }
-    if (isServicesVisible) {
+    } else if (isServicesVisible) {
       handleCloseServices();
+    } else {
+      resetProjects();
     }
   };
 
@@ -860,10 +860,10 @@ const Header = ({ onAnimationEnd, projects }) => {
             <div className={styles.nav__list} ref={navListRef}>
 
               <div className={`${styles.nav__item} ${noneAreOpen ? styles.active : ''}`}>
-                <a href="#" className={styles.homeLink}>
+                <a href="#">
                   <div className={`${styles.aboutCircleDesktop} ${noneAreOpen ? styles.active : ''}`}
                     onClick={handleCloseAll} ref={closeButtonRef} data-content="Home">
-                    <HomeIcon fill="#e8eaed" size={24} className={styles.closeIcon} />
+                    <HomeIcon fill={orange} size={34} />
                   </div>
                 </a>
               </div>
@@ -873,7 +873,7 @@ const Header = ({ onAnimationEnd, projects }) => {
                   <div
                     className={`${styles.aboutCircleDesktop} ${isAboutVisible ? styles.active : ''}`}
                     ref={aboutLinkRef} data-content="About" onClick={handleShowAbout}>
-                    <AboutIcon stroke={orange} fill="white" />
+                    <AboutIcon stroke={orange} />
                   </div>
                 </a>
               </div>
@@ -894,7 +894,7 @@ const Header = ({ onAnimationEnd, projects }) => {
                   <div 
                     className={`${styles.contactCircleDesktop} ${isContactVisible ? styles.active : ''}`}
                     ref={contactLinkRef} data-content="Contact" onClick={handleShowContact}>
-                    <ContactIcon stroke={orange} fill="white" />
+                    <ContactIcon fill={orange} />
                   </div>
                 </a>
               </div>
@@ -917,7 +917,7 @@ const Header = ({ onAnimationEnd, projects }) => {
       {!isAboutVisible && (
         <a href="#about" className={styles.aboutCircleMobile} ref={aboutLinkMobileRef} data-content="About" onClick={handleShowAbout}>
           <div>
-            <AboutIcon stroke="white" fill={orange} />
+            <AboutIcon stroke="white" />
           </div>
         </a>
       )}
@@ -928,7 +928,7 @@ const Header = ({ onAnimationEnd, projects }) => {
           ref={contactLinkMobileRef}
           data-content="Contact"
           onClick={handleShowContact}>
-          <ContactIcon stroke="white" fill={orange} />
+          <ContactIcon fill="white" />
         </a>
       )}
 

@@ -1,0 +1,78 @@
+.processFlow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f8e4bb;
+  padding: 20px;
+  gap: 20px;
+}
+
+.stepContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+
+  color: var(--dark-orange-text);
+  background-color: var( --color-link-transparent);
+  border: 2px solid var( --color-link);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  font-family: 'Poiret One', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--dark-orange-text);
+  margin: 0;
+  line-height: 1.27;
+  text-transform: lowercase;
+}
+
+.stepNumber {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+.stepText {
+  font-family: 'Poiret One', sans-serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--dark-orange-text);
+  line-height: 1.27;
+  text-transform: lowercase;
+}
+
+.approvalCircle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: rgb(243, 233, 212);
+  border: 1px solid white;
+
+
+  font-family: 'Poiret One', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--dark-orange-text);
+  line-height: 1.27;
+  text-transform: lowercase;
+}
+
+.arrow {
+  width: 50px;
+  height: 10px;
+}

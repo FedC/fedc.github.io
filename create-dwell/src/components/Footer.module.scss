@@ -1,0 +1,114 @@
+
+.footer {
+  position: relative;
+  opacity: 0;
+
+  .spacer {
+    width: 10px;
+    height: 10px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--color-link);
+    background-color: transparent;
+    border-radius: 50%;
+    position: relative;
+    transform: translateY(5px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin: auto 20px;
+  }
+
+  .footerTop {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 46px;
+    font-family: 'Poiret One', sans-serif;
+    color: #5b5750;
+
+    @media screen and (min-width: 768px) {
+    }
+
+    @media screen and (max-width: 768px) {
+      font-size: 16px;
+    }
+  }
+
+  .footerInner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+    margin: 50px 0 20px;
+
+    @media screen and (max-width: 768px) {
+      grid-template-columns: 1fr;
+      margin: 100px 0 20px;
+    }
+
+    @media screen and (min-width: 768px) {
+    }
+
+    // at around 1270px width, the grid should be 1 column
+    @media screen and (max-width: 1270px) {
+      grid-template-columns: 1fr;
+    }
+
+    .spacer {
+      display: inline-block;
+      transform: translateY(0);
+      width: 8px;
+      height: 8px;
+    }
+
+    p {
+      text-align: justify;
+      font-family: 'Poiret One', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.5;
+      color: #5b5750;
+
+      @media screen and (max-width: 768px) {
+        text-align: center;
+      }
+    }
+
+    a {
+      color: #4b3a18;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .footerLeft {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .footerRight {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .footerBottom {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 20px 20px;
+
+    small { 
+      font-size: 12px;
+      color: #5b5750;
+      font-family: 'Poiret One', sans-serif;
+    }
+  }
+}

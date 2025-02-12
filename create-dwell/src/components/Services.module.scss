@@ -1,0 +1,131 @@
+.servicesContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+
+  --services-text-color: #473d27;
+
+  height: auto;
+  /* Allow content to dictate height */
+  overflow-y: visible;
+  /* Use the parent container for scrolling */
+  color: var(--services-text-color);
+  font-family: 'Theinhardt', sans-serif;
+  letter-spacing: -0.35px;
+  width: 100%;
+  text-align: center;
+  padding-bottom: 100px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .servicesContent {
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+  }
+  
+  .servicesImage {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 0 20px;
+  }
+}
+
+.servicesTitle {
+  text-align: left;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  font-family: 'Poiret One', sans-serif;
+  font-size: 16x;
+  line-height: 17px;
+  color: var(--color-link);
+}
+
+.servicesSubTitle {
+  text-align: left;
+  margin-top: 0;
+  margin-bottom: 40px;
+  font-family: 'Poiret One', sans-serif;
+  font-size: 38px;
+  line-height: 44px;
+}
+
+.servicesDescription {
+  text-align: left;
+  color: var(--services-text-color);
+  letter-spacing: -0.45px;
+  font-size: 20px;
+  line-height: 1.8125;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+}
+
+.accordionItem {
+  overflow: hidden;
+}
+
+.accordionHeader {
+  background: transparent;
+  width: 100%;
+  padding: 15px;
+  font-size: 1.2rem;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.icon {
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: rotate(180deg);
+  }
+}
+
+.accordion {
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+  font-size: 18px;
+  position: relative;
+  background-color: transparent;
+  appearance: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 4px;
+
+  &.active,
+  &:hover {
+    background-color: #fde9c3;
+  }
+}
+
+.panel {
+  padding: 0 18px;
+  max-height: 0px;
+  overflow: hidden;
+  transition: all 0.3s ease-out;
+  text-align: left;
+  background-color: #fde9c3;
+
+  p {
+    margin: 20px 0 40px 0;
+    text-align: left;
+    color: var(--services-text-color);
+    letter-spacing: -0.45px;
+    font-size: 20px;
+    line-height: 1.8125;
+  }
+}

@@ -25,7 +25,6 @@ FourCircles.propTypes = {
   circles: PropTypes.arrayOf(
     PropTypes.shape({
       text: PropTypes.arrayOf(PropTypes.string).isRequired,
-      color: PropTypes.string.isRequired,
     })
   ).isRequired,
 };

@@ -6,11 +6,14 @@ import { doc, getDoc } from 'firebase/firestore';
 import { gsap } from 'gsap';
 
 import * as styles from './About.module.scss';
+import * as footerStyles from './Footer.module.scss';
 // import SwiperSection from './SwiperSection';
 import AboutSections from './AboutSections';
+import Footer from './Footer';
 
 const About = ({ parentScroller, openServices }) => {
   const aboutRef = useRef(null);
+  const footerRef = useRef(null);
   const animatedContentRef = useRef(null);
 
   const [title, setTitle] = useState('');
@@ -43,6 +46,8 @@ const About = ({ parentScroller, openServices }) => {
 
   const animateSections = () => {
 
+    gsap.set(footerRef.current.querySelector(`.${footerStyles.footer}`), { marginTop: '40px'})
+    gsap.to(footerRef.current.querySelector(`.${footerStyles.footer}`), { opacity: 1, duration: 0.5, delay: 0.5 });
   };
 
 
@@ -186,7 +191,7 @@ const About = ({ parentScroller, openServices }) => {
                         {index < serviceLabels.length - 1 && (
                           <div className={styles.arrow}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#473d27" viewBox="0 0 24 24">
-                              <path d="M4 12l1.41-1.41L11 16.17V3h2v13.17l5.59-5.58L20 12l-8 8-8-8z"/>
+                              <path d="M4 12l1.41-1.41L11 16.17V3h2v13.17l5.59-5.58L20 12l-8 8-8-8z" />
                             </svg>
                           </div>
                         )}
@@ -244,9 +249,13 @@ const About = ({ parentScroller, openServices }) => {
 
       <div className={styles.container}>
         <div className={styles.aboutImageContainer}>
-          <p className={styles.aboutParagraph}>{renderHighlightAbout(aboutText)}</p>
           {imageUrl && <img className={styles.aboutImage} src={imageUrl} alt="About" />}
+          <p className={styles.aboutParagraph}>{renderHighlightAbout(aboutText)}</p>
         </div>
+      </div>
+
+      <div ref={footerRef}>
+        <Footer />
       </div>
     </section>
   );

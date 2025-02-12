@@ -4,8 +4,10 @@ import { Draggable } from 'gsap/Draggable';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { preloadImages } from '../js/utils';
 import * as styles from './HomeProjectList.module.scss';
+import Footer from './Footer';
+import * as footerStyles from './Footer.module.scss';
 
-const HomeProjectList = ({ projects, headerAnimationComplete }) => {
+const HomeProjectList = ({ projects, headerAnimationComplete, projectReset }) => {
   const listRef = useRef(null);
   const footerRef = useRef(null);
   const [openProjects, setOpenProjects] = useState([]);
@@ -29,6 +31,17 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
   const previousScale = useRef(1);
   let scrollDirection;
   let contentFirstMoveX = 240;
+
+  useEffect(() => {
+    if (projectReset) {
+      projects.forEach((project) => {
+        if (openProjects.includes(project.id)) {
+          closeProject(project.id);
+        }
+      });
+      scrollToProject(projects[0].id);
+    }
+  }, [projectReset]);
 
   useEffect(() => {
     gsap.set(gridRef.current, { scale: 1, opacity: 0, y: '10vh' });
@@ -79,11 +92,80 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     calculateAspectRatios();
   }, [projects]);
 
+  const closeProject = async (projectId) => {
+    const projectRef = projectRefs.current[projectId];
+    if (!projectRef) return;
+  
+    const contentSelector = `#project-${projectId} .${styles.projectContent}`;
+    const mainImageSelector = `#project-${projectId} .${styles.projectMainImage}`;
+    const mainImageWrapper = `#project-${projectId} .${styles.mainImageWrapper}`;
+  
+    ScrollTrigger.disable();
+  
+    const tl = gsap.timeline();
+    const mm = gsap.matchMedia();
+    mm.add(
+      {
+        isDesktop: "(min-width: 768px)", // Desktop logic
+        isMobile: "(max-width: 767px)", // Mobile logic
+      },
+      (context) => {
+        const { isDesktop } = context.conditions;
+
+        tl.to(gridRef.current, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          ease: 'power3.out',
+        });
+      
+        // Move content out
+        tl.to(contentSelector, {
+          opacity: 1,
+          x: '100vw',
+          duration: 0.5,
+          ease: 'power3.out',
+        }, '<');
+      
+        // Reset project image size
+        tl.to(mainImageSelector, {
+          scale: .5,
+          filter: 'brightness(1)',
+          duration: 0.5,
+          ease: 'power3.out',
+          onComplete: () => {
+            gsap.set(mainImageSelector, {
+              width: '100%',
+              height: 'auto',
+              maxWidth: isDesktop ? '500px' : '268px',
+              scale: 1,
+            });
+          },
+        }, '<');
+      
+        // Reset position of the project
+        tl.to(projectRef, {
+          x: 0,
+          duration: 0.5,
+          ease: 'power2.out',
+          onComplete: () => {
+            setOpenProjects((prev) => prev.filter((id) => id !== projectId));
+            ScrollTrigger.enable();
+            ScrollTrigger.refresh();
+          },
+        });
+
+      });
+      
+    // Remove wheel event listener
+    // projectRef.removeEventListener('wheel', handleScroll);
+  };
+
   const setupFooterAnimation = () => {
-    const footerItems = footerRef.current.querySelectorAll(`.${styles.footerInner} > div`);
+    const footerItems = footerRef.current.querySelectorAll(`.${footerStyles.footerInner} > div`);
 
     gsap.fromTo(
-      footerRef.current,
+      footerRef.current.querySelector(`.${footerStyles.footer}`),
       {
         opacity: 0,
         y: -50,
@@ -94,7 +176,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
         duration: 1,
         ease: 'power3.out',
         scrollTrigger: {
-          trigger: footerRef.current,
+          trigger: footerRef.current.querySelector(`.${footerStyles.footer}`),
           start: 'top bottom', // Animation starts when footer is just about to enter the viewport
           end: 'center bottom', // Animation ends when the footer's center is in the viewport
           scrub: true, // Makes the animation smoother as the user scrolls
@@ -117,7 +199,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
         ease: 'power3.out',
         stagger: 0.2,
         scrollTrigger: {
-          trigger: footerRef.current,
+          trigger: footerRef.current.querySelector(`.${footerStyles.footer}`),
           start: 'top bottom',
           toggleActions: 'play none none none',
         },
@@ -214,6 +296,10 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
         start: 'top=+25% center',
         end: 'bottom center+=50%',
         scrub: true,
+        onUpdate: (self) => {
+          // const progress = self.progress;
+          // console.log(progress);
+        },
       },
     }).fromTo(
       marqueeInnerRef.current,
@@ -227,10 +313,18 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
     if (gridElement) {
       gsap.to(gridElement, {
         scale: 1,
-        duration: 3,
-        ease: 'ease',
+        duration: 1.22,
+        ease: 'power2.inOut',
       });
     }
+  };
+
+  const scrollToClosestProject = () => {
+    const closestProject = getClosestProjectItemToCenter();
+    if (!closestProject) return;
+    
+    const projectId = closestProject.id.split('-')[1];
+    scrollToProject(projectId);
   };
 
   const updateVelocityScale = (velocity) => {
@@ -255,6 +349,10 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
         minimumScaleOffset
       );
 
+      if (scale > 0.95) {
+        scale = 1;
+      }
+
       gsap.to(gridElement, {
         scale,
         duration: 1,
@@ -266,12 +364,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
           if (!isTweening) {
             resetScale();
           }
-        },
-        snap: {
-          snapTo: 1,
-          duration: { min: 0.2, max: 3 }, // the snap animation should be at least 0.2 seconds, but no more than 3 seconds (determined by velocity)
-          delay: 0.2, // wait 0.2 seconds from the last scroll event before doing the snapping
-          ease: 'power1.inOut' // the ease of the snap animation ("power3" by default)
         },
       });
 
@@ -385,9 +477,10 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
   };
 
   const toggleProject = async (projectId) => {
-    await scrollToProject(projectId);
-
-    if (openProjects.includes(projectId)) return;
+    if (openProjects.includes(projectId)) {
+      scrollToProject(projectId);
+      return;
+    }
 
     const projectRef = projectRefs.current[projectId];
 
@@ -506,6 +599,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
                     setLoadingContentImages((prev) => prev.filter((id) => id !== projectId));
                     ScrollTrigger.enable();
                     ScrollTrigger.refresh();
+                    scrollToProject(projectId);
                   },
                   onUpdate: () => {
                     // // Dynamically calculate the x position of the main image
@@ -521,7 +615,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
 
               const projectContent = document.querySelector(`#project-${projectId} .${styles.projectContent}`);
 
-              scrollToProject(projectId);
               ScrollTrigger.refresh();
               setupDraggable(projectId);
 
@@ -656,8 +749,8 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
             const contentX = gsap.getProperty(scrollRef, 'x');
             const snap = gsap.utils.snap(snappoints);
             const snapX = snap(contentX);
-            console.log(mostVisibleImage);
-            console.log('Snapping to', snapX);
+            // console.log(mostVisibleImage);
+            // console.log('Snapping to', snapX);
             // gsap.to(scrollRef, {
             //   x: snapX,
             //   duration: 0.5,
@@ -1176,46 +1269,9 @@ const HomeProjectList = ({ projects, headerAnimationComplete }) => {
         </div>
       </div>
 
-      <footer className={styles.footer} ref={footerRef}>
-        {/* carolina@create-dwell.com  |  954 210 0862   |  AR91865 + ID6603 
-        LinkedIn ©2025 by Carolina Wiebe PA, LEED AP BD+C */}
-
-        <div className={styles.footerTop}>
-          {
-            ['Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning']
-              .map((item, index) => (
-                item === 'spacer' ?
-                  <div key={`spacer-${index}`} className={styles.spacer}></div>
-                  :
-                  <span key={`item-${index}`}>{item}</span>
-              ))}
-        </div>
-
-        <div className={styles.footerInner}>
-
-          <div className={styles.footerLeft}>
-            <p>
-              <a href="mailto:carolina@create-dwell.com">carolina@create-dwell.com</a>
-              <span className={styles.spacer}></span>
-              <a href="tel:9542100862">954 210 0862</a>
-              <span className={styles.spacer}></span>
-              AR91865 + ID6603
-            </p>
-          </div>
-
-          <div className={styles.footerRight}>
-            <p>
-              ©2025 by Carolina Wiebe PA, LEED AP BD+C
-            </p>
-          </div>
-        </div>
-
-        <div className={styles.footerBottom}>
-          <small>
-            Built by <a target="_blank" href="https://okcd.io">okcd.io</a>
-          </small>
-        </div>
-      </footer>
+      <div ref={footerRef}>
+        <Footer />
+      </div>
     </>
   );
 };
