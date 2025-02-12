@@ -13,6 +13,10 @@ $radius: math.div($diameter, 2);
   position: relative;
 }
 
+.left {
+  border-radius: $radius 0 0 $radius;
+}
+
 .right {
   // border-radius: 0 150px 150px 0; // Flip to right half-circle
   border-radius: 0 $radius $radius 0; // Flip to right half-circle

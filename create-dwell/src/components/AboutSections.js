@@ -29,10 +29,10 @@ const AboutSections = ({ sections, openServices }) => {
   }, []);
 
   return (
-    <div ref={containerRef} className={styles.fullPageContainer}>
+    <div ref={containerRef} className={styles.aboutSectionsContainer}>
       {sections.map((section, index) => (
         <section
-          key={index}
+          key={'section_' + index}
           ref={(el) => (sectionRefs.current[index] = el)}
           className={styles.section}
         >
@@ -44,7 +44,7 @@ const AboutSections = ({ sections, openServices }) => {
                 <h2 className={styles.subtitle}>{section.subTitle}</h2>
                 <div className={styles.content}>
                   {section.content.map((content, i) => {
-                    if (content.type === "paragraph") return <p key={i} className={styles.paragraph}>{content.text}</p>;
+                    if (content.type === "paragraph") return <p key={'text_' + i} className={styles.paragraph}>{content.text}</p>;
                     // if (content.type === "bullets")
                     //   return (
                     //     <ul key={i} className={styles.list}>
@@ -115,7 +115,7 @@ const AboutSections = ({ sections, openServices }) => {
                         {group.subtitle && <h2 className={styles.subtitle}>{group.subtitle}</h2>}
                         <div className={styles.content}>
                           {group.paragraphs.map((paragraph, i) => (
-                            <p key={i} className={styles.paragraph}>{paragraph}</p>
+                            <p key={'text_' + index + '_' + i} className={styles.paragraph}>{paragraph}</p>
                           ))}
                         </div>
                       </div>
@@ -157,7 +157,7 @@ const AboutSections = ({ sections, openServices }) => {
                         {group.subtitle && <h2 className={styles.subtitle}>{group.subtitle}</h2>}
                         <div className={styles.content}>
                           {group.paragraphs.map((paragraph, i) => (
-                            <p key={i} className={styles.paragraph}>{paragraph}</p>
+                            <p key={'p_' + index + '_' + i} className={styles.paragraph}>{paragraph}</p>
                           ))}
                         </div>
                       </div>
@@ -175,7 +175,7 @@ const AboutSections = ({ sections, openServices }) => {
                 <h2 className={styles.subtitle}>{section.subTitle}</h2>
                 <div className={styles.content}>
                   {section.content.map((content, i) => {
-                    if (content.type === "paragraph") return <p key={i} className={styles.paragraph}>{content.text}</p>;
+                    if (content.type === "paragraph") return <p key={'how_' + 'p_' + i} className={styles.paragraph}>{content.text}</p>;
                     return null;
                   })}
 
@@ -213,7 +213,7 @@ const AboutSections = ({ sections, openServices }) => {
                 <h2 className={styles.subtitle}>{section.subTitle}</h2>
                 <div className={styles.content}>
                   {section.content.map((content, i) => {
-                    if (content.type === "paragraph") return <p key={i} className={styles.paragraph}>{content.text}</p>;
+                    if (content.type === "paragraph") return <p key={'who_p_' + i} className={styles.paragraph}>{content.text}</p>;
                     return null;
                   })}
                 </div>

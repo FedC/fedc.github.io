@@ -58,7 +58,7 @@ $pi: math.div(22, 7);
 
 /* Distribute 7 circles evenly using trigonometry */
 @for $i from 1 through 7 {
-  $angle: $i * $pi / 3.5;
+  $angle: math.div($i * $pi, 3.5);
 
   $xOffset: math.cos($angle) * $radius * 1.4;
   $yOffset: math.sin($angle) * $radius * 1.4;
@@ -110,7 +110,7 @@ $pi: math.div(22, 7);
 
   /* Adjust circle positions */
   @for $i from 1 through 7 {
-    $angle: $i * $pi / 3.5;
+    $angle: math.div($i * $pi, 3.5);
 
     $xOffset: math.cos($angle) * $radius * 1.3;
     $yOffset: math.sin($angle) * $radius * 1.3;

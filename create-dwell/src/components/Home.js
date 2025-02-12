@@ -24,6 +24,7 @@ const Home = () => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [headerAnimationComplete, setHeaderAnimationComplete] = useState(false);
+  const [projectReset, setProjectReset] = useState(false);
   let cursor = null;
   let cursorRef = useRef(null);
 
@@ -62,16 +63,23 @@ const Home = () => {
     setHeaderAnimationComplete(true);
   }
 
+  const onResetProjects = () => {
+    setProjectReset(true);
+    setTimeout(() => {
+      setProjectReset(false);
+    }, 100);
+  }
+
   return (
     <>
-      <Header onAnimationEnd={onHeaderAnimationEnd} projects={projects} />
+      <Header onAnimationEnd={onHeaderAnimationEnd} projects={projects} resetProjects={onResetProjects} />
       <main className={styles.pageWrapper}>
         <section className="grid-container">
           {/* <ProjectGrid
             projects={projects}
             // onProjectClick={handleGridItemClick}
           /> */}
-          <HomeProjectList projects={projects} headerAnimationComplete={headerAnimationComplete} />
+          <HomeProjectList projects={projects} headerAnimationComplete={headerAnimationComplete} projectReset={projectReset} />
         </section>
       </main>
 
