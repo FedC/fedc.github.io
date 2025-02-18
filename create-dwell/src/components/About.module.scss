@@ -48,7 +48,7 @@
 h1.heading {
   text-align: center;
   margin-top: 32px;
-  margin-bottom: 40px;
+  margin-bottom: 0;
   font-family: 'Poiret One', sans-serif;
   font-size: 38px;
   line-height: 44px;
@@ -87,12 +87,14 @@ h1.heading .highlight {
   h1.heading {
     font-size: 32px;
     line-height: 38px;
+    margin-top: 68px;
   }
 
   .aboutParagraph {
     font-size: 16px;
     line-height: 1.65;
     padding: 0 20px;
+    margin: 40px auto;
   }
 }
 
@@ -135,6 +137,7 @@ h1.heading .highlight {
     // reverse the order of the image and text
     .aboutImage {
       order: -1;
+      margin: auto;
     }
 
     img {
@@ -146,7 +149,7 @@ h1.heading .highlight {
 
 .aboutImageContainer {
   display: flex;
-  gap: 40px;
+  gap: 100px;
   padding: 20px;
   align-items: flex-start;
   justify-content: space-between;
@@ -165,7 +168,12 @@ h1.heading .highlight {
   img {
     width: 100%;
     border-radius: 2px;
-    max-width: 300px;
+    max-width: 200px;
+    margin: auto;
+  }
+
+  @media screen and (max-width: 1020px) {
+    gap: 40px;
   }
 
   @media screen and (max-width: 768px) {

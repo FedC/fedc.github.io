@@ -152,6 +152,9 @@
         width: 100%;
         height: 100%;
         transform: translate3d(0, 0, 0);
+        @media screen and (max-width: 767px) {
+            padding: 0;
+        }
     }
 
     &__list {
@@ -216,6 +219,15 @@
 
         &:hover {
             cursor: pointer;
+            color: var(--color-text);
+
+            &::before {
+                visibility: visible;
+                transform: scaleX(1);
+            }
+        }
+
+        &.active {
             color: var(--color-text);
 
             &::before {
@@ -316,7 +328,7 @@ a {
     background-color: rgb(246, 171, 11, 1);
     z-index: 10001;
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-    transform: translate3d(0, 100%, 0);
+    transform: translate3d(0, 102%, 0);
 }
 
 .aboutCircleMobile {
@@ -615,4 +627,14 @@ nav {
         box-sizing: border-box;
         vertical-align: middle;
     }
+}
+
+.mobileMenuContainer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: var(--nav-z-index);
+    transform-origin: center;
+    width: 68px;
+    height: 68px;
 }

@@ -17,6 +17,16 @@
   max-width: 1200px;
   margin: 0 auto;
 
+  @media screen and (max-width: 1500px) {
+    grid-template-columns: 1fr 1fr;
+
+  }
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+    
+  }
+
   .servicesContent {
     width: 100%;
     max-width: 1200px;
@@ -27,7 +37,15 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 100px 20px 0 20px;
+    padding: 300px 20px 0 20px;
+
+    @media screen and (max-width: 1500px) {
+      padding-top: 300px;
+    }
+
+    @media screen and (max-width: 768px) {
+      display: none;
+    }
   }
 }
 
@@ -36,18 +54,29 @@
   margin-top: 32px;
   margin-bottom: 16px;
   font-family: 'Poiret One', sans-serif;
-  font-size: 16x;
+  font-size: 20px;
   line-height: 17px;
   color: var(--color-link);
+  text-transform: lowercase;
+
+  @media screen and (max-width: 1280px) {
+    font-size: 24px;
+    line-height: 28px;
+  }
 }
 
 .servicesSubTitle {
   text-align: left;
   margin-top: 0;
   margin-bottom: 40px;
-  font-family: 'Poiret One', sans-serif;
   font-size: 38px;
+  font-weight: 400;
   line-height: 44px;
+
+  @media screen and (max-width: 1280px) {
+    font-size: 32px;
+    line-height: 38px;
+  }
 }
 
 .servicesDescription {
@@ -59,6 +88,11 @@
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 20px;
+
+  @media screen and (max-width: 1280px) {
+    font-size: 18px;
+    line-height: 1.8125;
+  }
 }
 
 .accordionItem {
@@ -76,6 +110,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media screen and (max-width: 1280px) {
+    font-size: 1rem;
+  }
 }
 
 .icon {
@@ -110,6 +148,24 @@
   &:hover {
     background-color: #fde9c3;
   }
+
+  @media screen and (max-width: 1280px) {
+    font-size: 16px;
+  }
+}
+
+.approvalTitle {
+  color: #777777;
+  font-weight: 600;
+  padding-left: 20px;
+
+  &::before {
+    content: '- ';
+  }
+
+  @media screen and (max-width: 1280px) {
+    font-size: 16px;
+  }
 }
 
 .panel {
@@ -127,5 +183,10 @@
     letter-spacing: -0.45px;
     font-size: 20px;
     line-height: 1.8125;
+
+    @media screen and (max-width: 1280px) {
+      font-size: 18px;
+      line-height: 1.8125;
+    }
   }
 }

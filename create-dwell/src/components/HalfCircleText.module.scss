@@ -38,16 +38,18 @@ $radius: math.div($diameter, 2);
 }
 
 .text {
+  font-family: 'Poiret One', sans-serif;
   font-size: 26px;
   font-weight: 400;
   color: var(--dark-orange-text);
   margin: 0;
-  line-height: 1.27;
+  line-height: 1.1;
   text-transform: lowercase;
 }
 
 @media screen and (max-width: 768px) {
   $diameter: 250px;
+  $radius: math.div($diameter, 2);
 
   .halfCircle {
     width: $radius;
@@ -61,6 +63,7 @@ $radius: math.div($diameter, 2);
 
   .text {
     font-size: 20px;
+    line-height: 1;
   }
   
 }

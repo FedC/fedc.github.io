@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import * as styles from './Contact.module.scss';
+import * as footerStyles from './Footer.module.scss';
+import gsap from 'gsap';
+import Footer from './Footer';
+import SendIcon from './SendIcon';
 
 const Contact = ({ parentScroller, projects }) => {
   const [formData, setFormData] = useState({
@@ -9,6 +13,7 @@ const Contact = ({ parentScroller, projects }) => {
     message: '',
   });
 
+  const footerRef = useRef(null);
   const [captchaValue, setCaptchaValue] = useState(null);
   const [status, setStatus] = useState(null);
   const [featuredItems, setFeaturedItems] = useState([]);
@@ -29,6 +34,14 @@ const Contact = ({ parentScroller, projects }) => {
       });
     });
   }, [projects]);
+
+  useEffect(() => {
+    if (footerRef.current) {
+      const curr = footerRef.current;
+      gsap.set(curr.querySelector(`.${footerStyles.footer}`), { marginTop: '40px' })
+      gsap.to(curr.querySelector(`.${footerStyles.footer}`), { opacity: 1, duration: 0.5, delay: 0.5 });
+    }
+  }, [footerRef]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,60 +84,68 @@ const Contact = ({ parentScroller, projects }) => {
   };
 
   return (
-    <div className={styles.contactContainer}>
-      <h2>Contact Us</h2>
-      <p>
-        We would love to hear from you! Please fill out the form below and we will get back to you as soon as possible.
-      </p>
+    <div className={styles.contactWrapper}>
 
-      {/* <div className={styles.featuredImages}>
-        {featuredItems.map((item, index) => (
-          <img key={index} src={item.imageUrl} alt="Featured" />
-        ))}
-      </div> */}
+      <h1>Contact Us</h1>
+      <h2>Ready to create?</h2>
+      <p>We look forward to hearing from you.</p>
 
-      <form onSubmit={handleSubmit} className={styles.contactForm} autoComplete="off">
-        <div className={styles.formGroup}>
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            minLength="2"
-            maxLength="50"
-          />
+      <div className={styles.contactContainer}>
+        <div>
+          <form onSubmit={handleSubmit} className={styles.contactForm} autoComplete="off">
+            <div className={styles.formGroup}>
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                minLength="2"
+                maxLength="50"
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="email">Email</label>
+              <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="message">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                value={formData.message}
+                onChange={handleChange}
+                required
+                minLength="10"
+                maxLength="500"
+              />
+            </div>
+
+            <div className={styles.captchaContainer}>
+              <ReCAPTCHA sitekey="6LfOJr8qAAAAAOvXNz5-ddMP3FmyucIOuqY9hYSQ" onChange={setCaptchaValue} />
+            </div>
+
+            {status && <p className={styles.statusMessage}>{status}</p>}
+
+            <button type="submit" className={styles.submitButton}>
+              <SendIcon />
+            </button>
+          </form>
         </div>
 
-        <div className={styles.formGroup}>
-          <label htmlFor="email">Email</label>
-          <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
+        <div className={styles.contactImage}>
+          <img src="https://s3-alpha-sig.figma.com/img/64a4/d5c5/63b937325165fa58cf1277f5a928fde8?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=IEyDJwvU4gpkQOhaoTAUrCJgVak4M3wYuA0vsGCQ4MQEydsd7z8YlGC0O9uxIvYxOhmS6rHKh9N1r-XSJla5irNhti0KBKNUg1FOToijnfVNjdI7SyQ94MDh-ulcf7HEsXLhJII0nQUgwWawpqjXSohKpXsuNpR0VMDgPZo4UoxQuA4MZ2Acto1jEUCTPMUaAAgwk9pwO~1yWHCWVKwxXefr0j91PQjgADFyaaTzkmvPZnSWsYRobC3cpRZnqdDcieb35Uf-MPxkT0VkdZjELWrWxDYCxQLhj6gU4Tczf6lkeJwns3Xq45Q78rkfLtwGpHF2W19JkzKVUfXTG4I9ig__" alt="Contact" />
         </div>
+      </div>
 
-        <div className={styles.formGroup}>
-          <label htmlFor="message">Message</label>
-          <textarea
-            id="message"
-            name="message"
-            rows="5"
-            value={formData.message}
-            onChange={handleChange}
-            required
-            minLength="10"
-            maxLength="500"
-          />
-        </div>
-
-        <div className={styles.captchaContainer}>
-          <ReCAPTCHA sitekey="6LfOJr8qAAAAAOvXNz5-ddMP3FmyucIOuqY9hYSQ" onChange={setCaptchaValue} />
-        </div>
-
-        {status && <p className={styles.statusMessage}>{status}</p>}
-
-        <button type="submit" className={styles.submitButton}>Send Message</button>
-      </form>
+      <div ref={footerRef}>
+        <Footer />
+      </div>
     </div>
   );
 };

@@ -7,7 +7,7 @@ import * as styles from './HomeProjectList.module.scss';
 import Footer from './Footer';
 import * as footerStyles from './Footer.module.scss';
 
-const HomeProjectList = ({ projects, headerAnimationComplete, projectReset }) => {
+const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, projectFilter }) => {
   const listRef = useRef(null);
   const footerRef = useRef(null);
   const [openProjects, setOpenProjects] = useState([]);
@@ -32,16 +32,28 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset }) =>
   let scrollDirection;
   let contentFirstMoveX = 240;
 
+  const reset = () => {
+    projects.forEach((project) => {
+      if (openProjects.includes(project.id)) {
+        closeProject(project.id);
+      }
+    });
+    setupFooterAnimation();
+  }
+
   useEffect(() => {
     if (projectReset) {
-      projects.forEach((project) => {
-        if (openProjects.includes(project.id)) {
-          closeProject(project.id);
-        }
-      });
-      scrollToProject(projects[0].id);
+      reset();
     }
   }, [projectReset]);
+
+  useEffect(() => {
+    if (!projects) return;
+
+    if (projectFilter) {
+      setupFooterAnimation();
+    }
+  }, [projectFilter]);
 
   useEffect(() => {
     gsap.set(gridRef.current, { scale: 1, opacity: 0, y: '10vh' });
@@ -231,9 +243,46 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset }) =>
     };
   }, [projects, headerAnimationComplete]);
 
-  useEffect(() => {
-    // scaleListItems();
-  }, [openProjects]);
+  const scaleListItems = () => {
+    const listItems = Object.values(projectRefs.current);
+    const listItemsArray = Array.from(listItems);
+
+    listItemsArray.forEach((box, index) => {
+      if (!box) return;
+
+      const projectId = box.dataset.projectId;
+      if (openProjects.includes(projectId)) {
+        return;
+      }
+
+      gsap.to(box, {
+        scrollTrigger: {
+          trigger: box,
+          start: "bottom center",
+          end: "bottom top",
+          scrub: true,
+        },
+        scale: .9,
+        duration: 0.5,
+        ease: 'sine',
+      });
+
+      gsap.fromTo(box, {
+        scale: 1,
+      },
+        {
+          scrollTrigger: {
+            trigger: box,
+            start: "top bottom",
+            end: "center center",
+            scrub: true,
+          },
+          scale: 1,
+          duration: 0.5,
+          ease: 'sine',
+        });
+    });
+  };
 
   const animation = async () => {
     await preloadImages(`.${styles.projectMainImage}`);
@@ -259,11 +308,13 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset }) =>
             const velocity = self.getVelocity();
             scrollDirection = velocity > 0 ? 1 : -1;
             velocityScale.current = Math.max(1 - Math.abs(velocity) / 1000, minimumScaleOffset);
-            updateVelocityScale(velocity);
+            // updateVelocityScale(velocity);
             applySkewEffect(velocity);
             moveNavToScrollVelocity(velocity);
           },
         });
+
+        scaleListItems();
       },
     });
 
@@ -404,9 +455,9 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset }) =>
 
   const applySkewEffect = (velocity) => {
     // make a liquid effect
-    const factor = velocityScale.current - Math.abs(velocity) / 200;
+    // const factor = velocityScale.current - Math.abs(velocity) / 200;
     const calcY = clamp(proxy.y - velocity / 200, -10, 10);
-    const calcScale = clamp(1 + Math.abs(velocity) / 1000, 1, 1.1);
+    // const calcScale = clamp(1 + Math.abs(velocity) / 1000, 1, 1.1);
 
     const mainImages = document.querySelectorAll(`.${styles.projectMainImage}`);
     const mainImagesArray = Array.from(mainImages);
@@ -599,7 +650,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset }) =>
                     setLoadingContentImages((prev) => prev.filter((id) => id !== projectId));
                     ScrollTrigger.enable();
                     ScrollTrigger.refresh();
-                    scrollToProject(projectId);
+                    // scrollToProject(projectId);
                   },
                   onUpdate: () => {
                     // // Dynamically calculate the x position of the main image
@@ -850,9 +901,9 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset }) =>
   useEffect(() => {
     // if any projects are open, update the marquee z-index behind the projects
     if (openProjects.length) {
-      gsap.set(marqueeRef.current, { zIndex: 1 });
+      gsap.set(marqueeRef.current, { opacity: 0 });
     } else {
-      gsap.set(marqueeRef.current, { zIndex: 3 });
+      gsap.set(marqueeRef.current, { opacity: 1 });
     }
   }, [openProjects]);
 
@@ -1270,7 +1321,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset }) =>
       </div>
 
       <div ref={footerRef}>
-        <Footer />
+        <Footer showCredits={true} />
       </div>
     </>
   );
