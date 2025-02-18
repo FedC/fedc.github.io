@@ -1,11 +1,9 @@
 import React from "react";
-import PropTypes from "prop-types";
 import * as styles from "./SevenCircles.module.scss";
 
 const SevenCircles = () => {
   const centerCircle = {
     text: "Architect",
-    bgColor: "rgb(243, 233, 212)", // Light beige
     borderColor: "white",
   };
 
@@ -22,20 +20,13 @@ const SevenCircles = () => {
   return (
     <div className={styles.circleContainer}>
       {/* Center Circle */}
-      <div className={styles.centerCircle} style={{ backgroundColor: centerCircle.bgColor, borderColor: centerCircle.borderColor }}>
+      <div className={styles.centerCircle}>
         <span className={styles.circleText}>{centerCircle.text}</span>
       </div>
 
       {/* Surrounding Circles */}
       {surroundingCircles.map((circle, index) => (
-        <div
-          key={index}
-          className={`${styles.circle} ${styles[circle.position]}`}
-          style={{
-            backgroundColor: "rgba(229, 183, 97, 0.5)", // Transparent Gold
-            borderColor: "rgb(246, 171, 11)", // Solid Border Gold
-          }}
-        >
+        <div key={'circle' + index} className={styles.circle}>
           <span className={styles.circleText}>{circle.text}</span>
         </div>
       ))}

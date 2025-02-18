@@ -6,9 +6,33 @@ import FullCircleText from "./FullCircleText";
 import FourCircles from "./FourCircles";
 import SevenCircles from "./SevenCircles";
 
+const Paragraphs = ({ paragraphs }) => {
+  return (
+    <>
+      {paragraphs.map((paragraph, i) => (
+        <p key={'p_' + i} className={styles.paragraph}>{paragraph}</p>
+      ))}
+    </>
+  );
+};
+
+const SectionContent = ({ content, name }) => {
+  return (
+    <>
+      {content.map((content, i) => {
+        if (content.type === "paragraph") return <p key={'section_' + name + '_p_' + i} className={styles.paragraph}>{content.text}</p>;
+        return null;
+      })}
+    </>
+  );
+};
+
 const AboutSections = ({ sections, openServices }) => {
   const containerRef = useRef(null);
   const sectionRefs = useRef([]);
+
+  const darkOrange = 'rgb(248, 192, 85)';
+  const lightOrange = 'rgb(253, 236, 205)';
 
   useEffect(() => {
     // Animate sections as they appear
@@ -38,44 +62,23 @@ const AboutSections = ({ sections, openServices }) => {
         >
 
           {section.title === 'Why' && (
-            <div className={`${styles.sectionContent} ${styles.leftAligned}`}>
-              <div className={styles.textContent}>
-                <h1 className={styles.title}>{section.title}</h1>
-                <h2 className={styles.subtitle}>{section.subTitle}</h2>
-                <div className={styles.content}>
-                  {section.content.map((content, i) => {
-                    if (content.type === "paragraph") return <p key={'text_' + i} className={styles.paragraph}>{content.text}</p>;
-                    // if (content.type === "bullets")
-                    //   return (
-                    //     <ul key={i} className={styles.list}>
-                    //       {content.bullets.map((b, j) => <li key={j}>{b}</li>)}
-                    //     </ul>
-                    //   );
-                    return null;
-                  })}
+            <div className={styles.sectionContent}>
+              <h1 className={styles.title}>{section.title}</h1>
+              <h2 className={styles.subtitle}>{section.subTitle}</h2>
+
+              <div className={`${styles.gridContainer} ${styles.leftAligned}`}>
+
+                <div className={styles.textContent}>
+                  <div className={styles.content}>
+                    <SectionContent content={section.content} name={section.title} />
+                  </div>
                 </div>
-              </div>
-              <div className={styles.imageContainer}>
-                {section.title === 'Why' && (
-                  <>
-                    <HalfCircleText text={['People',
-                      'Places',
-                      'Things',
-                      'Information',
-                      'Time']} />
 
-                    <p className={styles.imageText}>are</p>
-
-                    <HalfCircleText text={['sheltered',
-                      'defined',
-                      'contained',
-                      'conveyed',
-                      'recorded']} bgColor="rgb(253, 236, 205)" position="right" />
-                  </>
-                )}
-                {section.title !== 'Why' && (
-                  <img src={section.imageUrl} alt={section.title} className={styles.sectionImage} />
-                )}
+                <div className={styles.imageContainer}>
+                  <HalfCircleText text={['People', 'Places', 'Things', 'Information', 'Time']} bgColor={darkOrange} />
+                  <p className={styles.imageText}>are</p>
+                  <HalfCircleText text={['sheltered', 'defined', 'contained', 'conveyed', 'recorded']} bgColor={lightOrange} position="right" />
+                </div>
               </div>
             </div>
           )}
@@ -105,63 +108,62 @@ const AboutSections = ({ sections, openServices }) => {
                 }
 
                 return contentGroups.map((group, index) => (
-                  <div className={`${styles.sectionContent} ${styles.leftAligned} ${index === 0 ? styles.noBorderBottom : ''}
-                    ${index > 0 ? styles.borderTop : ''}`}>
-                    {/* Alternating Content */}
-                    {index % 2 === 0 && (
-                      <div className={styles.textContent}>
-                        {index === 0 && (<h1 className={styles.title}>{section.title}</h1>)}
-                        {index === 0 && (<h2 className={styles.subtitle}>{section.subTitle}</h2>)}
-                        {group.subtitle && <h2 className={styles.subtitle}>{group.subtitle}</h2>}
-                        <div className={styles.content}>
-                          {group.paragraphs.map((paragraph, i) => (
-                            <p key={'text_' + index + '_' + i} className={styles.paragraph}>{paragraph}</p>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                  <div key={'contentGroup_' + index} className={`${styles.sectionContent} ${index === 0 ? styles.noBorderBottom : ''} ${index > 0 ? styles.flushTop : ''}`}>
 
-                    {index === 0 && (
-                      <div className={styles.imageContainerFullCircles}>
-                        <FullCircleText
-                          text={["Thoughts", "Space", "Material", "Efficiency"]}
-                          bgColor="rgb(243, 233, 212)"
-                          borderColor="white"
-                          position="left"
-                        />
-                        <div className={styles.imageText}>+</div>
-                        <FullCircleText
-                          text={["Dreams", "Place", "Technology", "Economy"]}
-                          bgColor="rgb(246, 171, 11)"
-                          borderColor="rgb(246, 171, 11)"
-                          position="right"
-                        />
-                      </div>
-                    )}
-                    {index === 1 && (
-                      <FourCircles
-                        circles={[
-                          { text: ["Need", "Wants", "Budget"] },  // Top
-                          { text: ["Quality", "Size", "Cost"] }, // Bottom
-                          { text: ["Industry"] },  // Left
-                          { text: ["Site"] }, // Right
-                        ]}
-                      />
-                    )}
+                    {index === 0 && (<h1 className={styles.title}>{section.title}</h1>)}
+                    {index === 0 && (<h2 className={styles.subtitle}>{section.subTitle}</h2>)}
 
-                    {/* Right-aligned content */}
-                    {index % 2 !== 0 && (
-                      <div className={styles.textContent}>
-                        {index === 0 && (<h1 className={styles.title}>{section.title}</h1>)}
-                        {index === 0 && (<h2 className={styles.subtitle}>{section.subTitle}</h2>)}
-                        {group.subtitle && <h2 className={styles.subtitle}>{group.subtitle}</h2>}
-                        <div className={styles.content}>
-                          {group.paragraphs.map((paragraph, i) => (
-                            <p key={'p_' + index + '_' + i} className={styles.paragraph}>{paragraph}</p>
-                          ))}
+                    <div className={`${styles.gridContainer} ${styles.leftAligned} ${index === 1 ? styles.reverseMobile : ''}`}>
+
+                      {index % 2 === 0 && (
+                        <div className={styles.textContent}>
+                          {group.subtitle && <h2 className={styles.subtitle}>{group.subtitle}</h2>}
+
+                          <div className={styles.content}>
+                            <Paragraphs paragraphs={group.paragraphs} />
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+
+                      {index === 0 && (
+                        <div className={styles.imageContainerFullCircles}>
+                          <FullCircleText
+                            text={["Thoughts", "Space", "Material", "Efficiency"]}
+                            bgColor={lightOrange}
+                            borderColor={lightOrange}
+                            position="left"
+                          />
+                          <div className={styles.imageText}>+</div>
+                          <FullCircleText
+                            text={["Dreams", "Place", "Technology", "Economy"]}
+                            bgColor={darkOrange}
+                            borderColor={darkOrange}
+                            position="right"
+                          />
+                        </div>
+                      )}
+
+                      {index === 1 && (
+                        <FourCircles
+                          circles={[
+                            { text: ["Need", "Wants", "Budget"] },  // Top
+                            { text: ["Quality", "Size", "Cost"] }, // Bottom
+                            { text: ["Industry"] },  // Left
+                            { text: ["Site"] }, // Right
+                          ]}
+                        />
+                      )}
+
+                      {index % 2 !== 0 && (
+                        <div className={styles.textContent}>
+                          {group.subtitle && <h2 className={styles.subtitle}>{group.subtitle}</h2>}
+
+                          <div className={styles.content}>
+                            <Paragraphs paragraphs={group.paragraphs} />
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ));
               })()}
@@ -169,37 +171,37 @@ const AboutSections = ({ sections, openServices }) => {
           )}
 
           {section.title === 'How' && (
-            <div className={`${styles.sectionContent} ${styles.leftAligned}`}>
-              <div className={styles.textContent}>
-                <h1 className={styles.title}>{section.title}</h1>
-                <h2 className={styles.subtitle}>{section.subTitle}</h2>
-                <div className={styles.content}>
-                  {section.content.map((content, i) => {
-                    if (content.type === "paragraph") return <p key={'how_' + 'p_' + i} className={styles.paragraph}>{content.text}</p>;
-                    return null;
-                  })}
+            <div className={styles.sectionContent}>
 
-                  <p className={styles.paragraphThick}>
-                    Learn about <a onClick={openServices} >how</a> we provide Our Services
-                  </p>
+              <h1 className={styles.title}>{section.title}</h1>
+              <h2 className={styles.subtitle}>{section.subTitle}</h2>
 
-                </div>
-              </div>
-              <div className={styles.imageContainer}>
-                <HalfCircleText text={['constraints', 'defined', 'established', ' ', 'minimal', 'beautiful', 'impactful']}
-                  bgColor="rgb(253, 236, 205)" />
+              <div className={`${styles.gridContainer} ${styles.leftAligned}`}>
+                <div className={styles.textContent}>
+                  <div className={styles.content}>
+                    <SectionContent content={section.content} name={section.title} />
 
-                <div className={styles.twoRowImageText}>
-                  <div className={`${styles.imageText}`}>
-                    <div>Yet</div>
-                    <div className={styles.imageTextSmall}>catalysts for creativity <br />not preconceived <br />expected to change</div>
+                    <p className={styles.paragraphThick}>
+                      Learn about <a onClick={openServices} >how</a> we provide Our Services
+                    </p>
                   </div>
+                </div>
+                <div className={styles.imageContainer}>
+                  <HalfCircleText text={['constraints', 'defined', 'established', ' ', 'minimal', 'beautiful', 'impactful']}
+                    bgColor="rgb(253, 236, 205)" />
 
-                  <div className={`${styles.imageText}`}>
-                    <div>Yet</div>
-                    <div className={styles.imageTextSmall}>essential <br />
-                      transcending fashion <br />
-                      enviromentally sensitive</div>
+                  <div className={styles.twoRowImageText}>
+                    <div className={`${styles.imageText}`}>
+                      <div className={styles.yetText}>Yet</div>
+                      <div className={styles.imageTextSmall}>catalysts for creativity <br />not preconceived <br />expected to change</div>
+                    </div>
+
+                    <div className={`${styles.imageText}`}>
+                      <div>Yet</div>
+                      <div className={styles.imageTextSmall}>essential <br />
+                        transcending fashion <br />
+                        enviromentally sensitive</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -207,19 +209,19 @@ const AboutSections = ({ sections, openServices }) => {
           )}
 
           {section.title === 'Who' && (
-            <div className={`${styles.sectionContent} ${styles.leftAligned}`}>
-              <div className={styles.textContent}>
-                <h1 className={styles.title}>{section.title}</h1>
-                <h2 className={styles.subtitle}>{section.subTitle}</h2>
-                <div className={styles.content}>
-                  {section.content.map((content, i) => {
-                    if (content.type === "paragraph") return <p key={'who_p_' + i} className={styles.paragraph}>{content.text}</p>;
-                    return null;
-                  })}
+            <div className={styles.sectionContent}>
+              <div className={`${styles.gridContainer} ${styles.leftAligned}`}>
+                <div className={styles.textContent}>
+                  <h1 className={styles.title}>{section.title}</h1>
+                  <h2 className={styles.subtitle}>{section.subTitle}</h2>
+
+                  <div className={styles.content}>
+                    <SectionContent content={section.content} name={section.title} />
+                  </div>
                 </div>
-              </div>
-              <div className={styles.imageContainer}>
-                <SevenCircles />
+                <div className={styles.imageContainer}>
+                  <SevenCircles />
+                </div>
               </div>
             </div>
           )}

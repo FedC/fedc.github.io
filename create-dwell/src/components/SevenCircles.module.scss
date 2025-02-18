@@ -8,7 +8,7 @@ $radius: math.div($base-size, 2); // Corrected radius for proper spacing
 .circleContainer {
   position: relative;
   width: clamp(260px, 40vw, $base-size);
-  height: clamp(260px, 40vw, $base-size);
+  height: clamp(400px, 40vw, $base-size);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -27,9 +27,8 @@ $radius: math.div($base-size, 2); // Corrected radius for proper spacing
   text-align: center;
   font-size: clamp(14px, 1.5vw, 18px);
   font-weight: bold;
-  color: #333;
-  border: 3px solid white;
-  background-color: rgb(243, 233, 212);
+  color: var(--dark-orange-text);
+  background-color: #fff2d8;
 }
 
 /* Surrounding Circles */
@@ -45,8 +44,7 @@ $radius: math.div($base-size, 2); // Corrected radius for proper spacing
   font-size: clamp(12px, 1.5vw, 16px);
   font-weight: bold;
   color: var(--dark-orange-text);
-  border: 3px solid rgb(246, 171, 11);
-  background-color: rgba(229, 183, 97, 0.5);
+  background-color: #f7ab0c66;
   padding: 10px;
 }
 
@@ -88,7 +86,7 @@ $pi: math.div(22, 7);
 
   .circleContainer {
     width: clamp(200px, 80vw, $base-size);
-    height: clamp(200px, 80vw, $base-size);
+    height: clamp(350px, 80vh, $base-size);
   }
 
   .centerCircle {

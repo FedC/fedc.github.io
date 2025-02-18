@@ -19,6 +19,10 @@
     align-items: center;
 
     margin: auto 20px;
+
+    @media screen and (max-width: 768px) {
+      margin: auto 10px;
+    }
   }
 
   .footerTop {
@@ -29,12 +33,28 @@
     font-size: 46px;
     font-family: 'Poiret One', sans-serif;
     color: #5b5750;
+    text-transform: lowercase;
 
-    @media screen and (min-width: 768px) {
+    @media screen and (max-width: 1280px) {
+      font-size: 32px;
+    }
+
+    @media screen and (max-width: 980px) {
+      font-size: 24px;
+      
     }
 
     @media screen and (max-width: 768px) {
-      font-size: 16px;
+      font-size: 20px;
+    }
+
+    .spacer {
+      @media screen and (max-width: 768px) {
+        width: 4px;
+        height: 4px;
+        margin: auto 8px;
+        transform: translateY(3px);
+      }
     }
   }
 
@@ -47,10 +67,7 @@
 
     @media screen and (max-width: 768px) {
       grid-template-columns: 1fr;
-      margin: 100px 0 20px;
-    }
-
-    @media screen and (min-width: 768px) {
+      margin: 10px 0 20px;
     }
 
     // at around 1270px width, the grid should be 1 column
@@ -89,6 +106,17 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+
+      @media screen and (max-width: 768px) {
+        .spacer {
+          display: none;
+        }
+
+        p a {
+          display: block;
+          margin: 10px 0;
+        }
+      }
     }
 
     .footerRight {

@@ -1,7 +1,7 @@
 import React from 'react';
 import * as footerStyles from './Footer.module.scss';
 
-const Footer = () => {
+const Footer = ({ showCredits = false }) => {
   return (
     <footer className={footerStyles.footer}>
       {/* carolina@create-dwell.com  |  954 210 0862   |  AR91865 + ID6603 
@@ -9,12 +9,12 @@ const Footer = () => {
 
       <div className={footerStyles.footerTop}>
         {
-          ['Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning']
+          ['architecture', 'spacer', 'interior design', 'spacer', 'planning']
             .map((item, index) => (
               item === 'spacer' ?
                 <div key={`spacer-${index}`} className={footerStyles.spacer}></div>
                 :
-                <span key={`item-${index}`}>{item}</span>
+                <span key={`item-${item}`}>{item}</span>
             ))}
       </div>
 
@@ -37,11 +37,11 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className={footerStyles.footerBottom}>
+      {showCredits && (<div className={footerStyles.footerBottom}>
         <small>
           Built by <a target="_blank" href="https://okcd.io">okcd.io</a>
         </small>
-      </div>
+      </div>)}
     </footer>
   );
 };

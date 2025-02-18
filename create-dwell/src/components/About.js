@@ -45,9 +45,11 @@ const About = ({ parentScroller, openServices }) => {
 
 
   const animateSections = () => {
-
-    gsap.set(footerRef.current.querySelector(`.${footerStyles.footer}`), { marginTop: '40px'})
-    gsap.to(footerRef.current.querySelector(`.${footerStyles.footer}`), { opacity: 1, duration: 0.5, delay: 0.5 });
+    if (footerRef.current) {
+      const curr = footerRef.current;
+      gsap.set(curr.querySelector(`.${footerStyles.footer}`), { marginTop: '40px'})
+      gsap.to(curr.querySelector(`.${footerStyles.footer}`), { opacity: 1, duration: 0.5, delay: 0.5 });
+    }
   };
 
 

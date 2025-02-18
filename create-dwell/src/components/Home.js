@@ -21,10 +21,12 @@ gsap.registerPlugin(InertiaPlugin, ScrollTrigger, Draggable, CSSPlugin, ScrollTo
 initSmoothScrolling();
 
 const Home = () => {
+  const [originalProjects, setOriginalProjects] = useState([]);
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [headerAnimationComplete, setHeaderAnimationComplete] = useState(false);
   const [projectReset, setProjectReset] = useState(false);
+  const [projectFilter, setProjectFilter] = useState(null);
   let cursor = null;
   let cursorRef = useRef(null);
 
@@ -37,6 +39,7 @@ const Home = () => {
         projectData.push({ id: doc.id, ...doc.data() });
       });
       setProjects(projectData);
+      setOriginalProjects(projectData);
       onProjectsLoaded();
     };
 
@@ -64,22 +67,45 @@ const Home = () => {
   }
 
   const onResetProjects = () => {
+    setProjects(originalProjects);
     setProjectReset(true);
+    // animate scroll up
+    gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
     setTimeout(() => {
       setProjectReset(false);
     }, 100);
   }
 
+  const filterProjectUse = (use, filter) => {
+    // use can be an array of strings or a single string
+    if (Array.isArray(use)) {
+      return use.some(use => use.toLowerCase() === filter.toLowerCase());
+    } else {
+      return use.toLowerCase() === filter.toLowerCase();
+    }
+  }
+
+  const onFilterProjects = (filter) => {
+    const filteredProjects = originalProjects.filter((project) => project.use && filterProjectUse(project.use, filter));
+    setProjects(filteredProjects);
+    // animate scroll up
+    gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
+    setProjectFilter(true);
+    setTimeout(() => {
+      setProjectFilter(false);
+    }, 100);
+  }
+
   return (
     <>
-      <Header onAnimationEnd={onHeaderAnimationEnd} projects={projects} resetProjects={onResetProjects} />
+      <Header onAnimationEnd={onHeaderAnimationEnd} projects={projects} resetProjects={onResetProjects} filterProjects={onFilterProjects} />
       <main className={styles.pageWrapper}>
         <section className="grid-container">
           {/* <ProjectGrid
             projects={projects}
             // onProjectClick={handleGridItemClick}
           /> */}
-          <HomeProjectList projects={projects} headerAnimationComplete={headerAnimationComplete} projectReset={projectReset} />
+          <HomeProjectList projects={projects} headerAnimationComplete={headerAnimationComplete} projectReset={projectReset} projectFilter={projectFilter} />
         </section>
       </main>
 

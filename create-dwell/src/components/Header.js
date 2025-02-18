@@ -11,8 +11,9 @@ import HomeIcon from './HomeIcon';
 import About from './About';
 import Contact from './Contact';
 import Services from './Services';
+import MobileMenu from './MobileMenu';
 
-const Header = ({ onAnimationEnd, projects, resetProjects }) => {
+const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => {
 
   const orange = 'rgb(246, 171, 11)';
 
@@ -22,6 +23,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
   const logoRef = useRef(null);
   const contactRef = useRef(null);
   const servicesRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   const letterRefsCreate = useRef([]);
   const letterRefsDwell = useRef([]);
@@ -29,15 +31,12 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
   const topbarRef = useRef(null);
   const navTopBarEls = useRef([]);
   const aboutLinkRef = useRef(null);
-  const aboutLinkMobileRef = useRef(null);
   const contactLinkRef = useRef(null);
-  const contactLinkMobileRef = useRef(null);
   const servicesLinkRef = useRef(null);
-  const servicesLinkMobileRef = useRef(null);
   const aboutRef = useRef(null);
-  const closeButtonRef = useRef(null);
-  const closeButtonMobileRef = useRef(null);
+  const homeButtonRef = useRef(null);
 
+  const [selectedFilter, setSelectedFilter] = useState('all');
   const [isAboutVisible, setIsAboutVisible] = useState(false);
   const [isContactVisible, setIsContactVisible] = useState(false);
   const [isServicesVisible, setIsServicesVisible] = useState(false);
@@ -45,18 +44,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
   let hasFired = false;
   let entryAnimation = false;
 
-  // useEffect(() => {
-  //   // close about when resizing
-  //   function closeAbout(e) {
-  //     if (isAboutVisible) {
-  //       e.preventDefault();
-  //       handleCloseAbout();
-  //     }
-  //   }
-
-  //   window.addEventListener('resize', closeAbout);
-  //   return () => window.removeEventListener('resize', closeAbout);
-  // });
+  const breakpoints = { isDesktop: "(min-width: 768px)", isMobile: "(max-width: 767px)" };
 
   useEffect(() => {
     if (entryAnimation) {
@@ -64,24 +52,14 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
     }
     entryAnimation = true;
     const originalInnerNavWidth = navRef.current.offsetWidth;
+    const navLinks = [homeButtonRef.current, aboutLinkRef.current, servicesLinkRef.current, contactLinkRef.current];
 
     gsap.set(topbarRef.current, { opacity: 0 });
-
-    gsap.set(aboutLinkRef.current, { opacity: 0 });
-    gsap.set(aboutLinkMobileRef.current, { opacity: 0 });
-
-    gsap.set(contactLinkRef.current, { opacity: 0 });
-    gsap.set(contactLinkMobileRef.current, { opacity: 0 });
-
-    gsap.set(servicesLinkRef.current, { opacity: 0 });
-    gsap.set(servicesLinkMobileRef.current, { opacity: 0 });
-
-    gsap.set(closeButtonRef.current, { opacity: 0 });
-
+    gsap.set(navLinks, { opacity: 0 });
+    gsap.set(mobileMenuRef.current, { opacity: 0, scale: 0 });
 
     const tl = gsap.timeline({
       onUpdate: function () {
-        // Fire onAnimationEnd when progress reaches 95%
         if (tl.currentLabel() === 'logoUp' && !hasFired) {
           onAnimationEnd();
           hasFired = true; // Ensure it only fires once
@@ -94,142 +72,97 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
         setElementsVisibility();
       },
     });
+
     const mm = gsap.matchMedia();
 
-    mm.add(
-      {
-        isDesktop: "(min-width: 768px)", // Desktop logic
-        isMobile: "(max-width: 767px)", // Mobile logic
-      },
-      (context) => {
-        const { isDesktop, isMobile } = context.conditions;
+    mm.add(breakpoints, (context) => {
+      const { isDesktop, isMobile } = context.conditions;
 
-        gsap.set(navRef.current, {
-          width: '50%',
-        });
+      const orangeHalf = document.querySelector('.orangeHalf');
 
-        if (isMobile) {
-          gsap.set(navRef.current, { height: '100vh' });
-        }
+      gsap.set(navRef.current, {
+        width: '50%',
+      });
 
-        gsap.set(logoRef.current, {
-          y: window.innerHeight * 8 / 10, // Start at the bottom
-          x: isMobile ? 20 : 12.5,
-          scale: isDesktop ? 3 : 1.8,
-          transformOrigin: '50% 50%',
-        });
+      if (isMobile) {
+        gsap.set(navRef.current, { height: '100vh' });
+      }
 
-        gsap.set(letterRefsDwell.current, { x: 0, color: 'rgba(246, 171, 11, 0.65)', opacity: 1 });
-        const orangeHalf = document.querySelector('.orangeHalf');
-        gsap.set(orangeHalf, { fill: 'rgba(246, 171, 11, 0.65)' });
-        gsap.set(letterRefsCreate.current, { opacity: 1 });
+      gsap.set(logoRef.current, {
+        y: window.innerHeight * 8 / 10, // Start at the bottom
+        x: isMobile ? 20 : 12.5,
+        scale: isDesktop ? 3 : 1.8,
+        transformOrigin: '50% 50%',
+      });
 
-        // Animate "CREATE"
-        // tl.to(letterRefsCreate.current, {
-        //   opacity: 1,
-        //   y: 0,
-        //   x: 0,
-        //   duration: .5,
-        //   stagger: .1,
-        //   ease: 'power2.out',
-        // });
+      gsap.set(letterRefsDwell.current, { x: 0, color: 'rgba(246, 171, 11, 0.65)', opacity: 1 });
+      gsap.set(orangeHalf, { fill: 'rgba(246, 171, 11, 0.65)' });
+      gsap.set(letterRefsCreate.current, { opacity: 1 });
 
-        // Animate "DWELL"
-        // tl.to(letterRefsDwell.current, {
-        //   opacity: 1,
-        //   x: 0,
-        //   y: 0,
-        //   duration: .5,
-        //   ease: 'power2.out',
-        //   stagger: 0.1,
-        // }, '-=0');
+      tl.to(letterRefsDwell.current, { color: 'rgba(246, 171, 11, 0.65)', delay: 1.5 });
+      tl.to(
+        logoRef.current,
+        {
+          y: 20,
+          duration: 2,
+          ease: 'power2.out',
+        },
+      ).addLabel('logoUp', '-=1.4');
 
-        // wait for 2 seconds
-        tl.to(letterRefsDwell.current, { color: 'rgba(246, 171, 11, 0.65)', delay: 1.5 });
-
-        tl.to(
-          logoRef.current,
-          {
-            y: 20,
-            duration: 2,
-            ease: 'power2.out',
-          },
-        ).addLabel('logoUp', '-=1.4');
-
-        if (isMobile) {
-          tl.to(navRef.current, {
-            y: 0,
-            height: '100px',
-            backgroundColor: '#f6ab0b',
-            backdropFilter: 'blur(0px)',
-            duration: 2,
-            ease: 'power2.out',
-          }, '<');
-        }
-
+      if (isMobile) {
         tl.to(navRef.current, {
           y: 0,
-          x: 0,
-          height: isMobile ? '60px' : '100vh',
-          width: originalInnerNavWidth,
+          height: '100px',
           backgroundColor: '#f6ab0b',
           backdropFilter: 'blur(0px)',
           duration: 2,
           ease: 'power2.out',
-        })
-          .to(
-            logoRef.current,
-            {
-              y: 0,
-              // x: 45 / 3,
-              x: 25.5,
-              scale: 1,
-              duration: 1.5,
-              ease: 'power2.out',
-            },
-            '<'
-          );
+        }, '<');
+      }
 
-        tl.to(letterRefsDwell.current, { color: '#f6ab0b)' }, '<');
-        tl.to(orangeHalf, { fill: '#f6ab0b' }, '<');
-
-        tl.to(topbarRef.current,
-          { opacity: 1, duration: 0.5 },
+      tl.to(navRef.current, {
+        y: 0,
+        x: 0,
+        height: isMobile ? '60px' : '100vh',
+        width: originalInnerNavWidth,
+        backgroundColor: '#f6ab0b',
+        backdropFilter: 'blur(0px)',
+        duration: 2,
+        ease: 'power2.out',
+      })
+        .to(
+          logoRef.current,
+          {
+            y: 0,
+            x: 25.5,
+            scale: 1,
+            duration: 1.5,
+            ease: 'power2.out',
+          },
+          '<'
         );
 
-        if (isDesktop) {
-          gsap.set(navTopBarEls.current, { opacity: 0, x: 100 });
-          tl.to(navTopBarEls.current,
-            { opacity: 1, x: 0, duration: 0.3, ease: 'power2.out', stagger: 0.1 },
-            '<'
-          );
-        }
+      tl.to(letterRefsDwell.current, { color: '#f6ab0b)' }, '<');
+      tl.to(orangeHalf, { fill: '#f6ab0b' }, '<');
+      tl.to(topbarRef.current,
+        { opacity: 1, duration: 0.5 },
+      );
 
+      if (isDesktop) {
+        gsap.set(navTopBarEls.current, { opacity: 0, x: 100 });
+        gsap.set(navLinks, { opacity: 0, scale: 0, y: -10 });
+        tl.to(navTopBarEls.current, { opacity: 1, x: 0, duration: 0.3, ease: 'power2.out', stagger: 0.1 }, '<');
         tl.delay(.5);
-
-        if (isMobile) {
-          gsap.set(aboutLinkMobileRef.current, { opacity: 0, scale: .8 });
-          gsap.set(contactLinkMobileRef.current, { opacity: 0, scale: .8 });
-          gsap.set(servicesLinkMobileRef.current, { opacity: 0, scale: .8 });
-
-          tl.to(aboutLinkMobileRef.current, { scale: 1, opacity: 1, duration: 0.5, ease: 'bounce.out' }, '<');
-          tl.to(contactLinkMobileRef.current, { scale: 1, opacity: 1, duration: 0.5, ease: 'bounce.out', delay: 0.15 }, '<');
-          tl.to(servicesLinkMobileRef.current, { scale: 1, opacity: 1, duration: 0.5, ease: 'bounce.out', delay: 0.3 }, '<');
-
-        } else {
-          gsap.set(closeButtonRef.current, { opacity: 0, scale: 0, y: -10 });
-          gsap.set(aboutLinkRef.current, { opacity: 0, scale: 0, y: -10 });
-          gsap.set(contactLinkRef.current, { opacity: 0, scale: 0, y: -10 });
-          gsap.set(servicesLinkRef.current, { opacity: 0, scale: 0, y: -10 });
-
-          const navLinks = [closeButtonRef.current, aboutLinkRef.current, servicesLinkRef.current, contactLinkRef.current];
-          tl.to(navLinks, { opacity: 1, scale: 1, y: 0, duration: .22, ease: 'power2.out', stagger: .1 }, '<');
-        }
-
+        tl.to(navLinks, { opacity: 1, scale: 1, y: 0, duration: .22, ease: 'power2.out', stagger: .1 }, '<');
       }
+
+      if (isMobile) {
+        tl.to(mobileMenuRef.current, { opacity: 1, scale: 1, duration: 0.2, ease: 'power2.out' }, '<');
+      }
+
+    }
     );
 
-    // Cleanup
     return () => mm.revert();
   }, []);
 
@@ -266,38 +199,23 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
 
   const setElementsVisibility = () => {
     const mm = gsap.matchMedia();
-    mm.add(
-      {
-        isDesktop: "(min-width: 768px)", // Desktop logic
-        isMobile: "(max-width: 767px)", // Mobile logic
-      },
-      (context) => {
-        const { isDesktop, isMobile } = context.conditions;
+    mm.add(breakpoints, (context) => {
+      const { isDesktop, isMobile } = context.conditions;
 
-        if (isMobile) {
-          gsap.set(aboutLinkRef.current, { opacity: 0 });
-          gsap.set(contactLinkRef.current, { opacity: 0 });
-          gsap.set(servicesLinkRef.current, { opacity: 0 });
-
-          gsap.set(aboutLinkMobileRef.current, { opacity: 1 });
-          gsap.set(contactLinkMobileRef.current, { opacity: 1 });
-          gsap.set(servicesLinkMobileRef.current, { opacity: 1 });
-
-          gsap.set(navRef.current, { height: '60px' });
-          gsap.set(topbarRef.current, { opacity: 1 });
-        } else {
-          gsap.set(aboutLinkMobileRef.current, { opacity: 0 });
-          gsap.set(contactLinkMobileRef.current, { opacity: 0 });
-          gsap.set(servicesLinkMobileRef.current, { opacity: 0 });
-
-          gsap.set(aboutLinkRef.current, { opacity: 1 });
-          gsap.set(contactLinkRef.current, { opacity: 1 });
-          gsap.set(servicesLinkRef.current, { opacity: 1 });
-
-          gsap.set(navRef.current, { height: '100vh' });
-          gsap.set(topbarRef.current, { opacity: 1 });
-        }
+      if (isMobile) {
+        gsap.set(aboutLinkRef.current, { opacity: 0 });
+        gsap.set(contactLinkRef.current, { opacity: 0 });
+        gsap.set(servicesLinkRef.current, { opacity: 0 });
+        gsap.set(navRef.current, { height: '60px' });
+        gsap.set(topbarRef.current, { opacity: 1 });
+      } else {
+        gsap.set(aboutLinkRef.current, { opacity: 1 });
+        gsap.set(contactLinkRef.current, { opacity: 1 });
+        gsap.set(servicesLinkRef.current, { opacity: 1 });
+        gsap.set(navRef.current, { height: '100vh' });
+        gsap.set(topbarRef.current, { opacity: 1 });
       }
+    }
     );
 
     return () => mm.revert();
@@ -337,55 +255,47 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
     if (!hasOpened) {
 
       setTimeout(() => {
-        gsap.set(aboutRef.current, { opacity: 0 });
+        gsap.set(aboutRef.current.querySelector('*'), { opacity: 0 });
       });
 
       const tl = gsap.timeline();
       const mm = gsap.matchMedia();
-      mm.add(
-        {
-          isDesktop: "(min-width: 768px)",
-          isMobile: "(max-width: 767px)",
-        },
-        (context) => {
-          const { isMobile, isDesktop } = context.conditions;
+      mm.add(breakpoints, (context) => {
+        const { isMobile, isDesktop } = context.conditions;
 
-          setTimeout(() => {
-            if (isMobile) {
-              tl.to(navRef.current, {
-                height: '100vh',
-                width: '100vw',
-                duration: 0.4,
-                ease: 'power2.out',
-              });
-              tl.to(closeButtonMobileRef.current, {
-                opacity: 1,
-                duration: 0.2,
-                ease: 'power2.out',
-              }, '<');
-              tl.to(logoRef.current, {
-                opacity: 0,
-                duration: 0.8,
-                ease: 'power2.out',
-              }, '<');
-            }
+        setTimeout(() => {
+          if (isMobile) {
+            tl.to(navRef.current, {
+              height: '100vh',
+              width: '100vw',
+              duration: 0.4,
+              ease: 'power2.out',
+            });
+            tl.to(logoRef.current, {
+              opacity: 0,
+              duration: 0.8,
+              ease: 'power2.out',
+            }, '<');
+          }
 
-            if (isDesktop) {
-              tl.to(navRef.current, {
-                width: '90vw',
-                duration: 0.8,
-                ease: 'power2.out',
-              });
-            }
+          if (isDesktop) {
+            tl.to(navRef.current, {
+              width: '90vw',
+              duration: 0.8,
+              ease: 'power2.out',
+            });
+          }
 
-            tl.to(aboutRef.current, {
+          if (aboutRef.current) {
+            tl.to(aboutRef.current.querySelector('*'), {
               opacity: 1,
               duration: 0.2,
               ease: 'power2.out',
             });
-          }, 200);
+          }
+        }, 200);
 
-        },
+      },
       );
     }
   };
@@ -403,91 +313,54 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
       }
 
       const mm = gsap.matchMedia();
-      mm.add(
-        {
-          isDesktop: "(min-width: 768px)",
-          isMobile: "(max-width: 767px)",
-        },
-        (context) => {
-          const { isMobile } = context.conditions;
+      mm.add(breakpoints, (context) => {
+        const { isDesktop } = context.conditions;
 
-          if (isMobile) {
-            gsap.set(aboutLinkMobileRef.current, { opacity: .9, scale: .8 });
-          } else {
-            gsap.set(aboutLinkRef.current, { opacity: .9, scale: .8 });
+        if (isDesktop) {
+          gsap.set(aboutLinkRef.current, { opacity: .9, scale: .8 });
+        }
+
+        setTimeout(() => {
+          if (isDesktop) {
+            gsap.to(aboutLinkRef.current, { scale: 1, opacity: 1, duration: 1, ease: 'bounce.out' }, '<');
           }
 
-          setTimeout(() => {
-            if (isMobile) {
-              gsap.to(aboutLinkMobileRef.current, { scale: 1, opacity: 1, duration: 0.5, ease: 'bounce.out' }, '<');
-            } else {
-              gsap.to(aboutLinkRef.current, { scale: 1, opacity: 1, duration: 1, ease: 'bounce.out' }, '<');
-            }
-
-            tl.to(logoRef.current, {
-              opacity: 1,
-              duration: 0.8,
-              ease: 'power2.out',
-            }, '<');
-
-            // gsap.to(contactLinkMobileRef.current, {
-            //   opacity: 1,
-            //   scale: 1,
-            //   duration: 0.5,
-            //   ease: 'bounce.out',
-            // }, '<');
-
-            // gsap.set(navListRef.current, {
-            //   display: 'flex',
-            // });
-          }, 100);
-        });
+          tl.to(logoRef.current, {
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+          }, '<');
+        }, 100);
+      });
     }
 
     const mm = gsap.matchMedia();
-    mm.add(
-      {
-        isDesktop: "(min-width: 768px)",
-        isMobile: "(max-width: 767px)",
-      },
-      (context) => {
-        const { isMobile } = context.conditions;
+    mm.add(breakpoints, (context) => {
+      const { isMobile } = context.conditions;
 
-        tl.to(aboutRef.current, {
-          opacity: 0,
-          duration: 0.2,
-          ease: 'power2.out',
-        });
+      tl.to(aboutRef.current, {
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power2.out',
+      });
 
-        if (isMobile) {
-          tl.to(navRef.current, {
-            height: '60px',
-            width: '120px',
-            duration: 0.6,
-            ease: 'ease.out',
-            onComplete: onComplete,
-          }, '<');
-          tl.to(closeButtonMobileRef.current, {
-            opacity: 0,
-            duration: 0.2,
-            ease: 'power2.out',
-          }, '<');
-        } else {
-          tl.to(navRef.current, {
-            width: '120px',
-            duration: 0.6,
-            ease: 'ease.out',
-            onComplete: onComplete,
-          }, '<');
-          // tl.to(closeButtonRef.current, {
-          //   opacity: 0,
-          //   duration: 0.2,
-          //   ease: 'power2.out',
-          // }, '<');
-        }
-
-
-      },
+      if (isMobile) {
+        tl.to(navRef.current, {
+          height: '60px',
+          width: '120px',
+          duration: 0.6,
+          ease: 'ease.out',
+          onComplete: onComplete,
+        }, '<');
+      } else {
+        tl.to(navRef.current, {
+          width: '120px',
+          duration: 0.6,
+          ease: 'ease.out',
+          onComplete: onComplete,
+        }, '<');
+      }
+    },
     );
   };
 
@@ -513,47 +386,37 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
       const tl = gsap.timeline();
 
       const mm = gsap.matchMedia();
-      mm.add(
-        {
-          isDesktop: "(min-width: 768px)",
-          isMobile: "(max-width: 767px)",
-        },
-        (context) => {
-          const { isMobile } = context.conditions;
+      mm.add(breakpoints, (context) => {
+        const { isMobile } = context.conditions;
 
-          setTimeout(() => {
-            if (isMobile) {
-              tl.to(navRef.current, {
-                height: '100vh',
-                width: '100vw',
-                duration: 0.4,
-                ease: 'power2.out',
-              });
-              tl.to(closeButtonMobileRef.current, {
-                opacity: 1,
-                duration: 0.2,
-                ease: 'power2.out',
-              }, '<');
-              tl.to(logoRef.current, {
-                opacity: 0,
-                duration: 0.8,
-                ease: 'power2.out',
-              }, '<');
-            } else {
-              tl.to(navRef.current, {
-                width: '90vw',
-                duration: 0.8,
-                ease: 'power2.out',
-              });
-            }
-
-            tl.to(contactRef.current, {
-              opacity: 1,
-              duration: 0.2,
+        setTimeout(() => {
+          if (isMobile) {
+            tl.to(navRef.current, {
+              height: '100vh',
+              width: '100vw',
+              duration: 0.4,
               ease: 'power2.out',
             });
-          }, 200);
-        },
+            tl.to(logoRef.current, {
+              opacity: 0,
+              duration: 0.8,
+              ease: 'power2.out',
+            }, '<');
+          } else {
+            tl.to(navRef.current, {
+              width: '90vw',
+              duration: 0.8,
+              ease: 'power2.out',
+            });
+          }
+
+          tl.to(contactRef.current, {
+            opacity: 1,
+            duration: 0.2,
+            ease: 'power2.out',
+          });
+        }, 200);
+      },
       );
     }
   };
@@ -570,78 +433,54 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
       }
 
       const mm = gsap.matchMedia();
-      mm.add(
-        {
-          isDesktop: "(min-width: 768px)",
-          isMobile: "(max-width: 767px)",
-        },
-        (context) => {
-          const { isMobile } = context.conditions;
+      mm.add(breakpoints, (context) => {
+        const { isDesktop } = context.conditions;
 
-          if (isMobile) {
-            gsap.set(contactLinkMobileRef.current, { opacity: .9, scale: .8 });
-          } else {
-            gsap.set(contactLinkRef.current, { opacity: .9, scale: .8 });
+        if (isDesktop) {
+          gsap.set(contactLinkRef.current, { opacity: .9, scale: .8 });
+        }
+
+        setTimeout(() => {
+          if (isDesktop) {
+            gsap.to(contactLinkRef.current, { scale: 1, opacity: 1, duration: 1, ease: 'bounce.out' }, '<');
           }
 
-          setTimeout(() => {
-            if (isMobile) {
-              gsap.to(contactLinkMobileRef.current, { scale: 1, opacity: 1, duration: 0.5, ease: 'bounce.out' }, '<');
-            } else {
-              gsap.to(contactLinkRef.current, { scale: 1, opacity: 1, duration: 1, ease: 'bounce.out' }, '<');
-            }
-
-            tl.to(logoRef.current, {
-              opacity: 1,
-              duration: 0.8,
-              ease: 'power2.out',
-            }, '<');
-          }, 100);
-        });
+          tl.to(logoRef.current, {
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+          }, '<');
+        }, 100);
+      });
     }
 
     const mm = gsap.matchMedia();
-    mm.add(
-      {
-        isDesktop: "(min-width: 768px)",
-        isMobile: "(max-width: 767px)",
-      },
-      (context) => {
-        const { isMobile } = context.conditions;
+    mm.add(breakpoints, (context) => {
+      const { isMobile } = context.conditions;
 
-        tl.to(contactRef.current, {
-          opacity: 0,
-          duration: 0.2,
-          ease: 'power2.out',
-        });
+      tl.to(contactRef.current, {
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power2.out',
+      });
 
-        if (isMobile) {
-          tl.to(navRef.current, {
-            height: '60px',
-            width: '120px',
-            duration: 0.6,
-            ease: 'ease.out',
-            onComplete: onComplete,
-          }, '<');
-          tl.to(closeButtonMobileRef.current, {
-            opacity: 0,
-            duration: 0.2,
-            ease: 'power2.out',
-          }, '<');
-        } else {
-          tl.to(navRef.current, {
-            width: '120px',
-            duration: 0.6,
-            ease: 'ease.out',
-            onComplete: onComplete,
-          }, '<');
-          // tl.to(closeButtonRef.current, {
-          //   opacity: 0,
-          //   duration: 0.2,
-          //   ease: 'power2.out',
-          // }, '<');
-        }
+      if (isMobile) {
+        tl.to(navRef.current, {
+          height: '60px',
+          width: '120px',
+          duration: 0.6,
+          ease: 'ease.out',
+          onComplete: onComplete,
+        }, '<');
+      } else {
+        tl.to(navRef.current, {
+          width: '120px',
+          duration: 0.6,
+          ease: 'ease.out',
+          onComplete: onComplete,
+        }, '<');
       }
+    }
     );
   }
 
@@ -666,47 +505,37 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
       const tl = gsap.timeline();
 
       const mm = gsap.matchMedia();
-      mm.add(
-        {
-          isDesktop: "(min-width: 768px)",
-          isMobile: "(max-width: 767px)",
-        },
-        (context) => {
-          const { isMobile } = context.conditions;
+      mm.add(breakpoints, (context) => {
+        const { isMobile } = context.conditions;
 
-          setTimeout(() => {
-            if (isMobile) {
-              tl.to(navRef.current, {
-                height: '100vh',
-                width: '100vw',
-                duration: 0.4,
-                ease: 'power2.out',
-              });
-              tl.to(closeButtonMobileRef.current, {
-                opacity: 1,
-                duration: 0.2,
-                ease: 'power2.out',
-              }, '<');
-              tl.to(logoRef.current, {
-                opacity: 0,
-                duration: 0.8,
-                ease: 'power2.out',
-              }, '<');
-            } else {
-              tl.to(navRef.current, {
-                width: '90vw',
-                duration: 0.8,
-                ease: 'power2.out',
-              });
-            }
-
-            tl.to(servicesRef.current, {
-              opacity: 1,
-              duration: 0.2,
+        setTimeout(() => {
+          if (isMobile) {
+            tl.to(navRef.current, {
+              height: '100vh',
+              width: '100vw',
+              duration: 0.4,
               ease: 'power2.out',
             });
-          }, 200);
-        },
+            tl.to(logoRef.current, {
+              opacity: 0,
+              duration: 0.8,
+              ease: 'power2.out',
+            }, '<');
+          } else {
+            tl.to(navRef.current, {
+              width: '90vw',
+              duration: 0.8,
+              ease: 'power2.out',
+            });
+          }
+
+          tl.to(servicesRef.current, {
+            opacity: 1,
+            duration: 0.2,
+            ease: 'power2.out',
+          });
+        }, 200);
+      },
       );
     }
   };
@@ -727,87 +556,82 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
       }
 
       const mm = gsap.matchMedia();
-      mm.add(
-        {
-          isDesktop: "(min-width: 768px)",
-          isMobile: "(max-width: 767px)",
-        },
-        (context) => {
-          const { isMobile } = context.conditions;
+      mm.add(breakpoints, (context) => {
+        const { isDesktop } = context.conditions;
 
-          if (isMobile) {
-            gsap.set(servicesLinkMobileRef.current, { opacity: .9, scale: .8 });
-          } else {
-            gsap.set(servicesLinkRef.current, { opacity: .9, scale: .8 });
+        if (isDesktop) {
+          gsap.set(servicesLinkRef.current, { opacity: .9, scale: .8 });
+        }
+
+        setTimeout(() => {
+          if (isDesktop) {
+            gsap.to(servicesLinkRef.current, { scale: 1, opacity: 1, duration: 1, ease: 'bounce.out' }, '<');
           }
 
-          setTimeout(() => {
-            if (isMobile) {
-              gsap.to(servicesLinkMobileRef.current, { scale: 1, opacity: 1, duration: 0.5, ease: 'bounce.out' }, '<');
-            } else {
-              gsap.to(servicesLinkRef.current, { scale: 1, opacity: 1, duration: 1, ease: 'bounce.out' }, '<');
-            }
-
-            tl.to(logoRef.current, {
-              opacity: 1,
-              duration: 0.8,
-              ease: 'power2.out',
-            }, '<');
-          }, 100);
-        });
+          tl.to(logoRef.current, {
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+          }, '<');
+        }, 100);
+      });
     }
 
     const mm = gsap.matchMedia();
-    mm.add(
-      {
-        isDesktop: "(min-width: 768px)",
-        isMobile: "(max-width: 767px)",
-      },
-      (context) => {
-        const { isMobile } = context.conditions;
+    mm.add(breakpoints, (context) => {
+      const { isMobile } = context.conditions;
 
-        tl.to(servicesRef.current, {
-          opacity: 0,
-          duration: 0.2,
-          ease: 'power2.out',
-        });
+      tl.to(servicesRef.current, {
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power2.out',
+      });
 
-        if (isMobile) {
-          tl.to(navRef.current, {
-            height: '60px',
-            width: '120px',
-            duration: 0.6,
-            ease: 'ease.out',
-            onComplete: onComplete,
-          }, '<');
-          tl.to(closeButtonMobileRef.current, {
-            opacity: 0,
-            duration: 0.2,
-            ease: 'power2.out',
-          }, '<');
-        } else {
-          tl.to(navRef.current, {
-            width: '120px',
-            duration: 0.6,
-            ease: 'ease.out',
-            onComplete: onComplete,
-          }, '<');
-        }
+      if (isMobile) {
+        tl.to(navRef.current, {
+          height: '60px',
+          width: '120px',
+          duration: 0.6,
+          ease: 'ease.out',
+          onComplete: onComplete,
+        }, '<');
+      } else {
+        tl.to(navRef.current, {
+          width: '120px',
+          duration: 0.6,
+          ease: 'ease.out',
+          onComplete: onComplete,
+        }, '<');
       }
+    }
     );
   }
 
   const noneAreOpen = !isAboutVisible && !isContactVisible && !isServicesVisible;
 
+  const handleMenuClick = (e, id) => {
+    if (id === 'about') {
+      handleShowAbout(e);
+    } else if (id === 'services') {
+      handleShowServices(e);
+    } else if (id === 'contact') {
+      handleShowContact(e);
+    }
+  }
+
+  const onTopBarLinkClick = (e, filter) => {
+    e.preventDefault();
+    setSelectedFilter(filter);
+    if (filter === 'all') {
+      resetProjects();
+    } else {
+      filterProjects(filter);
+    }
+  }
+
   return (
     <>
       <nav className={styles.nav} id="verticalnav" ref={navRef}>
-
-        {(isAboutVisible || isServicesVisible || isContactVisible) && (
-          <button className={`${styles.closeButton} ${styles.closeButtonMobile}`} onClick={handleCloseAll} ref={closeButtonMobileRef}>
-            <CloseIcon fill="#e8eaed" size={24} className={styles.closeIcon} />
-          </button>
-        )}
 
         <div className={styles.nav__inner} ref={navInnerRef}>
 
@@ -838,7 +662,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
           </div>
 
           <div className={`${styles.nav__content} ${(isAboutVisible || isContactVisible || isServicesVisible) ? styles.nav__contentVisible : ''}`}>
-            
+
             {isAboutVisible && (
               <div className={`${styles.nav__scrollContent} js-about-scroll-container`} ref={aboutRef}>
                 <About parentScroller={aboutRef.current} openServices={handleShowServices} />
@@ -862,7 +686,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
               <div className={`${styles.nav__item} ${noneAreOpen ? styles.active : ''}`}>
                 <a href="#">
                   <div className={`${styles.aboutCircleDesktop} ${noneAreOpen ? styles.active : ''}`}
-                    onClick={handleCloseAll} ref={closeButtonRef} data-content="Home">
+                    onClick={handleCloseAll} ref={homeButtonRef} data-content="Home">
                     <HomeIcon fill={orange} size={34} />
                   </div>
                 </a>
@@ -881,7 +705,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
               <div className={`${styles.nav__item} ${isServicesVisible ? styles.active : ''}`}>
                 <a href="#services"
                   className={`${styles.servicesLink}`}>
-                  <div 
+                  <div
                     className={`${styles.servicesCircleDesktop} ${isServicesVisible ? styles.active : ''}`}
                     data-content="Services" onClick={handleShowServices} ref={servicesLinkRef}>
                     <ServicesIcon stroke={orange} fill="white" />
@@ -891,7 +715,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
 
               <div className={`${styles.nav__item} ${isContactVisible ? styles.active : ''}`}>
                 <a href="#contact" className={`${styles.contactLink}`}>
-                  <div 
+                  <div
                     className={`${styles.contactCircleDesktop} ${isContactVisible ? styles.active : ''}`}
                     ref={contactLinkRef} data-content="Contact" onClick={handleShowContact}>
                     <ContactIcon fill={orange} />
@@ -908,40 +732,20 @@ const Header = ({ onAnimationEnd, projects, resetProjects }) => {
 
       <nav className={styles.nav__topbar} id="topbar" ref={topbarRef}>
         <div className={styles.nav__topbarInner}>
-          <a href="#" className={styles.nav__link} ref={(el) => navTopBarEls.current[1] = el}>All</a>
-          <a href="#" className={styles.nav__link} ref={(el) => navTopBarEls.current[2] = el}>Residential</a>
-          <a href="#" className={styles.nav__link} ref={(el) => navTopBarEls.current[3] = el}>Commercial</a>
+          <a className={`${styles.nav__link} ${selectedFilter === 'all' ? styles.active : ''}`} 
+            ref={(el) => navTopBarEls.current[1] = el} onClick={(e) => onTopBarLinkClick(e, 'all')}>All</a>
+
+          <a className={`${styles.nav__link} ${selectedFilter === 'residential' ? styles.active : ''}`} 
+            ref={(el) => navTopBarEls.current[2] = el} onClick={(e) => onTopBarLinkClick(e, 'residential') }>Residential</a>
+
+          <a className={`${styles.nav__link} ${selectedFilter === 'commercial' ? styles.active : ''}`}
+            ref={(el) => navTopBarEls.current[3] = el} onClick={(e) => onTopBarLinkClick(e, 'commercial')}>Commercial</a>
         </div>
       </nav>
 
-      {!isAboutVisible && (
-        <a href="#about" className={styles.aboutCircleMobile} ref={aboutLinkMobileRef} data-content="About" onClick={handleShowAbout}>
-          <div>
-            <AboutIcon stroke="white" />
-          </div>
-        </a>
-      )}
-
-      {!isContactVisible && (
-        <a href="#contact"
-          className={`${styles.contactCircleMobile} ${(isAboutVisible || isServicesVisible) ? styles.contactCircleMobileWhite : ''}`}
-          ref={contactLinkMobileRef}
-          data-content="Contact"
-          onClick={handleShowContact}>
-          <ContactIcon fill="white" />
-        </a>
-      )}
-
-      {!isServicesVisible && (
-        <a href="#services"
-          className={`${styles.servicesCircleMobile} ${(isAboutVisible || isContactVisible) ? styles.servicesCircleMobileWhite : ''}`}
-          ref={servicesLinkMobileRef} data-content="Services" onClick={handleShowServices}>
-          <div >
-            <ServicesIcon stroke="white" fill={orange} />
-          </div>
-        </a>
-      )}
-
+      <div ref={mobileMenuRef} className={styles.mobileMenuContainer}>
+        <MobileMenu onMenuItemClick={handleMenuClick} />
+      </div>
     </>
   );
 };
