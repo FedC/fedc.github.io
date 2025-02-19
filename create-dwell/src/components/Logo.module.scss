@@ -1,0 +1,12 @@
+.logo {
+  width: 147px;
+  height: auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    transform-origin: center;
+  }
+}

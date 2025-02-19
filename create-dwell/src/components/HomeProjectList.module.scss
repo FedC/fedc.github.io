@@ -70,9 +70,6 @@
       position: relative;
 
       .projectTitle {
-        position: absolute;
-        top: 0;
-        left: calc(100% + 24px);
         max-width: calc(var(--grid-max-width));
         width: 100%;
         text-align: left;
@@ -85,6 +82,9 @@
           color: var(--color-link);
           margin-top: 0;
           margin-bottom: 2px;
+          @media screen and (max-width: 768px) {
+            text-align: center;
+          }
         }
       }
     }
@@ -150,7 +150,7 @@
 
           .projectHeader {
             min-width: calc(calc(var(--grid-max-width) / 2) + 72px);
-            padding-right: 48px;
+            // padding-right: 48px;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -171,6 +171,10 @@
                 display: none;
               }
 
+            }
+
+            .projectGeneralDescription {
+              padding-right: 48px;
             }
 
             // .scrollUpButton {
@@ -299,9 +303,17 @@
             flex-direction: column;
             justify-content: center;
 
-
             p {
               margin-top: 0;
+              margin-bottom: 0;
+            }
+
+            p.projectTeamRole {
+              font-weight: 500;
+              color: #afaba6;
+            }
+            p.projectTeamName {
+              font-weight: 400;
               color: #4f4c4a;
             }
           }
@@ -320,6 +332,27 @@
           }
         }
       }
+    }
+  }
+}
+
+.projectList .projectItem .projectContent .projectContentHorizontal .projectContentItem {
+  &.aspectLandscape {
+    .projectImage {
+      object-fit: cover;
+    }
+  }
+
+  &.aspectPortrait {
+    .projectImage {
+      object-fit: cover;
+      height: 100%;
+    }
+  }
+
+  &.aspectSquare {
+    .projectImage {
+      object-fit: cover;
     }
   }
 }

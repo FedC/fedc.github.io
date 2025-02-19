@@ -12,6 +12,7 @@ import About from './About';
 import Contact from './Contact';
 import Services from './Services';
 import MobileMenu from './MobileMenu';
+import Logo from './Logo';
 
 const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => {
 
@@ -25,8 +26,8 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
   const servicesRef = useRef(null);
   const mobileMenuRef = useRef(null);
 
-  const letterRefsCreate = useRef([]);
-  const letterRefsDwell = useRef([]);
+  // const letterRefsCreate = useRef([]);
+  // const letterRefsDwell = useRef([]);
 
   const topbarRef = useRef(null);
   const navTopBarEls = useRef([]);
@@ -64,10 +65,9 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
           onAnimationEnd();
           hasFired = true; // Ensure it only fires once
         }
-        // debugger;
       },
       onComplete: () => {
-        gsap.set(logoRef.current, { transformOrigin: 'center center' });
+        // gsap.set(logoRef.current, { transformOrigin: 'center center' });
         mm.kill();
         setElementsVisibility();
       },
@@ -78,7 +78,8 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
     mm.add(breakpoints, (context) => {
       const { isDesktop, isMobile } = context.conditions;
 
-      const orangeHalf = document.querySelector('.orangeHalf');
+      const orangeHalf = document.querySelector('.js-orange-half');
+      const logoDwell = document.querySelector('.js-logo-dwell');
 
       gsap.set(navRef.current, {
         width: '50%',
@@ -90,20 +91,21 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
 
       gsap.set(logoRef.current, {
         y: window.innerHeight * 8 / 10, // Start at the bottom
-        x: isMobile ? 20 : 12.5,
-        scale: isDesktop ? 3 : 1.8,
-        transformOrigin: '50% 50%',
+        // x: isMobile ? -11 : 0,
+        // scale: isDesktop ? 3 : 1.8,
+        // transformOrigin: '50% 50%',
       });
+      gsap.set(logoRef.current.querySelectorAll('svg'), { scale: isDesktop ? 3 : 1.8, x: isMobile ? -4 : -10 });
 
-      gsap.set(letterRefsDwell.current, { x: 0, color: 'rgba(246, 171, 11, 0.65)', opacity: 1 });
+      gsap.set(logoDwell, { fill: 'rgba(246, 171, 11, 0.65)', opacity: 1 });
       gsap.set(orangeHalf, { fill: 'rgba(246, 171, 11, 0.65)' });
-      gsap.set(letterRefsCreate.current, { opacity: 1 });
 
-      tl.to(letterRefsDwell.current, { color: 'rgba(246, 171, 11, 0.65)', delay: 1.5 });
+      tl.to(logoDwell, { fill: 'rgba(246, 171, 11, 0.65)', delay: 1.5 });
       tl.to(
         logoRef.current,
         {
           y: 20,
+          x: 0,
           duration: 2,
           ease: 'power2.out',
         },
@@ -134,15 +136,24 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
           logoRef.current,
           {
             y: 0,
-            x: 25.5,
             scale: 1,
+            duration: 1.5,
+            ease: 'power2.out',
+          },
+          '<'
+        )
+        .to(
+          logoRef.current.querySelectorAll('svg'),
+          {
+            scale: 1,
+            x: 0,
             duration: 1.5,
             ease: 'power2.out',
           },
           '<'
         );
 
-      tl.to(letterRefsDwell.current, { color: '#f6ab0b)' }, '<');
+      tl.to(logoDwell, { fill: '#f6ab0b)' }, '<');
       tl.to(orangeHalf, { fill: '#f6ab0b' }, '<');
       tl.to(topbarRef.current,
         { opacity: 1, duration: 0.5 },
@@ -187,9 +198,9 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
     setIsServicesVisible(false);
 
     if (isAboutVisible) {
-      handleCloseAbout(true);
+      handleCloseAbout();
     } else if (isContactVisible) {
-      closeContact(true);
+      closeContact();
     } else if (isServicesVisible) {
       handleCloseServices();
     } else {
@@ -300,7 +311,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
     }
   };
 
-  const handleCloseAbout = (preventLenis) => {
+  const handleCloseAbout = () => {
 
     const tl = gsap.timeline();
 
@@ -308,7 +319,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
       setIsAboutVisible(false);
 
       // Enable Lenis for smooth scrolling
-      if (window.lenis && !preventLenis) {
+      if (window.lenis) {
         initSmoothScrolling();
       }
 
@@ -421,14 +432,14 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
     }
   };
 
-  const closeContact = (preventLenis) => {
+  const closeContact = () => {
     const tl = gsap.timeline();
 
     function onComplete() {
       setIsContactVisible(false);
 
       // Enable Lenis for smooth scrolling
-      if (window.lenis && !preventLenis) {
+      if (window.lenis) {
         initSmoothScrolling();
       }
 
@@ -637,27 +648,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
 
           <div className={styles.nav__logo}>
             <div ref={logoRef} className={styles.logoSvg}>
-              {['C', 'R', 'E', 'A', 'T', 'E'].map((letter, index) => (
-                <span
-                  key={`create-${letter}-${index}`}
-                  ref={(el) => (letterRefsCreate.current[index] = el)}
-                  className={styles.logoWhiteLetter}
-                  style={{ opacity: 0, transform: 'translateX(0)' }}
-                >
-                  {letter}
-                </span>
-              ))}
-              <HalfCircle />
-              {['D', 'W', 'E', 'L', 'L'].map((letter, index) => (
-                <span
-                  key={`dwell-${letter}-${index}`}
-                  ref={(el) => (letterRefsDwell.current[index] = el)}
-                  className={styles.logoOrageLetter}
-                  style={{ opacity: 0, transform: 'translateX(3px)' }}
-                >
-                  {letter}
-                </span>
-              ))}
+              <Logo />
             </div>
           </div>
 
@@ -684,7 +675,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
             <div className={styles.nav__list} ref={navListRef}>
 
               <div className={`${styles.nav__item} ${noneAreOpen ? styles.active : ''}`}>
-                <a href="#">
+                <a href="#home">
                   <div className={`${styles.aboutCircleDesktop} ${noneAreOpen ? styles.active : ''}`}
                     onClick={handleCloseAll} ref={homeButtonRef} data-content="Home">
                     <HomeIcon fill={orange} size={34} />

@@ -69,7 +69,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
       animation();
 
       // Set up the draggable effect for the project list
-      setupDraggableToToggleProject();
+      // setupDraggableToToggleProject(); // removed for now because it's causing issues
 
       setupFooterAnimation();
     }
@@ -308,7 +308,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
             const velocity = self.getVelocity();
             scrollDirection = velocity > 0 ? 1 : -1;
             velocityScale.current = Math.max(1 - Math.abs(velocity) / 1000, minimumScaleOffset);
-            // updateVelocityScale(velocity);
+            // scaleBackWithScrollVelocity(velocity);
             applySkewEffect(velocity);
             moveNavToScrollVelocity(velocity);
           },
@@ -378,7 +378,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
     scrollToProject(projectId);
   };
 
-  const updateVelocityScale = (velocity) => {
+  const scaleBackWithScrollVelocity = (velocity) => {
     const gridElement = gridRef.current;
     if (!gridElement) return;
 
@@ -573,6 +573,8 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
 
           const tl = gsap.timeline();
 
+          tl.to(projectRef.querySelector(`.${styles.projectTitle}`), { y: -10, opacity: 0, duration: 0.1, ease: 'ease.inOut' }, '<');
+
           tl.to(mainImageSelector, {
             filter: 'brightness(0.5)',
             duration: 0.5,
@@ -648,9 +650,22 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                       ease: 'ease.out',
                     });
                     setLoadingContentImages((prev) => prev.filter((id) => id !== projectId));
+
+                    setTimeout(() => {
+                      const projectImage = document.querySelectorAll(`#project-${projectId} .${styles.projectImage}`);
+                      projectImage.forEach((img) => {
+                        gsap.set(img, { height: updatedMainImageHeight });
+                      });
+                    }, 0);
+
                     ScrollTrigger.enable();
                     ScrollTrigger.refresh();
-                    // scrollToProject(projectId);
+
+                    const isScrolling = Math.abs(velocityScale.current) > 40;
+                    const isInView = ScrollTrigger.isInViewport(projectRef);
+                    if (isInView && !isScrolling) {
+                      scrollToProject(projectId);
+                    }
                   },
                   onUpdate: () => {
                     // // Dynamically calculate the x position of the main image
@@ -1078,11 +1093,11 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                           <div className={styles.spinner}></div>)}
                       </div>
 
-                      {/* {(!openProjects.includes(project.id) && !loadingContentImages.includes(project.id)) && (
+                      {/* {(!openProjects.includes(project.id) && !loadingContentImages.includes(project.id)) && ( */}
                         <div className={styles.projectTitle}>
                           <h2>{project.title}</h2>
                         </div>
-                      )} */}
+                      {/* )} */}
                     </div>
 
                     {openProjects.includes(project.id) && (
@@ -1280,9 +1295,10 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                             <div className={styles.projectContentItem}>
                               <div className={styles.projectTeamText}>
                                 {project.teams.map((team, index) => (
-                                  <p key={'team_' + index}>
-                                    {team.role} - {team.name}
-                                  </p>
+                                  <div key={'team_' + index}>
+                                    <p className={styles.projectTeamRole}>{team.role}</p>
+                                    <p className={styles.projectTeamName}>{team.name}</p>
+                                  </div>
                                 ))}
                               </div>
                             </div>
