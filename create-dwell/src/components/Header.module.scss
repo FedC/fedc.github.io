@@ -58,18 +58,12 @@
     display: flex;
     align-items: center;
     column-gap: 1px;
+    position: relative;
+    left: 11px;
 
     span {
         display: inline-block;
     }
-}
-
-.logoOrageLetter {
-    color: var(--color-link);
-}
-
-.logoWhiteLetter {
-    color: white;
 }
 
 .nav {

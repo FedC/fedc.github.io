@@ -20,17 +20,17 @@ const Footer = ({ showCredits = false }) => {
 
       <div className={footerStyles.footerInner}>
 
-        <div className={footerStyles.footerLeft}>
+        <div className={footerStyles.footerContact}>
           <p>
             <a href="mailto:carolina@create-dwell.com">carolina@create-dwell.com</a>
-            <span className={footerStyles.spacer}></span>
+            <span className={footerStyles.emptySpace}></span>
             <a href="tel:9542100862">954 210 0862</a>
-            <span className={footerStyles.spacer}></span>
+            <span className={footerStyles.emptySpace}></span>
             AR91865 + ID6603
           </p>
         </div>
 
-        <div className={footerStyles.footerRight}>
+        <div className={footerStyles.footerCopyright}>
           <p>
             ©2025 by Carolina Wiebe PA, LEED AP BD+C
           </p>
