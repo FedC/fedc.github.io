@@ -59,7 +59,7 @@
     align-items: center;
     column-gap: 1px;
     position: relative;
-    left: 11px;
+    left: 23px;
 
     span {
         display: inline-block;
@@ -631,4 +631,8 @@ nav {
     transform-origin: center;
     width: 68px;
     height: 68px;
+}
+
+.mobileBottomMenu {
+    padding: 0;
 }

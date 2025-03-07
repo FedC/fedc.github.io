@@ -8,7 +8,7 @@ $radius: math.div($base-size, 2); // Corrected radius for proper spacing
 .circleContainer {
   position: relative;
   width: clamp(260px, 40vw, $base-size);
-  height: clamp(400px, 40vw, $base-size);
+  height: clamp(390px, 40vw, $base-size);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -78,6 +78,14 @@ $pi: math.div(22, 7);
   text-align: center;
 }
 
+@media (max-width: 1250px) {
+  .circleContainer {
+    width: clamp(260px, 80vw, $base-size);
+    height: clamp(390px, 80vh, $base-size);
+    transform: translate3d(0,0,0);
+  }
+}
+
 @media (max-width: 768px) {
   $base-size: 180px;
   $center-size: math.div($base-size, 1.5); 
@@ -86,7 +94,8 @@ $pi: math.div(22, 7);
 
   .circleContainer {
     width: clamp(200px, 80vw, $base-size);
-    height: clamp(350px, 80vh, $base-size);
+    height: clamp(300px, 80vh, $base-size);
+    transform: translate3d(0,0,0);
   }
 
   .centerCircle {

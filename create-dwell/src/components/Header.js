@@ -13,6 +13,7 @@ import Contact from './Contact';
 import Services from './Services';
 import MobileMenu from './MobileMenu';
 import Logo from './Logo';
+import MobileBottomMenu from './MobileBottomMenu';
 
 const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => {
 
@@ -25,6 +26,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
   const contactRef = useRef(null);
   const servicesRef = useRef(null);
   const mobileMenuRef = useRef(null);
+  const mobileBottomMenuRef = useRef(null);
 
   // const letterRefsCreate = useRef([]);
   // const letterRefsDwell = useRef([]);
@@ -57,7 +59,11 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
 
     gsap.set(topbarRef.current, { opacity: 0 });
     gsap.set(navLinks, { opacity: 0 });
-    gsap.set(mobileMenuRef.current, { opacity: 0, scale: 0 });
+
+    if (window.matchMedia('(max-width: 767px)').matches) {
+      gsap.set(mobileMenuRef.current, { opacity: 0, scale: 0 });
+      gsap.set(mobileBottomMenuRef.current.querySelector('menu'), { opacity: 0, y: 100 });
+    }
 
     const tl = gsap.timeline({
       onUpdate: function () {
@@ -167,8 +173,11 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
         tl.to(navLinks, { opacity: 1, scale: 1, y: 0, duration: .22, ease: 'power2.out', stagger: .1 }, '<');
       }
 
+      // debugger;
       if (isMobile) {
         tl.to(mobileMenuRef.current, { opacity: 1, scale: 1, duration: 0.2, ease: 'power2.out' }, '<');
+        tl.to(mobileBottomMenuRef.current.querySelector('menu'), { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' }, '<');
+        console.log(mobileBottomMenuRef.current);
       }
 
     }
@@ -192,10 +201,20 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
 
   }, [isAboutVisible, isContactVisible, isServicesVisible]);
 
+  const hideMobileBottomMenu = () => {
+    gsap.to(mobileBottomMenuRef.current.querySelector('menu'), { opacity: 0, y: 100, duration: 0.2, ease: 'power2.out' });
+  }
+
+  const showMobileBottomMenu = () => {
+    gsap.to(mobileBottomMenuRef.current.querySelector('menu'), { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' });
+  }
+
   const handleCloseAll = () => {
     setIsAboutVisible(false);
     setIsContactVisible(false);
     setIsServicesVisible(false);
+
+    showMobileBottomMenu();
 
     if (isAboutVisible) {
       handleCloseAbout();
@@ -247,6 +266,8 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
         ease: 'power2.out',
       });
     }
+
+    hideMobileBottomMenu();
   }
 
 
@@ -630,8 +651,14 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
     }
   }
 
+  const onMobileMenuLinkClick = (filter) => {
+    onTopBarLinkClick(null, filter);
+  }
+
   const onTopBarLinkClick = (e, filter) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     setSelectedFilter(filter);
     if (filter === 'all') {
       resetProjects();
@@ -736,6 +763,10 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
 
       <div ref={mobileMenuRef} className={styles.mobileMenuContainer}>
         <MobileMenu onMenuItemClick={handleMenuClick} />
+      </div>
+
+      <div ref={mobileBottomMenuRef} className={styles.mobileBottomMenu}>
+        <MobileBottomMenu selectedFilter={selectedFilter} onFilter={onMobileMenuLinkClick} />
       </div>
     </>
   );
