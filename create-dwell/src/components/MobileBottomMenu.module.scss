@@ -1,0 +1,127 @@
+.mobileMenu {
+  --bgColorMenu : var(--color-link);
+  --bgColorItem : white;
+  --timeOut: .7s;
+  --duration: .7s;    
+  
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--color-link);
+  opacity: 0.9;
+  padding: 10px 0;
+  z-index: 1000;
+  margin: 0;
+
+  .menuItem {
+    all: unset;
+    flex-grow: 1;
+    cursor: pointer;
+    text-align: center;
+    padding: 0;
+    color: white;
+    font-size: 1.2em;
+    position: relative;
+    transition: transform 0.3s ease;
+    width: 33%;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+
+    // make text veritcal
+    // writing-mode: vertical-rl;
+    transform: translateY(0px);
+
+    // .circle {
+    //   content: "";
+    //   z-index: -1;
+    //   width: 4.2em;
+    //   height: 4.2em;
+    //   border-radius: 50%;
+    //   position: absolute;
+    //   transform: scale(0) translate3d(-10px, -10px, 0px);
+    //   background-color: var(--bgColorItem);
+    //   transition: transform 0.3s ease, background-color 0.3s ease;
+    // }
+
+    &.active {
+      transform: translateY(-10px);
+
+      // .circle {
+      //   transform: scale(1) translate3d(-10px, -10px, 0px);
+      // }
+    }
+
+    &:active {
+      outline: none;
+      background: transparent;
+    }
+    &:focus {
+      outline: none;
+      background: transparent;
+    }
+  }
+}
+
+.icon {
+  width: 2em;
+  height: 2em;
+  stroke: white;
+  fill: transparent;
+  stroke-width: 1pt;
+  stroke-miterlimit: 10;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 400;
+}
+
+.tab {
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.menuItem.active .icon {
+  animation: stroke-animation 1.5s reverse;
+}
+
+.menuItem.active .tab {
+}
+
+@keyframes stroke-animation {
+  100% {
+    stroke-dashoffset: 400;
+  }
+}
+
+.menuBorder {
+  left: 0;
+  bottom: 99%;
+  width: 10.9em;
+  height: 2.4em;
+  position: absolute;
+  clip-path: url(#menu);
+  will-change: transform;
+  background-color: var(--bgColorMenu);
+  transition: transform var(--timeOut, var(--duration));
+}
+
+.svgContainer {
+  width: 0;
+  height: 0;
+}
+
+@media screen and (max-width: 767px) {
+  .mobileMenu {
+    font-size: 0.8em;
+  }
+}
+
+// hide on desktop
+@media screen and (min-width: 768px) {
+  .mobileMenu {
+    display: none;
+  }
+}
