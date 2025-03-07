@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { getFunctions, httpsCallable } from "firebase/functions";
 import * as styles from './Contact.module.scss';
 import * as footerStyles from './Footer.module.scss';
 import gsap from 'gsap';
@@ -65,6 +66,20 @@ const Contact = ({ parentScroller, projects }) => {
     }
 
     try {
+      const functions = getFunctions();
+      const verifyRecaptcha = httpsCallable(functions, "verifyRecaptcha");
+
+      // Send token to Firebase function
+      const recaptchaResponse = await verifyRecaptcha({
+        token: captchaValue,
+        action: "contact_form",
+      });
+
+      if (!recaptchaResponse.data.success || recaptchaResponse.data.score < 0.5) {
+        setStatus("reCAPTCHA verification failed. Please try again.");
+        return;
+      }
+
       const response = await fetch('https://formspree.io/f/manqwpov', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -80,6 +95,7 @@ const Contact = ({ parentScroller, projects }) => {
       }
     } catch (error) {
       setStatus('Error sending message. Please check your network connection.');
+      console.error("error:", error);
     }
   };
 

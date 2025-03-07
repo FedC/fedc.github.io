@@ -653,8 +653,10 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
 
                     setTimeout(() => {
                       const projectImage = document.querySelectorAll(`#project-${projectId} .${styles.projectImage}`);
+                      const projectItemInner = document.querySelectorAll(`#project-${projectId} .${styles.projectItemInner}`);
+                      const projectItemInnerHeight = projectItemInner[0].clientHeight;
                       projectImage.forEach((img) => {
-                        gsap.set(img, { height: updatedMainImageHeight });
+                        gsap.set(img, { height: projectItemInnerHeight });
                       });
                     }, 0);
 
