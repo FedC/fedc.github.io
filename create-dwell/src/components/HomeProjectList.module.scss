@@ -533,6 +533,13 @@
   }
 }
 
+// projectDescriptionButton smaller on mobile
+@media screen and (max-width: 768px) {
+  .projectDescriptionButton {
+    height: 40px;
+    width: 40px;
+  }
+}
 
 .projectPublicationItem {
   position: relative;
