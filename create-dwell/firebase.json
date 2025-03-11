@@ -22,10 +22,6 @@
     ],
     "rewrites": [
       {
-        "source": "/admin-login",
-        "destination": "/admin-login.html"
-      },
-      {
         "source": "**",
         "destination": "/index.html"
       }

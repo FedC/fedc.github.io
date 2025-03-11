@@ -27,7 +27,8 @@ const AdminPanel = () => {
       if (user) {
         setUser(user);
       } else {
-        window.location.href = "/admin-login";
+        // window.location.href = "/admin-login";
+        navigate('/admin-login');
       }
     });
 
@@ -127,9 +128,11 @@ const AdminPanel = () => {
             path="/"
             element={
               <div className={styles.adminContent}>
-                <div className={styles.manageProjects}>
+                <div className={styles.adminHeader}>
                   <h2>Manage Projects</h2>
                   <button id="newProjectBtn" className="primary-btn mb10" onClick={handleNewProjectClick}>New Project</button>
+                </div>
+                <div className={styles.manageProjects}>
                   <ProjectList projects={projects} onEdit={handleEditProject} onUpdate={handleUpdateProjects} />
                 </div>
               </div>

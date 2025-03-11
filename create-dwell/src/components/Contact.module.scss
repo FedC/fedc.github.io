@@ -159,9 +159,12 @@ p {
 }
 
 .statusMessage {
-  color: green;
-  font-weight: bold;
+  color: #473d27;
+  font-weight: 400;
   font-size: 16px;
+  padding: 10px;
+  border: 1px solid #c2b9a7;
+  border-radius: 4px;
 }
 
 .contactImage {
