@@ -23,6 +23,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
   const observerRef = useRef(null);
   // State to track the most visible image
   const [mostVisibleImage, setMostVisibleImage] = useState(null);
+  const [fullScreenContent, setFullScreenContent] = useState(null);
 
   const previousScrollY = useRef(0);
   const velocityScale = useRef(1);
@@ -107,13 +108,13 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
   const closeProject = async (projectId) => {
     const projectRef = projectRefs.current[projectId];
     if (!projectRef) return;
-  
+
     const contentSelector = `#project-${projectId} .${styles.projectContent}`;
     const mainImageSelector = `#project-${projectId} .${styles.projectMainImage}`;
     const mainImageWrapper = `#project-${projectId} .${styles.mainImageWrapper}`;
-  
+
     ScrollTrigger.disable();
-  
+
     const tl = gsap.timeline();
     const mm = gsap.matchMedia();
     mm.add(
@@ -130,7 +131,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
           duration: 0.5,
           ease: 'power3.out',
         });
-      
+
         // Move content out
         tl.to(contentSelector, {
           opacity: 1,
@@ -138,7 +139,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
           duration: 0.5,
           ease: 'power3.out',
         }, '<');
-      
+
         // Reset project image size
         tl.to(mainImageSelector, {
           scale: .5,
@@ -154,7 +155,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
             });
           },
         }, '<');
-      
+
         // Reset position of the project
         tl.to(projectRef, {
           x: 0,
@@ -168,7 +169,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
         });
 
       });
-      
+
     // Remove wheel event listener
     // projectRef.removeEventListener('wheel', handleScroll);
   };
@@ -373,7 +374,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
   const scrollToClosestProject = () => {
     const closestProject = getClosestProjectItemToCenter();
     if (!closestProject) return;
-    
+
     const projectId = closestProject.id.split('-')[1];
     scrollToProject(projectId);
   };
@@ -573,7 +574,8 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
 
           const tl = gsap.timeline();
 
-          tl.to(projectRef.querySelector(`.${styles.projectTitle}`), { y: -10, opacity: 0, duration: 0.1, ease: 'ease.inOut' }, '<');
+          tl.to(projectRef.querySelector(`.${styles.projectTitle}`), { y: '-100%', opacity: 0, duration: 0.1, ease: 'ease.inOut' }, '<');
+          tl.to(projectRef.querySelector(`.${styles.projectTitle}`), { height: 0 });
 
           tl.to(mainImageSelector, {
             filter: 'brightness(0.5)',
@@ -882,36 +884,57 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
 
   const toggleProjectContentDescription = (projectId, contentId, event) => {
     event.stopPropagation();
-
+  
+    // Detect if it's a mobile device
+    const isMobile = window.innerWidth <= 768;
+  
     // Find the correct project and content description
     const projectRef = projectRefs.current[projectId];
-    const projectContentDescription = projectRef.querySelector(
+    const projectContentDescription = projectRef?.querySelector(
       `.${styles.projectDescription}[data-content-id="${contentId}"]`
     );
-
+  
     if (!projectContentDescription) return;
-
-    // Toggle visibility with GSAP
-    if (projectContentDescription.style.opacity === '1') {
-      gsap.to(projectContentDescription, {
-        y: '100%',
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power3.out',
-        onComplete: () => {
-          gsap.set(projectContentDescription, { display: 'none' });
-        },
+  
+    if (isMobile) {
+      // Get content data
+      const content = projects
+        .find((p) => p.id === projectId)
+        ?.content.find((c, index) => c.id === contentId || index === contentId);
+  
+      if (!content) return;
+  
+      // Trigger full-screen mode on mobile
+      setFullScreenContent({
+        projectId,
+        contentId,
+        imageUrl: content.url,
+        description: content.description || '',
       });
+  
     } else {
-      gsap.to(projectContentDescription, {
-        y: 0,
-        opacity: 1,
-        duration: 0.5,
-        ease: 'power3.out',
-        onStart: () => {
-          gsap.set(projectContentDescription, { display: 'block' });
-        },
-      });
+      // Default GSAP behavior for desktop
+      if (projectContentDescription.style.opacity === '1') {
+        gsap.to(projectContentDescription, {
+          y: '100%',
+          opacity: 0,
+          duration: 0.5,
+          ease: 'power3.out',
+          onComplete: () => {
+            gsap.set(projectContentDescription, { display: 'none' });
+          },
+        });
+      } else {
+        gsap.to(projectContentDescription, {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power3.out',
+          onStart: () => {
+            gsap.set(projectContentDescription, { display: 'block' });
+          },
+        });
+      }
     }
   };
 
@@ -1096,9 +1119,9 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                       </div>
 
                       {/* {(!openProjects.includes(project.id) && !loadingContentImages.includes(project.id)) && ( */}
-                        <div className={styles.projectTitle}>
-                          <h2>{project.title}</h2>
-                        </div>
+                      <div className={styles.projectTitle}>
+                        <h2>{project.title}</h2>
+                      </div>
                       {/* )} */}
                     </div>
 
@@ -1269,7 +1292,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                           {project.publications && project.publications.length > 0 && (
                             project.publications.map((publication, index) => (
                               <div key={'publication_' + index} className={`${styles.projectContentItem} ${styles.projectPublicationItem}`}>
-                                
+
 
                                 <a href={publication.link} target="_blank" rel="noopener noreferrer">
                                   <button className={styles.projectPublicationButton}>
@@ -1341,6 +1364,27 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
       <div ref={footerRef}>
         <Footer showCredits={true} />
       </div>
+
+      {fullScreenContent && (
+        <div
+          className={styles.fullScreenOverlay}
+          onClick={() => setFullScreenContent(null)} // Tap to close
+        >
+          <div className={styles.fullScreenImageWrapper}>
+            <img
+              className={styles.fullScreenImage}
+              src={fullScreenContent.imageUrl}
+              alt="Full screen preview"
+            />
+          </div>
+          <div
+            className={styles.fullScreenDescription}
+            onClick={(e) => e.stopPropagation()} // Prevent closing when scrolling
+          >
+            <p>{fullScreenContent.description}</p>
+          </div>
+        </div>
+      )}
     </>
   );
 };

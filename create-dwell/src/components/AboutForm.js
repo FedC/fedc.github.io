@@ -116,7 +116,7 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
       type === 'paragraph'
         ? { type: 'paragraph', text: '', id: `p-${Date.now()}` }
         : type === 'subtitle' ? { type: 'subtitle', text: '', id: `s-${Date.now()}` }
-        : { type: 'bullets', bullets: [], id: `b-${Date.now()}` };
+          : { type: 'bullets', bullets: [], id: `b-${Date.now()}` };
     updatedSections[sectionIndex].content.push(newContent);
     setSections(updatedSections);
     saveAbout();
@@ -232,9 +232,9 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
       console.error('No image URL available. Please upload an image.');
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
       // Remove undefined values from sections
       const sanitizedSections = sections.map((section) => {
@@ -243,7 +243,7 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
           bullets: content.bullets || [], // Ensure bullets is an array
           text: content.text || '', // Ensure text is a string
         }));
-  
+
         const data = {
           ...section,
           content: sanitizedContent, // Replace with sanitized content
@@ -260,7 +260,7 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
         title,
         description,
       });
-  
+
       await setDoc(
         doc(db, 'about', 'main'),
         {
@@ -272,7 +272,7 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
         },
         { merge: true }
       );
-  
+
       console.log('About content saved successfully');
       onUpdateSuccess('About content saved successfully');
     } catch (error) {
@@ -285,20 +285,20 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
   const handleSectionImageFileChange = async (e, sectionIndex) => {
     const file = e.target.files[0];
     if (!file) return;
-  
+
     // Update preview image immediately
     const updatedSections = [...sections];
     updatedSections[sectionIndex].image = file; // Only for preview
     setSections(updatedSections);
-  
+
     // Upload image and get URL
     const imageUrl = await uploadSectionImage(sectionIndex, file);
-  
+
     // Update section with the final image URL
     updatedSections[sectionIndex].imageUrl = imageUrl; // URL for Firestore
     updatedSections[sectionIndex].image = undefined; // Remove File object
     setSections(updatedSections);
-  
+
     saveAbout();
   };
 
@@ -353,182 +353,185 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
         </button>
       </div>
 
-      <div className={styles.sections}>
-        <div className={styles.section}>
-          <div className={styles.formGroup}>
-            <label htmlFor="title">Title</label>
-            <input type="text" name="title" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
-          </div>
+      <div className={styles.aboutFormContent}>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="description">Description</label>
-            <textarea name="description" placeholder="Description" rows={5} cols={40} value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.sections}>
-        {sections.map((section, sectionIndex) => (
-          <div key={sectionIndex} className={styles.section}>
-            <input
-              type="text"
-              placeholder="Title"
-              value={section.title}
-              onBlur={saveAbout}
-              onChange={(e) => handleSectionChange(sectionIndex, 'title', e.target.value)}
-            />
-
-            {/* Image Upload for Section */}
-            <div className={styles.imageUpload}>
-              {section.imageUrl ? (
-                <img
-                  src={section.imageUrl instanceof File ? URL.createObjectURL(section.imageUrl) : section.imageUrl}
-                  alt={`Section ${sectionIndex} Image`}
-                  className={styles.sectionImage}
-                />
-              ) : (
-                <span>No image uploaded</span>
-              )}
-
-              <label htmlFor={`section-image-upload-${sectionIndex}`} className={styles.uploadLabel}>Upload Image</label>
-              <input type="file" name="mainImage" id={`section-image-upload-${sectionIndex}`}
-                onChange={(e) => handleSectionImageFileChange(e, sectionIndex)} />
+        <div className={styles.sections}>
+          <div className={styles.section}>
+            <div className={styles.formGroup}>
+              <label htmlFor="title">Title</label>
+              <input type="text" name="title" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
 
-            <input
-              type="text"
-              placeholder="SubTitle"
-              value={section.subTitle}
-              onBlur={saveAbout}
-              onChange={(e) => handleSectionChange(sectionIndex, 'subTitle', e.target.value)}
-            />
+            <div className={styles.formGroup}>
+              <label htmlFor="description">Description</label>
+              <textarea name="description" placeholder="Description" rows={5} cols={40} value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+            </div>
+          </div>
+        </div>
 
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragEnd={(event) => handleDragEndContent(sectionIndex, event)}
-            >
-              <SortableContext
-                items={section.content.map((content) => content.id)}
-                strategy={verticalListSortingStrategy}
+        <div className={styles.sections}>
+          {sections.map((section, sectionIndex) => (
+            <div key={sectionIndex} className={styles.section}>
+              <input
+                type="text"
+                placeholder="Title"
+                value={section.title}
+                onBlur={saveAbout}
+                onChange={(e) => handleSectionChange(sectionIndex, 'title', e.target.value)}
+              />
+
+              {/* Image Upload for Section */}
+              <div className={styles.imageUpload}>
+                {section.imageUrl ? (
+                  <img
+                    src={section.imageUrl instanceof File ? URL.createObjectURL(section.imageUrl) : section.imageUrl}
+                    alt={`Section ${sectionIndex} Image`}
+                    className={styles.sectionImage}
+                  />
+                ) : (
+                  <span>No image uploaded</span>
+                )}
+
+                <label htmlFor={`section-image-upload-${sectionIndex}`} className={styles.uploadLabel}>Upload Image</label>
+                <input type="file" name="mainImage" id={`section-image-upload-${sectionIndex}`}
+                  onChange={(e) => handleSectionImageFileChange(e, sectionIndex)} />
+              </div>
+
+              <input
+                type="text"
+                placeholder="SubTitle"
+                value={section.subTitle}
+                onBlur={saveAbout}
+                onChange={(e) => handleSectionChange(sectionIndex, 'subTitle', e.target.value)}
+              />
+
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={(event) => handleDragEndContent(sectionIndex, event)}
               >
-                {section.content.map((content, contentIndex) => (
-                  <SortableContent key={content.id} id={content.id}>
-                    <div className={styles.contentItem}>
-                      {content.type === 'paragraph' && (
-                        <textarea
-                          placeholder="Paragraph"
-                          value={content.text}
-                          onBlur={saveAbout}
-                          onChange={(e) =>
-                            handleContentChange(sectionIndex, contentIndex, 'text', e.target.value)
-                          }
-                        />
-                      )}
-                      {content.type === 'subtitle' && (
-                        <input type="text" value={content.text} onBlur={saveAbout}
-                          onChange={(e) => handleContentChange(sectionIndex, contentIndex, 'text', e.target.value)} />
-                      )}
-                      {content.type === 'bullets' && (
-                        <div className={styles.bullets}>
-                          {content.bullets.map((bullet, bulletIndex) => (
-                            <div key={bulletIndex} className={styles.bullet}>
-                              <input
-                                type="text"
-                                value={bullet}
-                                onBlur={saveAbout}
-                                onChange={(e) => {
-                                  const updatedBullets = [...content.bullets];
-                                  updatedBullets[bulletIndex] = e.target.value;
-                                  handleContentChange(
-                                    sectionIndex,
-                                    contentIndex,
-                                    'bullets',
-                                    updatedBullets
-                                  );
-                                }}
-                              />
-                              <button className={styles.warn}
-                                onClick={() =>
-                                  handleRemoveBullet(sectionIndex, contentIndex, bulletIndex)
-                                }
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
-                              </button>
-                            </div>
-                          ))}
-                          <button onClick={() => handleAddBullet(sectionIndex, contentIndex)} className={styles.iconButton}>
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg>
+                <SortableContext
+                  items={section.content.map((content) => content.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  {section.content.map((content, contentIndex) => (
+                    <SortableContent key={content.id} id={content.id}>
+                      <div className={styles.contentItem}>
+                        {content.type === 'paragraph' && (
+                          <textarea
+                            placeholder="Paragraph"
+                            value={content.text}
+                            onBlur={saveAbout}
+                            onChange={(e) =>
+                              handleContentChange(sectionIndex, contentIndex, 'text', e.target.value)
+                            }
+                          />
+                        )}
+                        {content.type === 'subtitle' && (
+                          <input type="text" value={content.text} onBlur={saveAbout}
+                            onChange={(e) => handleContentChange(sectionIndex, contentIndex, 'text', e.target.value)} />
+                        )}
+                        {content.type === 'bullets' && (
+                          <div className={styles.bullets}>
+                            {content.bullets.map((bullet, bulletIndex) => (
+                              <div key={bulletIndex} className={styles.bullet}>
+                                <input
+                                  type="text"
+                                  value={bullet}
+                                  onBlur={saveAbout}
+                                  onChange={(e) => {
+                                    const updatedBullets = [...content.bullets];
+                                    updatedBullets[bulletIndex] = e.target.value;
+                                    handleContentChange(
+                                      sectionIndex,
+                                      contentIndex,
+                                      'bullets',
+                                      updatedBullets
+                                    );
+                                  }}
+                                />
+                                <button className={styles.warn}
+                                  onClick={() =>
+                                    handleRemoveBullet(sectionIndex, contentIndex, bulletIndex)
+                                  }
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg>
+                                </button>
+                              </div>
+                            ))}
+                            <button onClick={() => handleAddBullet(sectionIndex, contentIndex)} className={styles.iconButton}>
+                              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" /></svg>
+                            </button>
+                          </div>
+                        )}
+
+                        <div className={styles.flexRight}>
+                          <button className={styles.warn}
+                            onClick={() => handleRemoveContent(sectionIndex, contentIndex)}
+                            title={'Remove ' + content.type === 'paragraph' ? 'paragraph' : 'bullets'}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                              <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                            </svg>
                           </button>
                         </div>
-                      )}
 
-                      <div className={styles.flexRight}>
-                        <button className={styles.warn}
-                          onClick={() => handleRemoveContent(sectionIndex, contentIndex)}
-                          title={'Remove ' + content.type === 'paragraph' ? 'paragraph' : 'bullets'}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-                            <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
-                          </svg>
-                        </button>
                       </div>
+                    </SortableContent>
+                  ))}
+                </SortableContext>
+              </DndContext>
 
-                    </div>
-                  </SortableContent>
-                ))}
-              </SortableContext>
-            </DndContext>
+              <div className={styles.contentActions}>
+                <button className={styles.iconButton} onClick={() => handleAddContent(sectionIndex, 'subtitle')}>
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M360-240v-80h480v80H360Zm0-200v-80h480v80H360ZM120-640v-80h720v80H120Z" /></svg>
+                  <span>Add Subtitle</span>
+                </button>
+                <button className={styles.iconButton} onClick={() => handleAddContent(sectionIndex, 'paragraph')}>
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M360-240v-80h480v80H360Zm0-200v-80h480v80H360ZM120-640v-80h720v80H120Z" /></svg>
+                  <span>Add Paragraph</span>
+                </button>
+                <button className={styles.iconButton} onClick={() => handleAddContent(sectionIndex, 'bullets')}>
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M360-200v-80h480v80H360Zm0-240v-80h480v80H360Zm0-240v-80h480v80H360ZM200-160q-33 0-56.5-23.5T120-240q0-33 23.5-56.5T200-320q33 0 56.5 23.5T280-240q0 33-23.5 56.5T200-160Zm0-240q-33 0-56.5-23.5T120-480q0-33 23.5-56.5T200-560q33 0 56.5 23.5T280-480q0 33-23.5 56.5T200-400Zm0-240q-33 0-56.5-23.5T120-720q0-33 23.5-56.5T200-800q33 0 56.5 23.5T280-720q0 33-23.5 56.5T200-640Z" /></svg>
+                  <span>Add Bullets</span>
+                </button>
+              </div>
 
-            <div className={styles.contentActions}>
-              <button className={styles.iconButton} onClick={() => handleAddContent(sectionIndex, 'subtitle')}>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M360-240v-80h480v80H360Zm0-200v-80h480v80H360ZM120-640v-80h720v80H120Z" /></svg>
-                <span>Add Subtitle</span>
-              </button>
-              <button className={styles.iconButton} onClick={() => handleAddContent(sectionIndex, 'paragraph')}>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M360-240v-80h480v80H360Zm0-200v-80h480v80H360ZM120-640v-80h720v80H120Z" /></svg>
-                <span>Add Paragraph</span>
-              </button>
-              <button className={styles.iconButton} onClick={() => handleAddContent(sectionIndex, 'bullets')}>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M360-200v-80h480v80H360Zm0-240v-80h480v80H360Zm0-240v-80h480v80H360ZM200-160q-33 0-56.5-23.5T120-240q0-33 23.5-56.5T200-320q33 0 56.5 23.5T280-240q0 33-23.5 56.5T200-160Zm0-240q-33 0-56.5-23.5T120-480q0-33 23.5-56.5T200-560q33 0 56.5 23.5T280-480q0 33-23.5 56.5T200-400Zm0-240q-33 0-56.5-23.5T120-720q0-33 23.5-56.5T200-800q33 0 56.5 23.5T280-720q0 33-23.5 56.5T200-640Z" /></svg>
-                <span>Add Bullets</span>
-              </button>
+              {/* <button className={styles.warn} onClick={() => handleRemoveSection(sectionIndex)}>Remove Section</button> */}
+              {/* handleAddSection */}
+              <button className={styles.iconButton} onClick={() => handleAddSection()}>Add Section</button>
+
             </div>
-
-            {/* <button className={styles.warn} onClick={() => handleRemoveSection(sectionIndex)}>Remove Section</button> */}
-            {/* handleAddSection */}
-            <button className={styles.iconButton} onClick={() => handleAddSection()}>Add Section</button>
-            
-          </div>
-        ))}
-      </div>
-
-      <div className={styles.aboutAuthorSection}>
-        <div className={styles.imageContainer}>
-          {imageUrl && (
-            <img
-              id="about-image-preview"
-              src={imageUrl instanceof File ? URL.createObjectURL(imageUrl) : imageUrl}
-              alt="About Image"
-              className={styles.aboutImage}
-            />
-          )}
-
-          <label htmlFor="about-image-upload" className={styles.uploadLabel}>Upload Image</label>
-          <input type="file" name="aboutImage" id="about-image-upload" onChange={onFileChange} />
+          ))}
         </div>
 
-        <div className={styles.section}>
-          <div className={styles.formGroup}>
-            <label htmlFor="aboutText">About the Architect</label>
-            <textarea name="aboutText" placeholder="About the architect" rows={25} cols={40}
-              onChange={handleAboutTextChange} onBlur={saveAbout} value={aboutText || ''}>
-            </textarea>
+        <div className={styles.aboutAuthorSection}>
+          <div className={styles.imageContainer}>
+            {imageUrl && (
+              <img
+                id="about-image-preview"
+                src={imageUrl instanceof File ? URL.createObjectURL(imageUrl) : imageUrl}
+                alt="About Image"
+                className={styles.aboutImage}
+              />
+            )}
+
+            <label htmlFor="about-image-upload" className={styles.uploadLabel}>Upload Image</label>
+            <input type="file" name="aboutImage" id="about-image-upload" onChange={onFileChange} />
           </div>
+
+          <div className={styles.section}>
+            <div className={styles.formGroup}>
+              <label htmlFor="aboutText">About the Architect</label>
+              <textarea name="aboutText" placeholder="About the architect" rows={25} cols={40}
+                onChange={handleAboutTextChange} onBlur={saveAbout} value={aboutText || ''}>
+              </textarea>
+            </div>
+          </div>
+
         </div>
 
       </div>
-
 
     </div>
   );

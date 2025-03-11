@@ -4,6 +4,8 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../js/firebase';
 import logo from '../img/logo.svg';
 
+import * as styles from './AdminHeader.module.scss';
+
 const AdminHeader = () => {
   const navigate = useNavigate();
 
@@ -28,38 +30,38 @@ const AdminHeader = () => {
   }
 
   return (
-    <header className="header">
+    <header className={styles.header}>
       <img src={logo} alt="Logo" width="250" id="logo" />
-      <nav className="header-nav">
+      <nav className={styles.headerNav}>
         <ul>
           <li>
-            <NavLink to="/admin" className={() => (isActive('/admin', window.location) ? 'active' : '')}>
+            <NavLink to="/admin" className={() => (isActive('/admin', window.location) ? styles.active : '')}>
               Projects
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin/about" className={() => (isActive('/admin/about', window.location) ? 'active' : '')}>
+            <NavLink to="/admin/about" className={() => (isActive('/admin/about', window.location) ? styles.active : '')}>
               About
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin/featured" className={() => (isActive('/admin/featured', window.location) ? 'active' : '')}>
+            <NavLink to="/admin/featured" className={() => (isActive('/admin/featured', window.location) ? styles.active : '')}>
               Featured
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin/users" className={() => (isActive('/admin/users', window.location) ? 'active' : '')}>
+            <NavLink to="/admin/users" className={() => (isActive('/admin/users', window.location) ? styles.active : '')}>
               Users
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin/analytics" className={() => (isActive('/admin/analytics', window.location) ? 'active' : '')}>
+            <NavLink to="/admin/analytics" className={() => (isActive('/admin/analytics', window.location) ? styles.active : '')}>
               Analytics
             </NavLink>
           </li>
         </ul>
       </nav>
-      <div className="actions">
+      <div className={styles.actions}>
         <button id="logoutBtn" className="warn-btn" onClick={handleLogout}>
           Logout
         </button>

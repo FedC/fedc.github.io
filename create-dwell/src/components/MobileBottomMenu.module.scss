@@ -1,5 +1,5 @@
 .mobileMenu {
-  --bgColorMenu : var(--color-link);
+  --bgColorMenu : rgb(246, 171, 11, .9);
   --bgColorItem : white;
   --timeOut: .7s;
   --duration: .7s;    
@@ -10,7 +10,7 @@
   width: 100%;
   display: flex;
   justify-content: space-around;
-  background-color: var(--color-link);
+  background-color: var(--bgColorMenu);
   opacity: 0.9;
   padding: 10px 0;
   z-index: 1000;

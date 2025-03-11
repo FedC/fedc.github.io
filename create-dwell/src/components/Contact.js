@@ -146,7 +146,7 @@ const Contact = ({ parentScroller, projects }) => {
               <ReCAPTCHA sitekey="6LfOJr8qAAAAAOvXNz5-ddMP3FmyucIOuqY9hYSQ" onChange={setCaptchaValue} />
             </div>
 
-            {status && <p className={styles.statusMessage}>{status}</p>}
+            {status && <div className={styles.statusMessage}>{status}</div>}
 
             <button type="submit" className={styles.submitButton}>
               <SendIcon />
