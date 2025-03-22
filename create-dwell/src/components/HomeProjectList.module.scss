@@ -85,6 +85,7 @@
         @media screen and (max-width: 768px) {
           max-width: calc(var(--grid-max-width-mobile));
           margin-top: 4px;
+          margin-left: 100px;
         }
         
         h2 {
@@ -265,7 +266,7 @@
 
               @media screen and (max-width: 768px) {
                 font-size: 1em;
-                
+                color: #4f4e4e;
               }
             }
 
@@ -430,7 +431,7 @@
 }
 
 .projectList .projectItem .projectContent .projectContentHorizontal {
-  background-color: #fdfdfd;
+  // background-color: #fdfdfd;
   touch-action: pan-x;
   scroll-padding: 20px;
 }
@@ -443,6 +444,10 @@
     padding-left: 2px;
     font-size: 13px;
     font-weight: 500;
+
+    @media screen and (max-width: 768px) {
+      color: #4f4e4e;
+    }
   }
 
   .status {
@@ -450,6 +455,10 @@
     padding-left: 2px;
     font-size: 13px;
     font-weight: 500;
+
+    @media screen and (max-width: 768px) {
+      color: #4f4e4e;
+    }
   }
 
   .type {
@@ -457,6 +466,10 @@
     padding-left: 2px;
     font-size: 13px;
     font-weight: 500;
+
+    @media screen and (max-width: 768px) {
+      color: #4f4e4e;
+    }
   }
 
   .area {
@@ -464,6 +477,10 @@
     padding-left: 2px;
     font-size: 13px;
     font-weight: 500;
+
+    @media screen and (max-width: 768px) {
+      color: #4f4e4e;
+    }
   }
 
   .projectGeneralDescription {

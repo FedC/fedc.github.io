@@ -29,6 +29,7 @@ const Home = () => {
   const [projectFilter, setProjectFilter] = useState(null);
   let cursor = null;
   let cursorRef = useRef(null);
+  let leftSlateMobileRef = useRef(null);
 
   useEffect(() => {
     document.body.classList.add('loading');
@@ -80,6 +81,8 @@ const Home = () => {
     // use can be an array of strings or a single string
     if (Array.isArray(use)) {
       return use.some(use => use.toLowerCase() === filter.toLowerCase());
+    } else if (use.includes(',')) {
+      return use.split(',').some(use => use.toLowerCase() === filter.toLowerCase());
     } else {
       return use.toLowerCase() === filter.toLowerCase();
     }
@@ -87,6 +90,7 @@ const Home = () => {
 
   const onFilterProjects = (filter) => {
     const filteredProjects = originalProjects.filter((project) => project.use && filterProjectUse(project.use, filter));
+    debugger;
     setProjects(filteredProjects);
     // animate scroll up
     gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
@@ -100,11 +104,12 @@ const Home = () => {
     <>
       <Header onAnimationEnd={onHeaderAnimationEnd} projects={projects} resetProjects={onResetProjects} filterProjects={onFilterProjects} />
       <main className={styles.pageWrapper}>
-        <section className="grid-container">
+        <section className={styles.listContainer}>
           {/* <ProjectGrid
             projects={projects}
             // onProjectClick={handleGridItemClick}
           /> */}
+          <div className={styles.leftSlateMobile} ref={leftSlateMobileRef}></div>
           <HomeProjectList projects={projects} headerAnimationComplete={headerAnimationComplete} projectReset={projectReset} projectFilter={projectFilter} />
         </section>
       </main>

@@ -79,3 +79,21 @@
         display: none;
     }
 }
+
+.listContainer {
+
+    .leftSlateMobile {
+        display: none;
+
+        @media screen and (max-width: 768px) {
+            background-color: var(--color-link);
+            display: block;
+            z-index: 1;
+            width: 90px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    }
+}

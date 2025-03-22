@@ -88,7 +88,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
       const logoDwell = document.querySelector('.js-logo-dwell');
 
       gsap.set(navRef.current, {
-        width: '50%',
+        width: isMobile ? '90px' : '50%',
       });
 
       if (isMobile) {
@@ -101,7 +101,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
         // scale: isDesktop ? 3 : 1.8,
         // transformOrigin: '50% 50%',
       });
-      gsap.set(logoRef.current.querySelectorAll('svg'), { scale: isDesktop ? 3 : 1.8, x: isMobile ? -4 : -10 });
+      // gsap.set(logoRef.current.querySelectorAll('svg'), { scale: isDesktop ? 3 : 1.8, x: isMobile ? -4 : -10 });
 
       gsap.set(logoDwell, { fill: 'rgba(246, 171, 11, 0.65)', opacity: 1 });
       gsap.set(orangeHalf, { fill: 'rgba(246, 171, 11, 0.65)' });
@@ -110,7 +110,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
       tl.to(
         logoRef.current,
         {
-          y: 20,
+          y: isMobile ? 0 : 20,
           x: 0,
           duration: 2,
           ease: 'power2.out',
@@ -120,7 +120,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
       if (isMobile) {
         tl.to(navRef.current, {
           y: 0,
-          height: '100px',
+          height: '75px',
           backgroundColor: '#f6ab0b',
           backdropFilter: 'blur(0px)',
           duration: 2,
@@ -131,7 +131,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
       tl.to(navRef.current, {
         y: 0,
         x: 0,
-        height: isMobile ? '60px' : '100vh',
+        height: isMobile ? '75px' : '100vh',
         width: originalInnerNavWidth,
         backgroundColor: '#f6ab0b',
         backdropFilter: 'blur(0px)',
@@ -177,7 +177,6 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
       if (isMobile) {
         tl.to(mobileMenuRef.current, { opacity: 1, scale: 1, duration: 0.2, ease: 'power2.out' }, '<');
         tl.to(mobileBottomMenuRef.current.querySelector('menu'), { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' }, '<');
-        console.log(mobileBottomMenuRef.current);
       }
 
     }
@@ -236,7 +235,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
         gsap.set(aboutLinkRef.current, { opacity: 0 });
         gsap.set(contactLinkRef.current, { opacity: 0 });
         gsap.set(servicesLinkRef.current, { opacity: 0 });
-        gsap.set(navRef.current, { height: '60px' });
+        gsap.set(navRef.current, { height: '75px' });
         gsap.set(topbarRef.current, { opacity: 1 });
       } else {
         gsap.set(aboutLinkRef.current, { opacity: 1 });
@@ -378,15 +377,15 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
 
       if (isMobile) {
         tl.to(navRef.current, {
-          height: '60px',
-          width: '120px',
+          height: '75px',
+          width: '90px',
           duration: 0.6,
           ease: 'ease.out',
           onComplete: onComplete,
         }, '<');
       } else {
         tl.to(navRef.current, {
-          width: '120px',
+          width: '90px',
           duration: 0.6,
           ease: 'ease.out',
           onComplete: onComplete,
@@ -498,15 +497,15 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
 
       if (isMobile) {
         tl.to(navRef.current, {
-          height: '60px',
-          width: '120px',
+          height: '75px',
+          width: '90px',
           duration: 0.6,
           ease: 'ease.out',
           onComplete: onComplete,
         }, '<');
       } else {
         tl.to(navRef.current, {
-          width: '120px',
+          width: '90px',
           duration: 0.6,
           ease: 'ease.out',
           onComplete: onComplete,
@@ -621,15 +620,15 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
 
       if (isMobile) {
         tl.to(navRef.current, {
-          height: '60px',
-          width: '120px',
+          height: '75px',
+          width: '90px',
           duration: 0.6,
           ease: 'ease.out',
           onComplete: onComplete,
         }, '<');
       } else {
         tl.to(navRef.current, {
-          width: '120px',
+          width: '90px',
           duration: 0.6,
           ease: 'ease.out',
           onComplete: onComplete,
