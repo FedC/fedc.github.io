@@ -1,6 +1,6 @@
 .mobileMenu {
-  --bgColorMenu : rgb(246, 171, 11, .9);
-  --bgColorItem : white;
+  --bgColorMenu: rgba(255,255,255,.98);
+  --bgColorItem: rgb(246, 171, 11);
   --timeOut: .7s;
   --duration: .7s;    
   
@@ -12,9 +12,10 @@
   justify-content: space-around;
   background-color: var(--bgColorMenu);
   opacity: 0.9;
-  padding: 10px 0;
+  padding: 20px 0;
   z-index: 1000;
   margin: 0;
+  box-shadow: 0 -3px 7px rgba(157, 157, 157, 0.3);
 
   .menuItem {
     all: unset;
@@ -22,37 +23,30 @@
     cursor: pointer;
     text-align: center;
     padding: 0;
-    color: white;
+    color: #9d9d9d;
     font-size: 1.2em;
     position: relative;
     transition: transform 0.3s ease;
     width: 33%;
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-
-    // make text veritcal
-    // writing-mode: vertical-rl;
     transform: translateY(0px);
 
-    // .circle {
-    //   content: "";
-    //   z-index: -1;
-    //   width: 4.2em;
-    //   height: 4.2em;
-    //   border-radius: 50%;
-    //   position: absolute;
-    //   transform: scale(0) translate3d(-10px, -10px, 0px);
-    //   background-color: var(--bgColorItem);
-    //   transition: transform 0.3s ease, background-color 0.3s ease;
-    // }
+    svg {
+      transition: fill 2s, stroke 0.3s;
+      transform: translateY(-10px);
+    }
+
+    &:not(.active) svg {
+      fill: transparent;
+      stroke: transparent;
+    }
 
     &.active {
-      transform: translateY(-10px);
-
-      // .circle {
-      //   transform: scale(1) translate3d(-10px, -10px, 0px);
-      // }
+      // transform: translateY(-10px);
+      color: var(--bgColorItem);
+      svg {
+        // fill: var(--bgColorItem);
+        stroke: var(--bgColorItem);
+      }
     }
 
     &:active {
@@ -69,7 +63,7 @@
 .icon {
   width: 2em;
   height: 2em;
-  stroke: white;
+  stroke: var(--bgColorItem);
   fill: transparent;
   stroke-width: 1pt;
   stroke-miterlimit: 10;
@@ -98,13 +92,12 @@
 
 .menuBorder {
   left: 0;
-  bottom: 99%;
-  width: 10.9em;
-  height: 2.4em;
+  top: 0;
+  width: 33%;
+  height: 2px;
   position: absolute;
-  clip-path: url(#menu);
   will-change: transform;
-  background-color: var(--bgColorMenu);
+  background-color: #fbad05;
   transition: transform var(--timeOut, var(--duration));
 }
 
