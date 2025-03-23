@@ -56,51 +56,80 @@ const db = admin.firestore();
 
 // updateProjects();
 
-async function populateFeaturedCollection() {
+// async function populateFeaturedCollection() {
+//   try {
+//     const projectsSnapshot = await db.collection('projects').get();
+
+//     const batch = db.batch(); // Use batch for better performance
+//     let order = 0; // Initialize order for featured images
+
+//     projectsSnapshot.forEach((doc) => {
+//       const project = doc.data();
+//       const projectId = doc.id;
+
+//       // Add the main image as a featured image if it exists
+//       if (project.mainImage) {
+//         const featuredDocRef = db.collection('featured').doc(); // Generate a new document ID
+//         batch.set(featuredDocRef, {
+//           projectId,
+//           type: 'main',
+//           contentIndex: null,
+//           imageUrl: project.mainImage,
+//           order: order++,
+//         });
+//       }
+
+//       // Add featured images from the content array
+//       if (project.content && Array.isArray(project.content)) {
+//         project.content.forEach((contentItem, index) => {
+//           if (contentItem.type === 'image' && contentItem.featured) {
+//             const featuredDocRef = db.collection('featured').doc(); // Generate a new document ID
+//             batch.set(featuredDocRef, {
+//               projectId,
+//               type: 'content',
+//               contentIndex: index,
+//               imageUrl: contentItem.url,
+//               order: order++,
+//             });
+//           }
+//         });
+//       }
+//     });
+
+//     await batch.commit();
+//     console.log('Featured collection populated successfully.');
+//   } catch (error) {
+//     console.error('Error populating featured collection:', error);
+//   }
+// }
+
+// populateFeaturedCollection();
+
+async function updateProjects() {
   try {
     const projectsSnapshot = await db.collection('projects').get();
+    const batch = db.batch();
 
-    const batch = db.batch(); // Use batch for better performance
-    let order = 0; // Initialize order for featured images
+    // const docid = '02rukrjrNlSZsOyKAfgu';
 
     projectsSnapshot.forEach((doc) => {
       const project = doc.data();
-      const projectId = doc.id;
 
-      // Add the main image as a featured image if it exists
-      if (project.mainImage) {
-        const featuredDocRef = db.collection('featured').doc(); // Generate a new document ID
-        batch.set(featuredDocRef, {
-          projectId,
-          type: 'main',
-          contentIndex: null,
-          imageUrl: project.mainImage,
-          order: order++,
-        });
-      }
-
-      // Add featured images from the content array
-      if (project.content && Array.isArray(project.content)) {
-        project.content.forEach((contentItem, index) => {
-          if (contentItem.type === 'image' && contentItem.featured) {
-            const featuredDocRef = db.collection('featured').doc(); // Generate a new document ID
-            batch.set(featuredDocRef, {
-              projectId,
-              type: 'content',
-              contentIndex: index,
-              imageUrl: contentItem.url,
-              order: order++,
-            });
-          }
-        });
+      if (project.id === ''
+        || project.title?.includes('Fede')
+        || project.title === ''
+        // && doc.id !== docid
+      ) {
+        const docRef = db.collection('projects').doc(doc.id);
+        batch.delete(docRef);
       }
     });
 
     await batch.commit();
-    console.log('Featured collection populated successfully.');
+    console.log('All matching projects deleted successfully.');
   } catch (error) {
-    console.error('Error populating featured collection:', error);
+    console.error('Error deleting projects:', error);
   }
 }
 
-populateFeaturedCollection();
+updateProjects();
