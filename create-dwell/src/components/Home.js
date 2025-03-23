@@ -90,7 +90,7 @@ const Home = () => {
 
   const onFilterProjects = (filter) => {
     const filteredProjects = originalProjects.filter((project) => project.use && filterProjectUse(project.use, filter));
-    debugger;
+    // debugger;
     setProjects(filteredProjects);
     // animate scroll up
     gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });

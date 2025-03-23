@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useEffect, use } from 'react';
+import { BrowserRouter as Router, Route, Routes, useNavigate, useParams, useLocation } from 'react-router-dom';
 import ToastNotification from './ToastNotification';
 import AdminHeader from './AdminHeader';
 import ProjectForm from './ProjectForm';
@@ -44,9 +44,14 @@ const AdminPanel = () => {
     setProjects(projectData);
   };
 
+  const location = useLocation();
+
   useEffect(() => {
-    fetchProjects();
-  }, []);
+    const pathname = location.pathname;
+    if (pathname === '/admin') {
+      fetchProjects();
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const fetchProjectById = async (id) => {
@@ -57,7 +62,7 @@ const AdminPanel = () => {
         setSelectedProject({ id: projectSnap.id, ...projectSnap.data() });
       } else {
         console.error('No such project!');
-        navigate('/'); // Redirect to home if project not found
+        navigate('/admin'); // Redirect to home if project not found
       }
     };
 

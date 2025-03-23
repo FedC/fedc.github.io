@@ -18,6 +18,7 @@ import {
   verticalListSortingStrategy,
   arrayMove,
 } from '@dnd-kit/sortable';
+// import { useLocation } from 'react-router-dom';
 
 import { CSS } from '@dnd-kit/utilities';
 
@@ -139,6 +140,10 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
   const [draggingContent, setDraggingContent] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
   const [originalData, setOriginalData] = useState(null); // To hold the initial snapshot
+  
+  // const location = useLocation();
+  // useEffect(() => {
+  // }, [location.pathname]);
 
   // Load the project data on editing
   useEffect(() => {
@@ -528,44 +533,36 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
 
   const handleSubmit = async (e, updatedFormData = null) => {
     if (e) { e.preventDefault(); }
+
+    const dataToSubmit = updatedFormData || formData;
+    // debugger;
+
+    // Check if data has changed
+    if (!isDataChanged(dataToSubmit, originalData) && !updatedFormData) {
+      // No changes detected. Skipping submit
+      console.log('No changes detected. Skipping submit');
+      return;
+    }
+
     try {
       let projectId = globalProjectId;
-
       // If creating a new project, we must first create a placeholder document to get an ID
       if (!projectId) {
-        const projectRef = await addDoc(collection(db, 'projects'), {}); // Placeholder
+        const projectRef = await addDoc(collection(db, 'projects'), {});
         projectId = projectRef.id;
         globalProjectId = projectId;
-
-        // Update the form data with the new ID
-        setFormData((prevData) => ({
-          ...prevData,
-          id: projectId,
-        }));
-      }
-
-      const dataToSubmit = updatedFormData || formData;
-      debugger;
-
-      // Check if data has changed
-      if (!isDataChanged(dataToSubmit, originalData) && !updatedFormData) {
-        // No changes detected. Skipping submit
-        console.log('No changes detected. Skipping submit');
-        return;
       }
 
       const projectData = {
         ...dataToSubmit,
+        content: dataToSubmit.content || [], // Ensure content is always an array
+        id: projectId,
       };
-
-      if (editingProject) {
-        const projectRef = doc(db, 'projects', projectId);
-        await updateDoc(projectRef, projectData);
-        console.log('Project updated', projectData);
-      } else {
-        await addDoc(collection(db, 'projects'), projectData);
-        console.log('Project saved', projectData);
-      }
+  
+      const projectRef = doc(db, 'projects', projectId);
+      await updateDoc(projectRef, projectData);
+      setFormData(projectData);
+      console.log('Project saved', projectData);
 
       onUpdateSuccess('Project saved successfully');
       setOriginalData(dataToSubmit); // Update the original data snapshot
