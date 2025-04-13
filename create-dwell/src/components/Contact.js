@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ReCAPTCHA from 'react-google-recaptcha';
-import { getFunctions, httpsCallable } from "firebase/functions";
 import * as styles from './Contact.module.scss';
 import * as footerStyles from './Footer.module.scss';
 import gsap from 'gsap';
@@ -15,9 +13,9 @@ const Contact = ({ parentScroller, projects }) => {
   });
 
   const footerRef = useRef(null);
-  const [captchaValue, setCaptchaValue] = useState(null);
-  const [status, setStatus] = useState(null);
   const [featuredItems, setFeaturedItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("idle"); // idle | loading | success | error
 
   useEffect(() => {
     if (!projects.length) return;
@@ -56,47 +54,32 @@ const Contact = ({ parentScroller, projects }) => {
     e.preventDefault();
 
     if (!formData.name || !formData.email || !formData.message) {
-      setStatus('Please fill in all fields.');
+      setStatus('error');
       return;
     }
 
-    if (!captchaValue) {
-      setStatus('Please verify that you are human.');
-      return;
-    }
+    setLoading(true);
+    setStatus(null);
 
     try {
-      const functions = getFunctions();
-      const verifyRecaptcha = httpsCallable(functions, "verifyRecaptcha");
-
-      // Send token to Firebase function
-      const recaptchaResponse = await verifyRecaptcha({
-        token: captchaValue,
-        action: "contact_form",
-      });
-
-      if (!recaptchaResponse.data.success || recaptchaResponse.data.score < 0.5) {
-        setStatus("reCAPTCHA verification failed. Please try again.");
-        return;
-      }
-
       const response = await fetch('https://formspree.io/f/manqwpov', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, 'g-recaptcha-response': captchaValue }),
+        body: JSON.stringify({ ...formData }),
       });
 
       if (response.ok) {
-        setStatus('Thank you for your message! We will get back to you soon.');
+        setStatus('success');
         setFormData({ name: '', email: '', message: '' });
-        setCaptchaValue(null);
       } else {
-        setStatus('Oops! Something went wrong. Please try again.');
+        setStatus('error');
       }
     } catch (error) {
-      setStatus('Error sending message. Please check your network connection.');
       console.error("error:", error);
+      setStatus('error');
     }
+
+    setLoading(false);
   };
 
   return (
@@ -142,15 +125,27 @@ const Contact = ({ parentScroller, projects }) => {
               />
             </div>
 
-            <div className={styles.captchaContainer}>
-              <ReCAPTCHA sitekey="6LfOJr8qAAAAAOvXNz5-ddMP3FmyucIOuqY9hYSQ" onChange={setCaptchaValue} />
-            </div>
+            {/* honeypot field for spam prevention */}
+            <input type="text" name="_gotcha" style={{ display: 'none' }} />
 
-            {status && <div className={styles.statusMessage}>{status}</div>}
+            {status === 'success' && (
+              <p className={styles.statusSuccess}>Thanks! We'll be in touch shortly.</p>
+            )}
 
-            <button type="submit" className={styles.submitButton}>
-              <SendIcon />
+            {status === 'error' && (
+              <p className={styles.statusError}>Something went wrong. Please try again.</p>
+            )}
+
+            <button type="submit" className={styles.submitButton} disabled={status === 'loading' || status === 'success'}>
+              {status === 'loading' ? (
+                <span className={styles.loader} />
+              ) : status === 'success' ? (
+                <span className={styles.checkmark}>✔</span>
+              ) : (
+                <SendIcon />
+              )}
             </button>
+
           </form>
         </div>
 

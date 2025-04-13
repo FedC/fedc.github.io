@@ -2,18 +2,17 @@ import React, { useRef, useEffect, useState, use } from 'react';
 import { gsap } from 'gsap';
 import { initSmoothScrolling } from '../js/smoothscroll';
 import * as styles from './Header.module.scss';
-import HalfCircle from './HalfCircle';
+// import HalfCircle from './HalfCircle';
 import AboutIcon from './AboutIcon';
 import ContactIcon from './ContactIcon';
 import ServicesIcon from './ServicesIcon';
-import CloseIcon from './CloseIcon';
+// import CloseIcon from './CloseIcon';
 import HomeIcon from './HomeIcon';
 import About from './About';
 import Contact from './Contact';
 import Services from './Services';
 import MobileMenu from './MobileMenu';
 import Logo from './Logo';
-import MobileBottomMenu from './MobileBottomMenu';
 
 const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => {
 
@@ -26,7 +25,6 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
   const contactRef = useRef(null);
   const servicesRef = useRef(null);
   const mobileMenuRef = useRef(null);
-  const mobileBottomMenuRef = useRef(null);
 
   // const letterRefsCreate = useRef([]);
   // const letterRefsDwell = useRef([]);
@@ -61,8 +59,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
     gsap.set(navLinks, { opacity: 0 });
 
     if (window.matchMedia('(max-width: 767px)').matches) {
-      gsap.set(mobileMenuRef.current, { opacity: 0, scale: 0 });
-      gsap.set(mobileBottomMenuRef.current.querySelector('menu'), { opacity: 0, y: 100 });
+      gsap.set(mobileMenuRef.current, { opacity: 0, x: 100 });
     }
 
     const tl = gsap.timeline({
@@ -101,7 +98,9 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
         // scale: isDesktop ? 3 : 1.8,
         // transformOrigin: '50% 50%',
       });
-      // gsap.set(logoRef.current.querySelectorAll('svg'), { scale: isDesktop ? 3 : 1.8, x: isMobile ? -4 : -10 });
+      gsap.set(logoRef.current.querySelectorAll('svg'), { scale: isDesktop ? 2.5 : 1, x: isMobile ? 0 : 105 });
+
+      // debugger;
 
       gsap.set(logoDwell, { fill: 'rgba(246, 171, 11, 0.65)', opacity: 1 });
       gsap.set(orangeHalf, { fill: 'rgba(246, 171, 11, 0.65)' });
@@ -175,8 +174,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
 
       // debugger;
       if (isMobile) {
-        tl.to(mobileMenuRef.current, { opacity: 1, scale: 1, duration: 0.2, ease: 'power2.out' }, '<');
-        tl.to(mobileBottomMenuRef.current.querySelector('menu'), { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' }, '<');
+        tl.to(mobileMenuRef.current, { opacity: 1, x: 0, duration: 0.2, ease: 'power2.out' }, '<');
       }
 
     }
@@ -200,20 +198,10 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
 
   }, [isAboutVisible, isContactVisible, isServicesVisible]);
 
-  const hideMobileBottomMenu = () => {
-    gsap.to(mobileBottomMenuRef.current.querySelector('menu'), { opacity: 0, y: 100, duration: 0.2, ease: 'power2.out' });
-  }
-
-  const showMobileBottomMenu = () => {
-    gsap.to(mobileBottomMenuRef.current.querySelector('menu'), { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' });
-  }
-
   const handleCloseAll = () => {
     setIsAboutVisible(false);
     setIsContactVisible(false);
     setIsServicesVisible(false);
-
-    showMobileBottomMenu();
 
     if (isAboutVisible) {
       handleCloseAbout();
@@ -265,8 +253,6 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
         ease: 'power2.out',
       });
     }
-
-    hideMobileBottomMenu();
   }
 
 
@@ -647,11 +633,9 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
       handleShowServices(e);
     } else if (id === 'contact') {
       handleShowContact(e);
+    } else if (['all', 'commercial', 'residential'].includes(id)) {
+      onTopBarLinkClick(e, id);
     }
-  }
-
-  const onMobileMenuLinkClick = (filter) => {
-    onTopBarLinkClick(null, filter);
   }
 
   const onTopBarLinkClick = (e, filter) => {
@@ -762,10 +746,6 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects }) => 
 
       <div ref={mobileMenuRef} className={styles.mobileMenuContainer}>
         <MobileMenu onMenuItemClick={handleMenuClick} />
-      </div>
-
-      <div ref={mobileBottomMenuRef} className={styles.mobileBottomMenu}>
-        <MobileBottomMenu selectedFilter={selectedFilter} onFilter={onMobileMenuLinkClick} />
       </div>
     </>
   );

@@ -111,6 +111,16 @@
       height: auto;
       border-radius: 2px;
       filter: brightness(1);
+      outline: none;
+    }
+
+    @media not all and (min-resolution: 0.001dpcm) {
+      @supports (-webkit-appearance: none) {
+        // Safari-only styles here
+        .projectMainImage {
+          height: 100%;
+        }
+      }
     }
 
     .projectContent {

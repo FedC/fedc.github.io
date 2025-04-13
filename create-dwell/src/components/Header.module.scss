@@ -59,7 +59,11 @@
     align-items: center;
     column-gap: 1px;
     position: relative;
-    left: 23px;
+    left: 22px;
+
+    @media screen and (min-width: 768px) {
+        left: 60px;
+    }
 
     span {
         display: inline-block;
