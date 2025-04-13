@@ -1,22 +1,16 @@
 /**
  * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-const { onRequest } = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+// const { onCall, onRequest } = require("firebase-functions/v2/https");
+const { logger } = require("firebase-functions/v2");
 const { onObjectFinalized } = require("firebase-functions/v2/storage");
-const { getFirestore } = require("firebase-admin/firestore");
+// const { getFirestore } = require("firebase-admin/firestore");
 const { getStorage } = require("firebase-admin/storage");
-const { RecaptchaEnterpriseServiceClient } = require("@google-cloud/recaptcha-enterprise");
 
-const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const cors = require('cors')({ origin: true });
+// const cors = require('cors')({ origin: true });
 const sharp = require('sharp');
 const path = require('path');
 const os = require('os');
@@ -28,53 +22,8 @@ const sizes = {
   large: 1600,
 };
 
-const projectID = "create-dwell";
-const recaptchaKey = "6LfOJr8qAAAAAOvXNz5-ddMP3FmyucIOuqY9hYSQ";
-
-const client = new RecaptchaEnterpriseServiceClient();
-
 // Initialize Firebase Admin SDK
 admin.initializeApp();
-
-exports.helloWorld = functions.https.onRequest({ region: "us-east1" }, (req, res) => {
-  res.send("Hello, World!");
-});
-
-exports.verifyRecaptcha = functions.https.onCall(async (data, context) => {
-  const token = data.token;
-  const recaptchaAction = data.action;
-  const projectPath = client.projectPath(projectID);
-
-  try {
-    const request = {
-      assessment: {
-        event: {
-          token: token,
-          siteKey: recaptchaKey,
-        },
-      },
-      parent: projectPath,
-    };
-
-    const [response] = await client.createAssessment(request);
-
-    if (!response.tokenProperties.valid) {
-      throw new Error(`Invalid reCAPTCHA token: ${response.tokenProperties.invalidReason}`);
-    }
-
-    if (response.tokenProperties.action !== recaptchaAction) {
-      throw new Error("reCAPTCHA action does not match.");
-    }
-
-    return {
-      success: true,
-      score: response.riskAnalysis.score,
-      reasons: response.riskAnalysis.reasons,
-    };
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
-});
 
 exports.generateResizedImages = onObjectFinalized({ region: "us-east1", bucket: "create-dwell.appspot.com" }, async (event) => {
   logger.info("Received event:", event);

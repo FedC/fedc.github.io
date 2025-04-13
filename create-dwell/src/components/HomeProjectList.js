@@ -103,6 +103,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
     };
 
     calculateAspectRatios();
+    console.log('Aspect ratios calculated:', imageAspectRatios);
   }, [projects]);
 
   const closeProject = async (projectId) => {
@@ -315,7 +316,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
           },
         });
 
-        scaleListItems();
+        // scaleListItems();
       },
     });
 
@@ -371,86 +372,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
     }
   };
 
-  const scrollToClosestProject = () => {
-    const closestProject = getClosestProjectItemToCenter();
-    if (!closestProject) return;
-
-    const projectId = closestProject.id.split('-')[1];
-    scrollToProject(projectId);
-  };
-
-  const scaleBackWithScrollVelocity = (velocity) => {
-    const gridElement = gridRef.current;
-    if (!gridElement) return;
-
-    const gridItems = Object.values(projectRefs.current);
-    if (!gridItems.length) return;
-
-    const currentScrollY = window.scrollY;
-    const differenceScroll = Math.abs(currentScrollY - previousScrollY.current);
-    previousScrollY.current = currentScrollY;
-
-    const calcScale = Math.max(
-      velocityScale.current - differenceScroll / 200,
-      minimumScaleOffset
-    );
-
-    if (previousScale.current !== calcScale) {
-      let scale = Math.max(
-        Math.min(calcScale, maxScaleOffset),
-        minimumScaleOffset
-      );
-
-      if (scale > 0.95) {
-        scale = 1;
-      }
-
-      gsap.to(gridElement, {
-        scale,
-        duration: 1,
-        transformOrigin: 'center center',
-        ease: 'power2.out',
-        overwrite: true,
-        onComplete: () => {
-          const isTweening = gsap.isTweening();
-          if (!isTweening) {
-            resetScale();
-          }
-        },
-      });
-
-      previousScale.current = calcScale;
-    }
-  };
-
-  const getClosestProjectItemToCenter = () => {
-    const windowCenterX = window.innerWidth / 2;
-    const windowCenterY = window.innerHeight / 2;
-
-    let closestElement = null;
-    let closestDistance = Infinity;
-
-    const elements = document.querySelectorAll(`.${styles.projectItem}`); // Select all elements
-
-    elements.forEach(element => {
-      const rect = element.getBoundingClientRect();
-      const elementCenterX = rect.left + rect.width / 2;
-      const elementCenterY = rect.top + rect.height / 2;
-
-      const distance = Math.sqrt(
-        Math.pow(elementCenterX - windowCenterX, 2) +
-        Math.pow(elementCenterY - windowCenterY, 2)
-      );
-
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestElement = element;
-      }
-    });
-
-    return closestElement;
-  }
-
   let proxy = { y: 0 };
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -482,7 +403,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
     });
   };
 
-  const navProxy = { x: 0 }
+  // const navProxy = { x: 0 }
 
   const moveNavToScrollVelocity = (velocity) => {
     const nav = document.querySelector('#verticalnav');
@@ -614,11 +535,19 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
           const scaleY = targetHeight / mainImageHeight;
           const scale = Math.min(scaleX, scaleY);
 
+          gsap.set(mainImageSelector, {
+            maxWidth: `${targetWidth}px`,
+            // maxHeight: `${targetHeight}px` 
+          });
+
           tl.fromTo(mainImageSelector, {
+            opacity: 1,
             width: mainImageWidth,
+            height: mainImageHeight,
           }, {
             width: targetWidth,
-            maxWidth: `${targetWidth}px`,
+            height: targetHeight,
+            opacity: 1,
             duration: 0.5,
             ease: 'ease.out',
             onComplete: async () => {
@@ -839,48 +768,48 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
       });
   };
 
-  const toggleProjectDescription = (projectId, event) => {
-    event.stopPropagation();
-    const projectRef = projectRefs.current[projectId];
-    const projectDescription = projectRef.querySelector(`.${styles.projectDescription}`);
-    const projectDescriptionButton = projectRef.querySelector(`.${styles.projectDescriptionButton}`);
-    const projectDescriptionIconButton = projectRef.querySelector(`.${styles.projectDescriptionIconButton}`);
-    if (!projectDescription) return;
+  // const toggleProjectDescription = (projectId, event) => {
+  //   event.stopPropagation();
+  //   const projectRef = projectRefs.current[projectId];
+  //   const projectDescription = projectRef.querySelector(`.${styles.projectDescription}`);
+  //   const projectDescriptionButton = projectRef.querySelector(`.${styles.projectDescriptionButton}`);
+  //   const projectDescriptionIconButton = projectRef.querySelector(`.${styles.projectDescriptionIconButton}`);
+  //   if (!projectDescription) return;
 
-    if (projectDescription.style.opacity === '1') {
-      gsap.to(projectDescription, {
-        y: '100%',
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power3.out',
-        onComplete: () => {
-          gsap.set(projectDescription, { display: 'none' });
-        },
-      });
+  //   if (projectDescription.style.opacity === '1') {
+  //     gsap.to(projectDescription, {
+  //       y: '100%',
+  //       opacity: 0,
+  //       duration: 0.5,
+  //       ease: 'power3.out',
+  //       onComplete: () => {
+  //         gsap.set(projectDescription, { display: 'none' });
+  //       },
+  //     });
 
-      gsap.to(projectDescriptionButton, {
-        scale: 1,
-        duration: 0.5,
-        ease: 'bounce.out',
-      });
-    } else {
-      gsap.to(projectDescription, {
-        y: 0,
-        opacity: 1,
-        duration: 0.5,
-        ease: 'power3.out',
-        onStart: () => {
-          gsap.set(projectDescription, { display: 'block' });
-        },
-      });
+  //     gsap.to(projectDescriptionButton, {
+  //       scale: 1,
+  //       duration: 0.5,
+  //       ease: 'bounce.out',
+  //     });
+  //   } else {
+  //     gsap.to(projectDescription, {
+  //       y: 0,
+  //       opacity: 1,
+  //       duration: 0.5,
+  //       ease: 'power3.out',
+  //       onStart: () => {
+  //         gsap.set(projectDescription, { display: 'block' });
+  //       },
+  //     });
 
-      gsap.to(projectDescriptionButton, {
-        scale: 1.1,
-        duration: 0.5,
-        ease: 'bounce.out',
-      });
-    }
-  };
+  //     gsap.to(projectDescriptionButton, {
+  //       scale: 1.1,
+  //       duration: 0.5,
+  //       ease: 'bounce.out',
+  //     });
+  //   }
+  // };
 
   const toggleProjectContentDescription = (projectId, contentId, event) => {
     event.stopPropagation();

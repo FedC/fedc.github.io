@@ -6,6 +6,7 @@ import ServicesIcon from "./ServicesIcon";
 import ContactIcon from "./ContactIcon";
 // import HomeIcon from './HomeIcon';
 import CloseIcon from './CloseIcon';
+import HalfCircle from './HalfCircle';
 
 import * as styles from "./MobileMenu.module.scss";
 
@@ -13,6 +14,7 @@ const MobileMenu = ({ onMenuItemClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonsRef = useRef([]);
+  const [activeId, setActiveId] = useState('all');
 
   const orange = 'rgb(246, 171, 11)';
 
@@ -32,6 +34,7 @@ const MobileMenu = ({ onMenuItemClick }) => {
   const handleItemClick = (e, id) => {
     e.stopPropagation();
     if (onMenuItemClick) onMenuItemClick(e, id);
+    setActiveId(id);
     setIsOpen(false);
   };
 
@@ -43,6 +46,8 @@ const MobileMenu = ({ onMenuItemClick }) => {
 
       <AnimatePresence>
         {isOpen && (
+          <>
+          <div className={styles.underlay} onClick={toggleMenu} ></div>
           <motion.div
             className={styles.menuPanel}
             initial={{ x: "100%" }}
@@ -54,14 +59,27 @@ const MobileMenu = ({ onMenuItemClick }) => {
               {menuItems.map((item) => (
                 <button
                   key={item.id}
-                  className={styles.menuTextItem}
+                  className={`${styles.menuTextItem} ${activeId === item.id ? styles.active : ""}`}
                   onClick={(e) => handleItemClick(e, item.id)}
                 >
+                  {activeId === item.id && (
+                    <span
+                      className={styles.activeIndicator}
+                    >
+                      <HalfCircle
+                        fill="white"
+                        stroke={orange}
+                        width={20}
+                        height={20}
+                      />
+                    </span>
+                  )}
                   {item.label}
                 </button>
               ))}
             </nav>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>

@@ -1,8 +1,12 @@
 .menuWrapper {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 1000;
+  padding: 0;
+}
+
+// hide on desktop
+@media screen and (min-width: 768px) {
+  .menuWrapper {
+    display: none;
+  }
 }
 
 .toggleButton {
@@ -17,6 +21,22 @@
   justify-content: center;
   cursor: pointer;
   z-index: 1001;
+
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+}
+
+.underlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 999;
 }
 
 .menuPanel {
@@ -29,9 +49,19 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 3rem 2rem;
+  padding: 20px 32px;
   z-index: 1000;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.menuPanel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(32px - 10px);
+  height: 100%;
+  background: rgb(238, 193, 107);
 }
 
 .menuItems {
@@ -49,4 +79,36 @@
   cursor: pointer;
   text-align: left;
   padding: 0;
+  position: relative;
+
+  &.active {
+    color: rgb(238, 193, 107);
+  }
+}
+
+.activeIndicator {
+  position: absolute;
+  top: 9px;
+  left: -17px;
+  transform: translate(0, -50%);
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+  
+  // &::after {
+  //   content: '';
+  //   position: absolute;
+  //   top: 50%;
+  //   left: 50%;
+  //   transform: translate(-50%, -50%);
+  //   width: 16px;
+  //   height: 16px;
+  //   background-color: white;
+  //   border-radius: 50%;
+  //   transition: background-color 0.3s ease;
+
+  //   // half circle
+  //   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  //   transform: translate(-50%, -50%) rotate(45deg);
+  //   transition: transform 0.3s ease;
+  // }
 }
