@@ -15,6 +15,7 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { Draggable } from 'gsap/Draggable';
 import InertiaPlugin from './InertiaPlugin.js';
 import { Cursor } from '../js/cursor.js';
+import InfoPage from './InfoPage';
 
 gsap.registerPlugin(InertiaPlugin, ScrollTrigger, Draggable, CSSPlugin, ScrollToPlugin);
 
@@ -27,6 +28,8 @@ const Home = () => {
   const [headerAnimationComplete, setHeaderAnimationComplete] = useState(false);
   const [projectReset, setProjectReset] = useState(false);
   const [projectFilter, setProjectFilter] = useState(null);
+  const [isInfoPageOpen, setIsInfoPageOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(null);
   let cursor = null;
   let cursorRef = useRef(null);
   let leftSlateMobileRef = useRef(null);
@@ -100,16 +103,38 @@ const Home = () => {
     }, 100);
   }
 
+  const handleShowInfoPage = (page) => {
+    setCurrentPage(page);
+    setIsInfoPageOpen(!!page);
+  };
+
+  const handleSectionChange = (section) => {
+    setCurrentPage(section);
+  };
+
+  const handleCloseInfoPage = () => {
+    setIsInfoPageOpen(false);
+    setCurrentPage(null);
+  };
+
   return (
     <>
-      <Header onAnimationEnd={onHeaderAnimationEnd} projects={projects} resetProjects={onResetProjects} filterProjects={onFilterProjects} />
+      <Header 
+        onAnimationEnd={onHeaderAnimationEnd} 
+        projects={projects} 
+        resetProjects={onResetProjects} 
+        filterProjects={onFilterProjects}
+        onShowInfoPage={handleShowInfoPage}
+        isInfoPageOpen={isInfoPageOpen}
+        currentPage={currentPage}
+      />
+      <div className={styles.leftSlateMobile} ref={leftSlateMobileRef}></div>
       <main className={styles.pageWrapper}>
         <section className={styles.listContainer}>
           {/* <ProjectGrid
             projects={projects}
             // onProjectClick={handleGridItemClick}
           /> */}
-          <div className={styles.leftSlateMobile} ref={leftSlateMobileRef}></div>
           <HomeProjectList projects={projects} headerAnimationComplete={headerAnimationComplete} projectReset={projectReset} projectFilter={projectFilter} />
         </section>
       </main>
@@ -117,6 +142,13 @@ const Home = () => {
       <svg className={styles.cursor} ref={cursorRef} width="40" height="40" viewBox="0 0 40 40">
         <circle className="cursor__inner" cx="20" cy="20" r="10"/>
       </svg>
+
+      <InfoPage 
+        isOpen={isInfoPageOpen}
+        onClose={handleCloseInfoPage}
+        currentPage={currentPage}
+        onSectionChange={handleSectionChange}
+      />
 
       {/* {selectedProject && (
         <ProjectOverlay

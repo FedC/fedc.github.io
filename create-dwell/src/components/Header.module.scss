@@ -70,6 +70,12 @@
     }
 }
 
+.nav.infoPageOpen {
+    @media screen and (min-width: 768px) {
+        transform: translate3d(calc(100vw - 300px), 0, 0) !important;
+    }
+}
+
 .nav {
     position: fixed;
     top: 0;
@@ -80,13 +86,11 @@
     z-index: var(--nav-z-index);
     transform: translate3d(0, 0, 0);
     background-color: var(--color-link-transparent);
-
+    transition: transform .5s ease-out;
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
-    // box-shadow: 0 3px 7px rgba(47, 47, 47, 0.1);
 
-    // on mobile screens height is topbar height
-    @media screen and (min-width: 53em) {
+    @media screen and (min-width: 768px) {
         height: 100vh;
         top: 0;
         bottom: 0;
@@ -100,8 +104,8 @@
         width: 100%;
         height: 75px;
         background-color: rgba(255, 255, 255, 1);
-        z-index: 1;
         z-index: var(--frame-z-index);
+        transition: transform 0.5s ease;
     }
 
     &__topbarInner {

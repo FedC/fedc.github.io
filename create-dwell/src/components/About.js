@@ -13,7 +13,7 @@ import Footer from './Footer';
 
 const About = ({ parentScroller, openServices }) => {
   const aboutRef = useRef(null);
-  const footerRef = useRef(null);
+  // const footerRef = useRef(null);
   const animatedContentRef = useRef(null);
 
   const [title, setTitle] = useState('');
@@ -45,11 +45,11 @@ const About = ({ parentScroller, openServices }) => {
 
 
   const animateSections = () => {
-    if (footerRef.current) {
-      const curr = footerRef.current;
-      gsap.set(curr.querySelector(`.${footerStyles.footer}`), { marginTop: '40px'})
-      gsap.to(curr.querySelector(`.${footerStyles.footer}`), { opacity: 1, duration: 0.5, delay: 0.5 });
-    }
+    // if (footerRef.current) {
+    //   const curr = footerRef.current;
+    //   gsap.set(curr.querySelector(`.${footerStyles.footer}`), { marginTop: '40px'})
+    //   gsap.to(curr.querySelector(`.${footerStyles.footer}`), { opacity: 1, duration: 0.5, delay: 0.5 });
+    // }
   };
 
 
@@ -256,9 +256,6 @@ const About = ({ parentScroller, openServices }) => {
         </div>
       </div>
 
-      <div ref={footerRef}>
-        <Footer />
-      </div>
     </section>
   );
 };
