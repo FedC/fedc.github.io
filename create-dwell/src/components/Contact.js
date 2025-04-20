@@ -4,8 +4,10 @@ import * as footerStyles from './Footer.module.scss';
 import gsap from 'gsap';
 import Footer from './Footer';
 import SendIcon from './SendIcon';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../js/firebase';
 
-const Contact = ({ parentScroller, projects }) => {
+const Contact = ({ projects = [] }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,7 +20,7 @@ const Contact = ({ parentScroller, projects }) => {
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
 
   useEffect(() => {
-    if (!projects.length) return;
+    if (!projects || !projects.length) return;
     const publishedProjects = projects.filter((project) => project.published);
     const projectContents = publishedProjects.map((project) => {
       return project.content;
@@ -44,42 +46,31 @@ const Contact = ({ parentScroller, projects }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!formData.name || !formData.email || !formData.message) {
-      setStatus('error');
-      return;
-    }
-
-    setLoading(true);
-    setStatus(null);
+    setStatus("loading");
 
     try {
-      const response = await fetch('https://formspree.io/f/manqwpov', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData }),
+      await addDoc(collection(db, 'messages'), {
+        ...formData,
+        timestamp: new Date(),
       });
-
-      if (response.ok) {
-        setStatus('success');
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        setStatus('error');
-      }
+      setStatus("success");
+      setFormData({
+        name: '',
+        email: '',
+        message: '',
+      });
     } catch (error) {
-      console.error("error:", error);
-      setStatus('error');
+      console.error('Error sending message:', error);
+      setStatus("error");
     }
-
-    setLoading(false);
   };
 
   return (

@@ -59,15 +59,15 @@ const accordionData = [
 
 const Services = () => {
   const [openedId, setOpenedId] = useState(null);
-  const footerRef = useRef(null);
+  // const footerRef = useRef(null);
 
   useEffect(() => {
     animate();
   }, []);
 
   const animate = () => {
-    gsap.set(footerRef.current.querySelector(`.${footerStyles.footer}`), { marginTop: '40px'})
-    gsap.to(footerRef.current.querySelector(`.${footerStyles.footer}`), { opacity: 1, duration: 0.5, delay: 0.5 });
+    // gsap.set(footerRef.current.querySelector(`.${footerStyles.footer}`), { marginTop: '40px'})
+    // gsap.to(footerRef.current.querySelector(`.${footerStyles.footer}`), { opacity: 1, duration: 0.5, delay: 0.5 });
   };
 
   const toggleAccordion = (id) => {
@@ -119,9 +119,9 @@ const Services = () => {
 
       </div>
 
-      <div ref={footerRef}>
+      {/* <div ref={footerRef}>
         <Footer />
-      </div>
+      </div> */}
     </>
   );
 };
