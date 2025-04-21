@@ -20,7 +20,62 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "headers": [
+      {
+        "source": "**/*.js",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/javascript"
+          }
+        ]
+      }
+    ],
     "rewrites": [
+      {
+        "source": "**/PoiretOne.eb47bc17.woff2",
+        "destination": "/PoiretOne.eb47bc17.woff2"
+      },
+      {
+        "source": "**/Theinhardt-Medium.fc38eab.ababa72e.woff2",
+        "destination": "/Theinhardt-Medium.fc38eab.ababa72e.woff2"
+      },
+      {
+        "source": "**/Theinhardt-Regular.b467019.cab8507b.woff2",
+        "destination": "/Theinhardt-Regular.b467019.cab8507b.woff2"
+      },
+      {
+        "source": "**/favicon.5dd17029.ico",
+        "destination": "/favicon.5dd17029.ico"
+      },
+      {
+        "source": "**/logo.403ac06d.svg",
+        "destination": "/logo.403ac06d.svg"
+      },
+      {
+        "source": "/admin/edit-project/index.*.js",
+        "destination": "/index.a2dc116f.js"
+      },
+      {
+        "source": "/**/index.*.js",
+        "destination": "/index.a2dc116f.js"
+      },
+      {
+        "source": "/admin/edit-project/index.0863ab1c.css",
+        "destination": "/index.0863ab1c.css"
+      },
+      {
+        "source": "/**/index.0863ab1c.css",
+        "destination": "/index.0863ab1c.css"
+      },
+      {
+        "source": "/admin/edit-project/index.66e993a3.css",
+        "destination": "/index.66e993a3.css"
+      },
+      {
+        "source": "/**/index.66e993a3.css",
+        "destination": "/index.66e993a3.css"
+      },
       {
         "source": "**",
         "destination": "/index.html"
