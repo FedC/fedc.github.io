@@ -7,7 +7,7 @@ import * as styles from './InfoPage.module.scss';
 import HalfCircle from './HalfCircle';
 import MobileMenu from './MobileMenu';
 
-const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange }) => {
+const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuState, onMobileMenuStateChange }) => {
   const aboutRef = useRef(null);
   const servicesRef = useRef(null);
   const contactRef = useRef(null);
@@ -154,7 +154,11 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange }) => {
               />
             </div>
             <div className={styles.mobileMenuWrapper}>
-              <MobileMenu onMenuItemClick={handleMenuClick} />
+              <MobileMenu 
+                onMenuItemClick={handleMenuClick} 
+                mobileMenuState={mobileMenuState}
+                onMobileMenuStateChange={onMobileMenuStateChange}
+              />
             </div>
           </div>
 

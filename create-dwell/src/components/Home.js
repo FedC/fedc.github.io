@@ -27,9 +27,13 @@ const Home = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [headerAnimationComplete, setHeaderAnimationComplete] = useState(false);
   const [projectReset, setProjectReset] = useState(false);
-  const [projectFilter, setProjectFilter] = useState(null);
+  const [projectFilter, setProjectFilter] = useState('all');
   const [isInfoPageOpen, setIsInfoPageOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(null);
+  const [mobileMenuState, setMobileMenuState] = useState({
+    isOpen: false,
+    activeId: 'all'
+  });
   let cursor = null;
   let cursorRef = useRef(null);
   let leftSlateMobileRef = useRef(null);
@@ -71,13 +75,8 @@ const Home = () => {
   }
 
   const onResetProjects = () => {
-    setProjects(originalProjects);
     setProjectReset(true);
-    // animate scroll up
-    gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
-    setTimeout(() => {
-      setProjectReset(false);
-    }, 100);
+    setTimeout(() => setProjectReset(false), 0);
   }
 
   const filterProjectUse = (use, filter) => {
@@ -92,20 +91,12 @@ const Home = () => {
   }
 
   const onFilterProjects = (filter) => {
-    const filteredProjects = originalProjects.filter((project) => project.use && filterProjectUse(project.use, filter));
-    // debugger;
-    setProjects(filteredProjects);
-    // animate scroll up
-    gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
-    setProjectFilter(true);
-    setTimeout(() => {
-      setProjectFilter(false);
-    }, 100);
+    setProjectFilter(filter);
   }
 
   const handleShowInfoPage = (page) => {
     setCurrentPage(page);
-    setIsInfoPageOpen(!!page);
+    setIsInfoPageOpen(true);
   };
 
   const handleSectionChange = (section) => {
@@ -115,6 +106,10 @@ const Home = () => {
   const handleCloseInfoPage = () => {
     setIsInfoPageOpen(false);
     setCurrentPage(null);
+  };
+
+  const handleMobileMenuStateChange = (newState) => {
+    setMobileMenuState(newState);
   };
 
   return (
@@ -127,6 +122,8 @@ const Home = () => {
         onShowInfoPage={handleShowInfoPage}
         isInfoPageOpen={isInfoPageOpen}
         currentPage={currentPage}
+        mobileMenuState={mobileMenuState}
+        onMobileMenuStateChange={handleMobileMenuStateChange}
       />
       <div className={styles.leftSlateMobile} ref={leftSlateMobileRef}></div>
       <main className={styles.pageWrapper}>
@@ -148,6 +145,8 @@ const Home = () => {
         onClose={handleCloseInfoPage}
         currentPage={currentPage}
         onSectionChange={handleSectionChange}
+        mobileMenuState={mobileMenuState}
+        onMobileMenuStateChange={handleMobileMenuStateChange}
       />
 
       {/* {selectedProject && (
