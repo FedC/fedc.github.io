@@ -47,6 +47,7 @@ const Home = () => {
         projectData.push({ id: doc.id, ...doc.data() });
       });
       setProjects(projectData);
+      console.log('projectData', projectData);
       setOriginalProjects(projectData);
       onProjectsLoaded();
     };
@@ -75,8 +76,13 @@ const Home = () => {
   }
 
   const onResetProjects = () => {
-    setProjectReset(true);
-    setTimeout(() => setProjectReset(false), 0);
+    setProjects(originalProjects);
+     setProjectReset(true);
+     // animate scroll up
+     gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
+     setTimeout(() => {
+       setProjectReset(false);
+     }, 100);
   }
 
   const filterProjectUse = (use, filter) => {
@@ -91,12 +97,20 @@ const Home = () => {
   }
 
   const onFilterProjects = (filter) => {
-    setProjectFilter(filter);
+    const filteredProjects = originalProjects.filter((project) => project.use && filterProjectUse(project.use, filter));
+     // debugger;
+     setProjects(filteredProjects);
+     // animate scroll up
+     gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
+     setProjectFilter(true);
+     setTimeout(() => {
+       setProjectFilter(false);
+     }, 100);
   }
 
   const handleShowInfoPage = (page) => {
     setCurrentPage(page);
-    setIsInfoPageOpen(true);
+    setIsInfoPageOpen(!!page);
   };
 
   const handleSectionChange = (section) => {
@@ -147,6 +161,8 @@ const Home = () => {
         onSectionChange={handleSectionChange}
         mobileMenuState={mobileMenuState}
         onMobileMenuStateChange={handleMobileMenuStateChange}
+        filterProjects={onFilterProjects}
+        resetProjects={onResetProjects}
       />
 
       {/* {selectedProject && (
