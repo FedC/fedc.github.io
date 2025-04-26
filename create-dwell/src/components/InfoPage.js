@@ -7,7 +7,7 @@ import * as styles from './InfoPage.module.scss';
 import HalfCircle from './HalfCircle';
 import MobileMenu from './MobileMenu';
 
-const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuState, onMobileMenuStateChange }) => {
+const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuState, onMobileMenuStateChange, filterProjects, resetProjects }) => {
   const aboutRef = useRef(null);
   const servicesRef = useRef(null);
   const contactRef = useRef(null);
@@ -16,6 +16,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
   const isScrollingRef = useRef(false);
   const hasInitializedRef = useRef(false);
   const orange = '#fbe4b7';
+  const [selectedFilter, setSelectedFilter] = useState('all');
 
   useEffect(() => {
     if (isOpen) {
@@ -116,11 +117,20 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
 
   const handleMenuClick = (e, id) => {
     if (['all', 'commercial', 'residential'].includes(id)) {
-      // Close InfoPage if portfolio filters are clicked
+      // Trigger filtering in Home.js
+      if (id === 'all') {
+        resetProjects?.();
+      } else {
+        filterProjects?.(id);
+      }
       onClose();
     } else if (id === 'about' || id === 'services' || id === 'contact') {
       onSectionChange?.(id);
     }
+  };
+
+  const handleFilterChange = (filter) => {
+    setSelectedFilter(filter);
   };
 
   return (
@@ -158,6 +168,8 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
                 onMenuItemClick={handleMenuClick} 
                 mobileMenuState={mobileMenuState}
                 onMobileMenuStateChange={onMobileMenuStateChange}
+                selectedFilter={selectedFilter}
+                onFilterChange={handleFilterChange}
               />
             </div>
           </div>
