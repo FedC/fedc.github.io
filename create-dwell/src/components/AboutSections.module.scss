@@ -16,7 +16,7 @@
   margin-bottom: 100px;
 
   @media screen and (max-width: 1250px) {
-    padding: 0 20px 50px 20px;
+    padding: 0 0 50px 0;
     margin-bottom: 50px;
     
   }
@@ -205,7 +205,7 @@
     font-size: 24px;
     font-weight: 600;
     color: #F5AA0D;
-    margin: 0;
+    margin: 0 8px;
     text-align: center;
   }
 
@@ -217,10 +217,12 @@
 
     .imageTextSmall {
       font-size: 16px;
+      font-weight: 500;
     }
 
     .yetText {
       font-size: 20px;
+      font-weight: 500;
     }
   }
 }

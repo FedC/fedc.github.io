@@ -197,7 +197,7 @@ const AboutSections = ({ sections, openServices }) => {
                     </div>
 
                     <div className={`${styles.imageText}`}>
-                      <div>Yet</div>
+                      <div className={styles.yetText}>Yet</div>
                       <div className={styles.imageTextSmall}>essential <br />
                         transcending fashion <br />
                         enviromentally sensitive</div>

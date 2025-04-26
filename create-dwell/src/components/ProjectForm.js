@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, getMetadata, deleteObject } from 'firebase/storage';
 import { db, storage } from '../js/firebase';
@@ -107,6 +107,71 @@ const waitForProcessedFile = async (filePath) => {
     }
   }
 };
+
+/** MultiSelectDropdown for project uses */
+const USE_OPTIONS = [
+  'Residential',
+  'Commercial',
+  'Retail',
+  'Educational',
+  'Office',
+  'Cultural',
+];
+
+function MultiSelectDropdown({ options, selected, onChange, label }) {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef();
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleCheckboxChange = (option) => {
+    if (selected.includes(option)) {
+      onChange(selected.filter((item) => item !== option));
+    } else {
+      onChange([...selected, option]);
+    }
+  };
+
+  return (
+    <div className={styles.multiSelectDropdown} ref={dropdownRef}>
+      <label>{label}</label>
+      <button
+        type="button"
+        className={styles.dropdownButton}
+        onClick={() => setOpen((o) => !o)}
+      >
+        {selected.length > 0 ? selected.join(', ') : 'Select...'}
+        <span className={styles.dropdownArrow}>
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline', verticalAlign: 'middle' }}>
+            <path d="M6 8L10 12L14 8" stroke="#1b1b1b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </span>
+      </button>
+      {open && (
+        <div className={styles.dropdownMenu}>
+          {options.map((option) => (
+            <label key={option} className={styles.dropdownOption}>
+              <input
+                type="checkbox"
+                checked={selected.includes(option)}
+                onChange={() => handleCheckboxChange(option)}
+              />
+              {option}
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
   let globalProjectId = editingProject?.id;
@@ -703,8 +768,11 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="use">Use (use comma separated for many)</label>
-              <input type="text" name="use" placeholder="Use (comma separated)" onChange={handleInputChange} onBlur={handleSubmit} value={formData.use || ''} />
+              <label htmlFor="use">Use</label>
+              <MultiSelectDropdown options={USE_OPTIONS} selected={formData.use} onChange={(selected) => {
+                setFormData(prev => ({ ...prev, use: selected }));
+                setTimeout(() => handleSubmit(), 0);
+              }} label="Select uses" />
             </div>
 
             <div className="grid-two-col">
@@ -713,6 +781,10 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
                 <select id="projectType" name="projectType" onChange={handleInputChangeAndSubmit} value={formData.projectType || ''}>
                   <option value="Historic Interior Renovation">Historic Interior Renovation</option>
                   <option value="Interior Renovation">Interior Renovation</option>
+                  <option value="Exterior Renovation">Exterior Renovation</option>
+                  <option value="Signage / Wayfinding">Signage / Wayfinding</option>
+                  <option value="Package">Package</option>
+                  <option value="Addition">Addition</option>
                   <option value="New Construction">New Construction</option>
                   <option value="Schematic Proposal">Schematic Proposal</option>
                   <option value="Renovation">Renovation</option>
@@ -723,9 +795,16 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
                 <label htmlFor="status">Project Status</label>
                 <select name="status" onChange={handleInputChangeAndSubmit} value={formData.status}>
                   <option value="">Select Status</option>
-                  <option value="Built">Built</option>
-                  <option value="Unbuilt">Unbuilt</option>
+                  <option value="Schematic Design">Schematic Design</option>
+                  <option value="Design Development">Design Development</option>
+                  <option value="Construction Documentation">Construction Documentation</option>
+                  <option value="Bidding and Negotiation">Bidding and Negotiation</option>
+                  <option value="Construction Administration">Construction Administration</option>
                   <option value="Permitting">Permitting</option>
+                  <option value="Planned for Construction">Planned for Construction</option>
+                  <option value="Under Construction">Under Construction</option>
+                  <option value="Unbuilt">Unbuilt</option>
+                  <option value="Built">Built</option>
                 </select>
               </div>
             </div>
