@@ -44,7 +44,7 @@
   top: 0;
   right: 0;
   width: max-content;
-  height: 100vh;
+  height: auto;
   background: white;
   display: flex;
   flex-direction: column;
@@ -67,7 +67,7 @@
 .menuItems {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 10px;
 }
 
 .menuTextItem {

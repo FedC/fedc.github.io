@@ -9,7 +9,7 @@ import HomeIcon from './HomeIcon';
 import MobileMenu from './MobileMenu';
 import Logo from './Logo';
 
-const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects, onShowInfoPage, isInfoPageOpen, currentPage }) => {
+const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects, onShowInfoPage, isInfoPageOpen, currentPage, mobileMenuState, onMobileMenuStateChange }) => {
   const orange = 'rgb(246, 171, 11)';
 
   const navRef = useRef(null);
@@ -319,7 +319,11 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects, onSho
       </nav>
 
       <div ref={mobileMenuRef} className={styles.mobileMenuContainer}>
-        <MobileMenu onMenuItemClick={handleMenuClick} />
+        <MobileMenu 
+          onMenuItemClick={handleMenuClick} 
+          mobileMenuState={mobileMenuState}
+          onMobileMenuStateChange={onMobileMenuStateChange}
+        />
       </div>
     </>
   );

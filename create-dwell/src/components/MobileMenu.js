@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu } from "lucide-react";
 import AboutIcon from "./AboutIcon";
@@ -10,12 +10,9 @@ import HalfCircle from './HalfCircle';
 
 import * as styles from "./MobileMenu.module.scss";
 
-const MobileMenu = ({ onMenuItemClick }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const MobileMenu = ({ onMenuItemClick, mobileMenuState, onMobileMenuStateChange }) => {
   const menuRef = useRef(null);
   const buttonsRef = useRef([]);
-  const [activeId, setActiveId] = useState('all');
-
   const orange = 'rgb(246, 171, 11)';
 
   const menuItems = [
@@ -28,24 +25,30 @@ const MobileMenu = ({ onMenuItemClick }) => {
   ];
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
+    onMobileMenuStateChange({
+      ...mobileMenuState,
+      isOpen: !mobileMenuState.isOpen
+    });
   };
 
   const handleItemClick = (e, id) => {
     e.stopPropagation();
     if (onMenuItemClick) onMenuItemClick(e, id);
-    setActiveId(id);
-    setIsOpen(false);
+    onMobileMenuStateChange({
+      ...mobileMenuState,
+      activeId: id,
+      isOpen: false
+    });
   };
 
   return (
     <div className={styles.menuWrapper}>
       <button onClick={toggleMenu} className={styles.toggleButton}>
-        {isOpen ? <CloseIcon size={32} /> : <Menu size={32} />}
+        {mobileMenuState.isOpen ? <CloseIcon size={32} /> : <Menu size={32} />}
       </button>
 
       <AnimatePresence>
-        {isOpen && (
+        {mobileMenuState.isOpen && (
           <>
           <div className={styles.underlay} onClick={toggleMenu} ></div>
           <motion.div
@@ -59,10 +62,10 @@ const MobileMenu = ({ onMenuItemClick }) => {
               {menuItems.map((item) => (
                 <button
                   key={item.id}
-                  className={`${styles.menuTextItem} ${activeId === item.id ? styles.active : ""}`}
+                  className={`${styles.menuTextItem} ${mobileMenuState.activeId === item.id ? styles.active : ""}`}
                   onClick={(e) => handleItemClick(e, item.id)}
                 >
-                  {activeId === item.id && (
+                  {mobileMenuState.activeId === item.id && (
                     <span
                       className={styles.activeIndicator}
                     >
