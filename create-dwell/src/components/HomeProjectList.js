@@ -32,6 +32,23 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
   const previousScale = useRef(1);
   let scrollDirection;
   let contentFirstMoveX = 240;
+  const scrollHintRefs = useRef({});
+
+  useEffect(() => {
+    if (!openProjects.length) return;
+  
+    openProjects.forEach(projectId => {
+      const hint = scrollHintRefs.current[projectId];
+      if (!hint) return;
+      gsap.to(hint, { opacity: 1, duration: 0.5 });
+  
+      const timeout = setTimeout(() => {
+        gsap.to(hint, { opacity: 0, duration: 0.5 });
+      }, 10000);
+  
+      return () => clearTimeout(timeout);
+    });
+  }, [openProjects]);
 
   const reset = () => {
     projects.forEach((project) => {
@@ -176,6 +193,8 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
   };
 
   const setupFooterAnimation = () => {
+    if (!headerAnimationComplete) return;
+
     const footerItems = footerRef.current.querySelectorAll(`.${footerStyles.footerInner} > div`);
 
     gsap.fromTo(
@@ -768,6 +787,26 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
       });
   };
 
+  const handleScrollHintClick = (e, projectId) => {
+    e.stopPropagation();
+    debugger;
+    const projectRef = projectRefs.current[projectId];
+    if (!projectRef) return;
+  
+    // Scroll the project to the left a bit more
+    gsap.to(projectRef, {
+      x: gsap.getProperty(projectRef, "x") - 200, // scroll 200px further left
+      duration: 0.8,
+      ease: "power3.out",
+    });
+  
+    // Hide the scroll hint
+    const hint = scrollHintRefs.current[projectId];
+    if (hint) {
+      gsap.to(hint, { opacity: 0, duration: 0.5 });
+    }
+  };
+
   // const toggleProjectDescription = (projectId, event) => {
   //   event.stopPropagation();
   //   const projectRef = projectRefs.current[projectId];
@@ -813,26 +852,26 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
 
   const toggleProjectContentDescription = (projectId, contentId, event) => {
     event.stopPropagation();
-  
+
     // Detect if it's a mobile device
     const isMobile = window.innerWidth <= 768;
-  
+
     // Find the correct project and content description
     const projectRef = projectRefs.current[projectId];
     const projectContentDescription = projectRef?.querySelector(
       `.${styles.projectDescription}[data-content-id="${contentId}"]`
     );
-  
+
     if (!projectContentDescription) return;
-  
+
     if (isMobile) {
       // Get content data
       const content = projects
         .find((p) => p.id === projectId)
         ?.content.find((c, index) => c.id === contentId || index === contentId);
-  
+
       if (!content) return;
-  
+
       // Trigger full-screen mode on mobile
       setFullScreenContent({
         projectId,
@@ -840,7 +879,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
         imageUrl: content.url,
         description: content.description || '',
       });
-  
+
     } else {
       // Default GSAP behavior for desktop
       if (projectContentDescription.style.opacity === '1') {
@@ -1000,6 +1039,26 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
     return `${sqft.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} sqft`;
   }
 
+  const handleHeaderClick = (e, projectId) => {
+    e.stopPropagation();
+    const header = e.currentTarget;
+    const container = header.closest(`.${styles.projectContentHorizontal}`);
+    if (!container) return;
+
+    const containerCenter = container.offsetWidth / 2;
+    const headerCenter = header.offsetLeft + (header.offsetWidth / 2);
+
+    const scrollTo = headerCenter - containerCenter;
+
+    gsap.to(container, {
+      scrollTo: {
+        left: scrollTo,
+      },
+      duration: 1,
+      ease: 'power3.out',
+    });
+  };
+
   return (
     <>
       <div className={styles.projectList} ref={listRef}>
@@ -1063,6 +1122,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                                 ? styles.hasAdditionalContent
                                 : ''
                                 }`}
+                              onClick={(e) => handleHeaderClick(e, project.id)}
                             >
 
                               <div className={styles.projectHeaderTop}>
@@ -1260,6 +1320,15 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                         </div>
                       </div>
                     )}
+
+                    <div className={styles.scrollHint}
+                      ref={(el) => { if (el) scrollHintRefs.current[project.id] = el; }}
+                      onClick={(e) => handleScrollHintClick(e, project.id)}
+                      >
+                      <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </div>
                   </div>
                 )
               }

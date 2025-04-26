@@ -148,7 +148,7 @@ function MultiSelectDropdown({ options, selected, onChange, label }) {
         className={styles.dropdownButton}
         onClick={() => setOpen((o) => !o)}
       >
-        {selected.length > 0 ? selected.join(', ') : 'Select...'}
+        {Array.isArray(selected) && selected.length > 0 ? selected.join(', ') : 'Select...'}
         <span className={styles.dropdownArrow}>
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline', verticalAlign: 'middle' }}>
             <path d="M6 8L10 12L14 8" stroke="#1b1b1b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
