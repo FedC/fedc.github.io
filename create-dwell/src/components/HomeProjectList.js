@@ -36,17 +36,17 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
 
   useEffect(() => {
     if (!openProjects.length) return;
-  
+
     openProjects.forEach(projectId => {
       const hint = scrollHintRefs.current[projectId];
       if (!hint) return;
       gsap.to(hint, { opacity: 1, duration: 0.5 });
-  
-      const timeout = setTimeout(() => {
-        gsap.to(hint, { opacity: 0, duration: 0.5 });
-      }, 10000);
-  
-      return () => clearTimeout(timeout);
+
+      // const timeout = setTimeout(() => {
+      //   gsap.to(hint, { opacity: 0, duration: 0.5 });
+      // }, 10000);
+
+      // return () => clearTimeout(timeout);
     });
   }, [openProjects]);
 
@@ -792,14 +792,14 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
     debugger;
     const projectRef = projectRefs.current[projectId];
     if (!projectRef) return;
-  
+
     // Scroll the project to the left a bit more
     gsap.to(projectRef, {
       x: gsap.getProperty(projectRef, "x") - 200, // scroll 200px further left
       duration: 0.8,
       ease: "power3.out",
     });
-  
+
     // Hide the scroll hint
     const hint = scrollHintRefs.current[projectId];
     if (hint) {
@@ -1118,13 +1118,9 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                         <div className={styles.projectContentHorizontal}>
                           <div className={styles.projectContentItem}>
                             <div
-                              className={`${styles.projectHeader} ${projectHasDescriptions(project)
-                                ? styles.hasAdditionalContent
-                                : ''
-                                }`}
+                              className={`${styles.projectHeader}`}
                               onClick={(e) => handleHeaderClick(e, project.id)}
                             >
-
                               <div className={styles.projectHeaderTop}>
                                 <h2>{project.title}</h2>
                                 <p className={styles.projectLocation}>{project.location}</p>
@@ -1132,51 +1128,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                                 {project.status && <p className={styles.status}>{project.status}</p>}
                                 {project.area && <p className={styles.area}>{prettySqft(project.area)}</p>}
                               </div>
-
-                              <div className={styles.projectHeaderInner}>
-                                <h2>{project.title}</h2>
-                                <p className={styles.projectLocation}>{project.location}</p>
-                                {project.type && <p className={styles.type}>{project.type}</p>}
-                                {project.status && <p className={styles.status}>{project.status}</p>}
-                                {project.area && <p className={styles.area}>{prettySqft(project.area)}</p>}
-
-                                {project.description && (
-                                  <div className={styles.projectGeneralDescription}>
-                                    {formatTextToNumberedList(project.description)}
-                                  </div>
-                                )}
-                                {project.clientDescription && (
-                                  <div className={styles.projectGeneralDescription}>
-                                    {formatTextToNumberedList(project.clientDescription)}
-                                  </div>
-                                )}
-                                {project.challenge && (
-                                  <div className={styles.projectGeneralDescription}>
-                                    {formatTextToNumberedList(project.challenge)}
-                                  </div>
-                                )}
-                                {project.solution && (
-                                  <div className={styles.projectGeneralDescription}>
-                                    {formatTextToNumberedList(project.solution)}
-                                  </div>
-                                )}
-                              </div>
-
-                              {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
-                                <button className={styles.scrollUpButton} onClick={(e) => scrollProjectHeaderUp(e, project.id)}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
-                                    <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
-                                  </svg>
-                                </button>
-                              )}
-
-                              {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
-                                <button className={styles.scrollDownButton} onClick={(e) => scrollProjectHeader(e, project.id)}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
-                                    <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
-                                  </svg>
-                                </button>
-                              )}
                             </div>
                           </div>
 
@@ -1277,6 +1228,49 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                               return null;
                             })}
 
+                          <div className={styles.projectContentItem}>
+                            <div className={`${styles.projectHeader} ${styles.projectHeaderDescription} ${projectHasDescriptions(project) ? styles.hasAdditionalContent : ''}`}>
+                              <div className={styles.projectHeaderInner}>
+                                {project.description && (
+                                  <div className={styles.projectGeneralDescription}>
+                                    {formatTextToNumberedList(project.description)}
+                                  </div>
+                                )}
+                                {project.clientDescription && (
+                                  <div className={styles.projectGeneralDescription}>
+                                    {formatTextToNumberedList(project.clientDescription)}
+                                  </div>
+                                )}
+                                {project.challenge && (
+                                  <div className={styles.projectGeneralDescription}>
+                                    {formatTextToNumberedList(project.challenge)}
+                                  </div>
+                                )}
+                                {project.solution && (
+                                  <div className={styles.projectGeneralDescription}>
+                                    {formatTextToNumberedList(project.solution)}
+                                  </div>
+                                )}
+                              </div>
+
+                              {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
+                                <button className={styles.scrollUpButton} onClick={(e) => scrollProjectHeaderUp(e, project.id)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
+                                    <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
+                                  </svg>
+                                </button>
+                              )}
+
+                              {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
+                                <button className={styles.scrollDownButton} onClick={(e) => scrollProjectHeader(e, project.id)}>
+                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
+                                    <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+                                  </svg>
+                                </button>
+                              )}
+                            </div>
+                          </div>
+
                           {/* add publications as content items: { title: '', link: '', date: '', imageUrl: '' } */}
                           {project.publications && project.publications.length > 0 && (
                             project.publications.map((publication, index) => (
@@ -1324,9 +1318,9 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                     <div className={styles.scrollHint}
                       ref={(el) => { if (el) scrollHintRefs.current[project.id] = el; }}
                       onClick={(e) => handleScrollHintClick(e, project.id)}
-                      >
-                      <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgb(246, 171, 11)">
+                        <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
                       </svg>
                     </div>
                   </div>
