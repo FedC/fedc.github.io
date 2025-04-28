@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
@@ -7,9 +7,7 @@ import 'swiper/css/navigation';
 import * as styles from './SwiperSection.module.scss';
 import './swiper.scss';
 
-const SwiperSection = ({ sections }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-
+const SwiperSection = ({ children, onSwipe }) => {
   return (
     <div className={styles.sectionsContainer}>
       <Swiper
@@ -23,38 +21,15 @@ const SwiperSection = ({ sections }) => {
         grabCursor={true}
         centeredSlides={true}
         speed={700}
-        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+        onSlideChange={(swiper) => onSwipe?.(swiper.realIndex)}
         breakpoints={{
           620: { slidesPerView: 1, spaceBetween: 30 },
           768: { slidesPerView: 1, spaceBetween: 50 },
           1024: { slidesPerView: 2, spaceBetween: 100 },
         }}
       >
-        {sections.map((section, index) => (
-          <SwiperSlide key={index}>
-            <div className={`${styles.contentSection} ${index === activeIndex ? styles.active : ''}`}>
-              <div>
-                <h2>{section.title}</h2>
-                <div className={styles.contentSectionImageContainer}>
-                  <img src={section.imageUrl} alt={section.title} className={styles.sectionImage} />
-                  {(section.title === 'Service' || section.title === 'Process') && (
-                    <button className={styles.imageInfoIcon}>
-                      <span>i</span>
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div className={styles.contentSectionText}>
-                <div className={styles.content}>
-                  {section.content.map((content, i) => {
-                    if (content.type === 'paragraph') return <p className={styles.paragraph} key={'p_' + index + '_' + i}>{content.text}</p>;
-                    if (content.type === 'bullets') return <ul className={styles.list} key={'ul_' + index + '_' + i}>{content.bullets.map((b, j) => <li key={'bullet_' + index + '_' + j}>{b}</li>)}</ul>;
-                    return null;
-                  })}
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
+        {React.Children.map(children, (child, index) => (
+          <SwiperSlide key={index}>{child}</SwiperSlide>
         ))}
       </Swiper>
 
