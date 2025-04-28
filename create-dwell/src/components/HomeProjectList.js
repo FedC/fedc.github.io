@@ -7,7 +7,7 @@ import * as styles from './HomeProjectList.module.scss';
 import Footer from './Footer';
 import * as footerStyles from './Footer.module.scss';
 
-const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, projectFilter }) => {
+const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, projectFilter, setFullScreenContent }) => {
   const listRef = useRef(null);
   const footerRef = useRef(null);
   const [openProjects, setOpenProjects] = useState([]);
@@ -23,7 +23,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
   const observerRef = useRef(null);
   // State to track the most visible image
   const [mostVisibleImage, setMostVisibleImage] = useState(null);
-  const [fullScreenContent, setFullScreenContent] = useState(null);
 
   const previousScrollY = useRef(0);
   const velocityScale = useRef(1);
@@ -1356,27 +1355,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
       <div ref={footerRef}>
         <Footer showCredits={true} />
       </div>
-
-      {fullScreenContent && (
-        <div
-          className={styles.fullScreenOverlay}
-          onClick={() => setFullScreenContent(null)} // Tap to close
-        >
-          <div className={styles.fullScreenImageWrapper}>
-            <img
-              className={styles.fullScreenImage}
-              src={fullScreenContent.imageUrl}
-              alt="Full screen preview"
-            />
-          </div>
-          <div
-            className={styles.fullScreenDescription}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when scrolling
-          >
-            <p>{fullScreenContent.description}</p>
-          </div>
-        </div>
-      )}
     </>
   );
 };
