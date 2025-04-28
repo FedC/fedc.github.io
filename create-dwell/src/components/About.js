@@ -7,7 +7,7 @@ import { gsap } from 'gsap';
 
 import * as styles from './About.module.scss';
 import * as footerStyles from './Footer.module.scss';
-// import SwiperSection from './SwiperSection';
+import SwiperSection from './SwiperSection';
 import AboutSections from './AboutSections';
 import Footer from './Footer';
 
@@ -175,7 +175,8 @@ const About = ({ parentScroller, openServices }) => {
         <p className={styles.aboutParagraph}>{renderHighlightAbout(description)}</p>
       </div>
 
-      {/* <SwiperSection sections={sections} /> */}
+      <SwiperSection sections={sections} />
+
       < AboutSections sections={sections} openServices={openServices} />
 
       {activeSection && (

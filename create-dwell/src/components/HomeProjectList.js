@@ -23,7 +23,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
   const observerRef = useRef(null);
   // State to track the most visible image
   const [mostVisibleImage, setMostVisibleImage] = useState(null);
-  const [fullScreenContent, setFullScreenContent] = useState(null);
 
   const previousScrollY = useRef(0);
   const velocityScale = useRef(1);
@@ -36,16 +35,16 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
 
   useEffect(() => {
     if (!openProjects.length) return;
-  
+
     openProjects.forEach(projectId => {
       const hint = scrollHintRefs.current[projectId];
       if (!hint) return;
       gsap.to(hint, { opacity: 1, duration: 0.5 });
-  
+
       const timeout = setTimeout(() => {
         gsap.to(hint, { opacity: 0, duration: 0.5 });
       }, 10000);
-  
+
       return () => clearTimeout(timeout);
     });
   }, [openProjects]);
@@ -792,14 +791,14 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
     debugger;
     const projectRef = projectRefs.current[projectId];
     if (!projectRef) return;
-  
+
     // Scroll the project to the left a bit more
     gsap.to(projectRef, {
       x: gsap.getProperty(projectRef, "x") - 200, // scroll 200px further left
       duration: 0.8,
       ease: "power3.out",
     });
-  
+
     // Hide the scroll hint
     const hint = scrollHintRefs.current[projectId];
     if (hint) {
@@ -1059,331 +1058,145 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
     });
   };
 
+  useEffect(() => {
+    if (headerAnimationComplete) {
+      gsap.to(listRef.current, {
+        opacity: 1,
+        duration: 0.5,
+        delay: 0.2,
+      });
+    }
+  }, [headerAnimationComplete]);
+
+  useEffect(() => {
+    if (projectReset) {
+      setOpenProjects([]);
+      setLoadingContentImages([]);
+    }
+  }, [projectReset]);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(Draggable);
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      scrollDirection = currentScrollY > previousScrollY.current ? 'down' : 'up';
+      previousScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5,
+    };
+
+    const callback = (entries) => {
+      let maxVisibility = 0;
+      let mostVisible = null;
+
+      entries.forEach((entry) => {
+        if (entry.intersectionRatio > maxVisibility) {
+          maxVisibility = entry.intersectionRatio;
+          mostVisible = entry.target.dataset.projectId;
+        }
+      });
+
+      if (mostVisible) {
+        setMostVisibleImage(mostVisible);
+      }
+    };
+
+    observerRef.current = new IntersectionObserver(callback, options);
+
+    // Observe all project images
+    Object.values(imageRefs.current).forEach((ref) => {
+      if (ref) {
+        observerRef.current.observe(ref);
+      }
+    });
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  const handleProjectClick = async (projectId) => {
+    if (loadingContentImages.includes(projectId)) return;
+
+    if (openProjects.includes(projectId)) {
+      setOpenProjects(openProjects.filter((id) => id !== projectId));
+      return;
+    }
+
+    setLoadingContentImages((prev) => [...prev, projectId]);
+    const project = projects.find((p) => p.id === projectId);
+    
+    if (project.contentImages) {
+      await preloadImages(project.contentImages);
+    }
+    
+    setLoadingContentImages((prev) => prev.filter((id) => id !== projectId));
+    setOpenProjects([...openProjects, projectId]);
+  };
+
+  const getProjectScale = (projectId) => {
+    if (openProjects.includes(projectId)) {
+      return 1;
+    }
+    return minimumScaleOffset;
+  };
+
   return (
-    <>
-      <div className={styles.projectList} ref={listRef}>
-        <div className={styles.projectListVertical} ref={gridRef}>
-          {projects
-            .sort((a, b) => a.order - b.order) // Sort projects by their order
-            .map(
-              (project) => {
-
-                // Initialize an array for each project's images in `imageRefs`
-                if (!imageRefs.current[project.id]) {
-                  imageRefs.current[project.id] = [];
-                }
-
-                return project.published && (
-                  <div
-                    key={project.id}
-                    className={styles.projectItem}
-                    id={`project-${project.id}`}
-                    ref={(el) => (projectRefs.current[project.id] = el)}
-                    onClick={() => toggleProject(project.id)}
-                  >
-                    <div className={styles.projectItemInner}>
-                      <div className={styles.mainImageWrapper} ref={(el) => el && imageRefs.current[project.id].push(el)}>
-                        <img
-                          className={styles.projectMainImage}
-                          src={project.mainImage}
-                          alt={project.title}
-                        />
-
-                        {/* {project.description && openProjects.includes(project.id) && (
-                      <>
-                        <div className={styles.projectDescriptionIconButton}>
-                          <button className={styles.projectDescriptionButton} onClick={(e) => toggleProjectDescription(project.id, e)}>
-                            <span>i</span>
-                          </button>
-                        </div>
-                        <div className={styles.projectDescription} onClick={(e) => toggleProjectDescription(project.id, e)}>
-                          <p>{project.description}</p>
-                        </div>
-                      </>
-                    )} */}
-
-                        {loadingContentImages.includes(project.id) && (
-                          <div className={styles.spinner}></div>)}
-                      </div>
-
-                      {/* {(!openProjects.includes(project.id) && !loadingContentImages.includes(project.id)) && ( */}
-                      <div className={styles.projectTitle}>
-                        <h2>{project.title}</h2>
-                      </div>
-                      {/* )} */}
-                    </div>
-
-                    {openProjects.includes(project.id) && (
-                      <div className={styles.projectContent}>
-                        <div className={styles.projectContentHorizontal}>
-                          <div className={styles.projectContentItem}>
-                            <div
-                              className={`${styles.projectHeader} ${projectHasDescriptions(project)
-                                ? styles.hasAdditionalContent
-                                : ''
-                                }`}
-                              onClick={(e) => handleHeaderClick(e, project.id)}
-                            >
-
-                              <div className={styles.projectHeaderTop}>
-                                <h2>{project.title}</h2>
-                                <p className={styles.projectLocation}>{project.location}</p>
-                                {project.type && <p className={styles.type}>{project.type}</p>}
-                                {project.status && <p className={styles.status}>{project.status}</p>}
-                                {project.area && <p className={styles.area}>{prettySqft(project.area)}</p>}
-                              </div>
-
-                              <div className={styles.projectHeaderInner}>
-                                <h2>{project.title}</h2>
-                                <p className={styles.projectLocation}>{project.location}</p>
-                                {project.type && <p className={styles.type}>{project.type}</p>}
-                                {project.status && <p className={styles.status}>{project.status}</p>}
-                                {project.area && <p className={styles.area}>{prettySqft(project.area)}</p>}
-
-                                {project.description && (
-                                  <div className={styles.projectGeneralDescription}>
-                                    {formatTextToNumberedList(project.description)}
-                                  </div>
-                                )}
-                                {project.clientDescription && (
-                                  <div className={styles.projectGeneralDescription}>
-                                    {formatTextToNumberedList(project.clientDescription)}
-                                  </div>
-                                )}
-                                {project.challenge && (
-                                  <div className={styles.projectGeneralDescription}>
-                                    {formatTextToNumberedList(project.challenge)}
-                                  </div>
-                                )}
-                                {project.solution && (
-                                  <div className={styles.projectGeneralDescription}>
-                                    {formatTextToNumberedList(project.solution)}
-                                  </div>
-                                )}
-                              </div>
-
-                              {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
-                                <button className={styles.scrollUpButton} onClick={(e) => scrollProjectHeaderUp(e, project.id)}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
-                                    <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
-                                  </svg>
-                                </button>
-                              )}
-
-                              {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
-                                <button className={styles.scrollDownButton} onClick={(e) => scrollProjectHeader(e, project.id)}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
-                                    <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
-                                  </svg>
-                                </button>
-                              )}
-                            </div>
-                          </div>
-
-                          {project.content &&
-                            project.content.map((content, index) => {
-                              if (!content) return null;
-                              if (!content.published) return null;
-
-                              const uniqueKey =
-                                content.id || content.url || `${content.type}-${index}`;
-
-                              if (content.type === 'image' && content.description) {
-                                const aspectRatio = imageAspectRatios[content.url];
-                                const aspectClass = getAspectRatioClass(aspectRatio);
-
-                                return (
-                                  <div
-                                    key={uniqueKey}
-                                    data-aspect-ratio={aspectRatio}
-                                    className={`${styles.projectContentItem} ${aspectClass}`}
-                                    ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
-                                  >
-                                    <div className={styles.projectImageWrapper}>
-                                      <img
-                                        className={styles.projectImage}
-                                        src={content.url}
-                                        alt={content.title}
-                                      />
-                                      {(content.description && openProjects.includes(project.id)) && (
-                                        <>
-                                          <div className={styles.projectDescriptionIconButton}>
-                                            <button
-                                              className={styles.projectDescriptionButton}
-                                              onClick={(e) =>
-                                                toggleProjectContentDescription(project.id, content.id || index, e)
-                                              }
-                                            >
-                                              <span>i</span>
-                                            </button>
-                                          </div>
-                                          <div
-                                            className={styles.projectDescription}
-                                            data-content-id={content.id || index} // Add identifier here as well
-                                            onClick={(e) =>
-                                              toggleProjectContentDescription(project.id, content.id || index, e)
-                                            }
-                                          >
-                                            <p>{content.description}</p>
-                                          </div>
-                                        </>
-                                      )}
-                                    </div>
-
-                                  </div>
-                                );
-                              } else if (content.type === 'image') {
-                                const aspectRatio = imageAspectRatios[content.url];
-                                const aspectClass = getAspectRatioClass(aspectRatio);
-
-                                return (
-                                  <div
-                                    key={uniqueKey}
-                                    data-aspect-ratio={aspectRatio}
-                                    className={`${styles.projectContentItem} ${aspectClass}`}
-                                    ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
-                                  >
-                                    <div className={styles.projectImageWrapper}>
-                                      <img
-                                        className={styles.projectImage}
-                                        src={content.url}
-                                        alt={content.title}
-                                      />
-                                    </div>
-                                  </div>
-                                );
-                              } else if (content.type === 'text') {
-                                return (
-                                  <div
-                                    key={uniqueKey}
-                                    className={styles.projectContentItem}
-                                    ref={(el) => el && imageRefs.current[project.id].push(el)} // Add content to refs
-                                  >
-                                    <div className={styles.projectText}>
-                                      {content.text}
-                                    </div>
-                                  </div>
-                                );
-                              } else if (content.type === 'quote') {
-                                return (
-                                  <blockquote
-                                    key={uniqueKey}
-                                    className={styles.projectQuote}
-                                  >
-                                    {content.text}
-                                  </blockquote>
-                                );
-                              }
-                              return null;
-                            })}
-
-                          {/* add publications as content items: { title: '', link: '', date: '', imageUrl: '' } */}
-                          {project.publications && project.publications.length > 0 && (
-                            project.publications.map((publication, index) => (
-                              <div key={'publication_' + index} className={`${styles.projectContentItem} ${styles.projectPublicationItem}`}>
-
-
-                                <a href={publication.link} target="_blank" rel="noopener noreferrer">
-                                  <button className={styles.projectPublicationButton}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z" /></svg>
-                                  </button>
-                                </a>
-
-                                <div className={styles.projectPublication}>
-                                  <img src={publication.imageUrl} alt={publication.title} />
-                                </div>
-
-                                <div className={styles.projectPublicationDescription}>
-                                  <a href={publication.link} target="_blank" rel="noopener noreferrer">
-                                    <h3>{publication.title}</h3>
-                                  </a>
-                                  <p>{publication.date}</p>
-                                </div>
-                              </div>
-                            ))
-                          )}
-
-
-                          {/* add last section of content for project.teams: Team (discipline listed first and company names second) */}
-                          {project.teams && project.teams.length > 0 && (
-                            <div className={styles.projectContentItem}>
-                              <div className={styles.projectTeamText}>
-                                {project.teams.map((team, index) => (
-                                  <div key={'team_' + index}>
-                                    <p className={styles.projectTeamRole}>{team.role}</p>
-                                    <p className={styles.projectTeamName}>{team.name}</p>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    <div className={styles.scrollHint}
-                      ref={(el) => { if (el) scrollHintRefs.current[project.id] = el; }}
-                      onClick={(e) => handleScrollHintClick(e, project.id)}
-                      >
-                      <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
-                    </div>
+    <div className="home-project-list" ref={listRef}>
+      <div className="project-list">
+        {projects.map((project, index) => {
+          const isOpen = openProjects.includes(project.id);
+          const isLoading = loadingContentImages.includes(project.id);
+          const scale = getProjectScale(project.id);
+          
+          return (
+            <div
+              key={project.id}
+              className={`project-item ${isOpen ? 'open' : ''}`}
+              onClick={() => handleProjectClick(project.id)}
+            >
+              <div className="project-image-container">
+                <img
+                  ref={(el) => (imageRefs.current[project.id] = el)}
+                  data-project-id={project.id}
+                  src={project.coverImage}
+                  alt={project.title}
+                  className="project-image"
+                  style={{
+                    transform: `scale(${scale})`,
+                  }}
+                />
+                {isLoading && (
+                  <div className="loading-overlay">
+                    <div className="loading-spinner"></div>
                   </div>
-                )
-              }
-            )}
-        </div>
+                )}
+              </div>
+              <div className="project-info">
+                <h3>{project.title}</h3>
+                <p>{project.description}</p>
+              </div>
+            </div>
+          );
+        })}
       </div>
-
-      <div className={styles.mark} ref={marqueeRef}>
-        <div className={styles.mark__inner} ref={marqueeInnerRef}>
-
-          {
-            ['Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning', 'spacer',
-              'Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning', 'spacer',
-              'Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning',
-            ]
-              .map((item, index) => (
-                item === 'spacer' ?
-                  <div key={`spacer-${index}`} className={styles.spacer}></div>
-                  :
-                  <span key={`item-${index}`}>{item}</span>
-              ))}
-
-          {/* <span>Architecture</span>
-          <div className={styles.spacer}></div>
-          <span>Interior Design</span>
-          <div className={styles.spacer}></div>
-          <span>Planning</span> */}
-        </div>
-      </div>
-
-      <div ref={footerRef}>
-        <Footer showCredits={true} />
-      </div>
-
-      {fullScreenContent && (
-        <div
-          className={styles.fullScreenOverlay}
-          onClick={() => setFullScreenContent(null)} // Tap to close
-        >
-          <div className={styles.fullScreenImageWrapper}>
-            <img
-              className={styles.fullScreenImage}
-              src={fullScreenContent.imageUrl}
-              alt="Full screen preview"
-            />
-          </div>
-          <div
-            className={styles.fullScreenDescription}
-            onClick={(e) => e.stopPropagation()} // Prevent closing when scrolling
-          >
-            <p>{fullScreenContent.description}</p>
-          </div>
-        </div>
-      )}
-    </>
+    </div>
   );
 };
 

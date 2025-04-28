@@ -21,6 +21,7 @@ import {
 // import { useLocation } from 'react-router-dom';
 
 import { CSS } from '@dnd-kit/utilities';
+import MultiSelectToggleDrag from './MultiSelectToggleDrag';
 
 const SortableItem = ({ id, overlay, children }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isOver } = useSortable({ id });
@@ -173,6 +174,18 @@ function MultiSelectDropdown({ options, selected, onChange, label }) {
   );
 }
 
+const PROJECT_TYPE_OPTIONS = [
+  'Historic Interior Renovation',
+  'Interior Renovation',
+  'Exterior Renovation',
+  'Signage / Wayfinding',
+  'Package',
+  'Addition',
+  'New Construction',
+  'Schematic Proposal',
+  'Renovation',
+];
+
 const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
   let globalProjectId = editingProject?.id;
 
@@ -205,6 +218,7 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
   const [draggingContent, setDraggingContent] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
   const [originalData, setOriginalData] = useState(null); // To hold the initial snapshot
+  const [unsaved, setUnsaved] = useState(false);
   
   // const location = useLocation();
   // useEffect(() => {
@@ -218,6 +232,12 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
       setOriginalData(snapshot); // Capture the initial snapshot for comparison
     }
   }, [editingProject]);
+
+  useEffect(() => {
+    // Simple shallow comparison; for deep objects, use a deep equality check
+    const isChanged = JSON.stringify(formData) !== JSON.stringify(originalData);
+    setUnsaved(isChanged);
+  }, [formData, originalData]);
 
   // Deep comparison utility
   const isDataChanged = (data1, data2) => {
@@ -698,6 +718,11 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
         </button>
       </div>
 
+      {unsaved && (
+        <div className={styles.unsavedBanner}>
+          Unsaved changes
+        </div>
+      )}
 
       {loading && (
         <div className={styles.loadingOverlay}>
@@ -728,12 +753,7 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
             <input type="hidden" name="id" value={formData.id} />
 
             <div className={styles.flexSpaceBetween}>
-              <div className={styles.formGroup}>
-                <div className={styles.flex}>
-                  <label htmlFor="order">Order</label>
-                  <input type="number" name="order" placeholder="Order" onChange={handleInputChange} onBlur={handleSubmit} value={formData.order || 0} className={styles.numberInput} />
-                </div>
-              </div>
+              <div></div>
 
               <div className={styles.formGroup}>
                 <Checkbox label="Published" checked={!!formData.published} onChange={handleInputChangeAndSubmit} name="published" />
@@ -769,26 +789,21 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
 
             <div className={styles.formGroup}>
               <label htmlFor="use">Use</label>
-              <MultiSelectDropdown options={USE_OPTIONS} selected={formData.use} onChange={(selected) => {
+              <MultiSelectToggleDrag options={USE_OPTIONS} selected={formData.use} onChange={(selected) => {
                 setFormData(prev => ({ ...prev, use: selected }));
-                setTimeout(() => handleSubmit(), 0);
-              }} label="Select uses" />
+              }} />
             </div>
 
             <div className="grid-two-col">
               <div className={styles.formGroup}>
                 <label htmlFor="projectType">Project Type</label>
-                <select id="projectType" name="projectType" onChange={handleInputChangeAndSubmit} value={formData.projectType || ''}>
-                  <option value="Historic Interior Renovation">Historic Interior Renovation</option>
-                  <option value="Interior Renovation">Interior Renovation</option>
-                  <option value="Exterior Renovation">Exterior Renovation</option>
-                  <option value="Signage / Wayfinding">Signage / Wayfinding</option>
-                  <option value="Package">Package</option>
-                  <option value="Addition">Addition</option>
-                  <option value="New Construction">New Construction</option>
-                  <option value="Schematic Proposal">Schematic Proposal</option>
-                  <option value="Renovation">Renovation</option>
-                </select>
+                <MultiSelectToggleDrag
+                  options={PROJECT_TYPE_OPTIONS}
+                  selected={Array.isArray(formData.projectType) ? formData.projectType : (formData.projectType ? [formData.projectType] : [])}
+                  onChange={(selected) => {
+                    setFormData(prev => ({ ...prev, projectType: selected }));
+                  }}
+                />
               </div>
 
               <div className={styles.formGroup}>
@@ -800,7 +815,7 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
                   <option value="Construction Documentation">Construction Documentation</option>
                   <option value="Bidding and Negotiation">Bidding and Negotiation</option>
                   <option value="Construction Administration">Construction Administration</option>
-                  <option value="Permitting">Permitting</option>
+                  <option value="In Permitting">In Permitting</option>
                   <option value="Planned for Construction">Planned for Construction</option>
                   <option value="Under Construction">Under Construction</option>
                   <option value="Unbuilt">Unbuilt</option>

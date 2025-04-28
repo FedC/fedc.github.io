@@ -101,3 +101,57 @@
         left: 0;
     }
 }
+
+.fullScreenOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.fullScreenImageWrapper {
+  max-width: 90vw;
+  max-height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.fullScreenImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.fullScreenDescription {
+  color: white;
+  max-width: 600px;
+  padding: 1rem;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  cursor: default;
+  p {
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
