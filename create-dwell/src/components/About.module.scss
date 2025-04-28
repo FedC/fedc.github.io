@@ -43,6 +43,7 @@
   width: 100%;
   text-align: center;
   padding-bottom: 100px;
+  padding: 0 20px;
 }
 
 h1.heading {
@@ -83,13 +84,13 @@ h1.heading .highlight {
 
   // styles for screens smaller than 1020px
   .about {
-    padding: 0px;
+    // padding: 0px;
   }
 
   h1.heading {
     font-size: 32px;
     line-height: 38px;
-    margin-top: 68px;
+    margin-top: 0;
   }
 
   .aboutParagraph {
@@ -129,64 +130,6 @@ h1.heading .highlight {
   width: 20px;
   height: 20px;
   fill: #595d70;
-}
-
-@media screen and (max-width: 1020px) {
-  .aboutImageContainer {
-    grid-template-columns: 1fr;
-    margin: auto;
-
-    // reverse the order of the image and text
-    .aboutImage {
-      order: -1;
-      margin: auto;
-    }
-
-    img {
-      width: 100%;
-      max-width: 300px;
-    }
-  }
-}
-
-.aboutImageContainer {
-  display: flex;
-  gap: 100px;
-  padding: 20px;
-  align-items: flex-start;
-  justify-content: space-between;
-
-  .aboutParagraph {
-    text-align: left;
-    margin: 0;
-  }
-
-  .aboutParagraph .highlight {
-    color: #473d27;
-    font-size: 110%;
-    text-transform: capitalize;
-  }
-
-  img {
-    width: 100%;
-    border-radius: 2px;
-    max-width: 200px;
-    margin: auto;
-  }
-
-  @media screen and (max-width: 1020px) {
-    gap: 40px;
-  }
-
-  @media screen and (max-width: 768px) {
-    flex-direction: column;
-    gap: 16px;
-
-    img {
-      max-width: 150px;
-      margin-left: auto;
-    }
-  }
 }
 
 @keyframes fadeIn {
