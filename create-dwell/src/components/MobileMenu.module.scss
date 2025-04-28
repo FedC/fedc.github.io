@@ -44,7 +44,7 @@
   top: 0;
   right: 0;
   width: max-content;
-  height: auto;
+  height: 100vh;
   background: white;
   display: flex;
   flex-direction: column;
@@ -61,7 +61,7 @@
   left: 0;
   width: calc(32px - 10px);
   height: 100%;
-  background: rgb(238, 193, 107);
+  background: var(--color-link);
 }
 
 .menuItems {

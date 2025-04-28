@@ -217,7 +217,7 @@ const ProjectList = ({ projects, onEdit, onUpdate }) => {
                       </button>
                       <span>&nbsp;</span>
 
-                      <span>{project.order}</span>
+                      {/* <span>{project.order}</span> */}
                     </div>
                   </td>
                   <td>

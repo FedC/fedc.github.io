@@ -19,159 +19,111 @@ import InfoPage from './InfoPage';
 
 gsap.registerPlugin(InertiaPlugin, ScrollTrigger, Draggable, CSSPlugin, ScrollToPlugin);
 
-initSmoothScrolling();
-
 const Home = () => {
-  const [originalProjects, setOriginalProjects] = useState([]);
   const [projects, setProjects] = useState([]);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [headerAnimationComplete, setHeaderAnimationComplete] = useState(false);
   const [projectReset, setProjectReset] = useState(false);
-  const [projectFilter, setProjectFilter] = useState('all');
-  const [isInfoPageOpen, setIsInfoPageOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(null);
+  const [projectFilter, setProjectFilter] = useState(null);
+  const [fullScreenContent, setFullScreenContent] = useState(null);
   const [mobileMenuState, setMobileMenuState] = useState({
     isOpen: false,
     activeId: 'all'
   });
-  let cursor = null;
-  let cursorRef = useRef(null);
-  let leftSlateMobileRef = useRef(null);
+  const imageRefs = useRef({});
 
   useEffect(() => {
-    document.body.classList.add('loading');
+    // Initialize smooth scrolling
+    initSmoothScrolling();
+
+    // Initialize cursor
+    const cursor = new Cursor(document.querySelector('.cursor'));
+
+    // Fetch projects from Firestore
     const fetchProjects = async () => {
-      const querySnapshot = await getDocs(collection(db, 'projects'));
-      const projectData = [];
-      querySnapshot.forEach((doc) => {
-        projectData.push({ id: doc.id, ...doc.data() });
-      });
-      setProjects(projectData);
-      console.log('projectData', projectData);
-      setOriginalProjects(projectData);
-      onProjectsLoaded();
+      try {
+        const projectsCollection = collection(db, 'projects');
+        const projectsSnapshot = await getDocs(projectsCollection);
+        const projectsList = projectsSnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+
+        // Sort projects by order field
+        projectsList.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+        setProjects(projectsList);
+        setLoading(false);
+
+        // Preload all project images
+        const imageUrls = projectsList.reduce((acc, project) => {
+          if (project.mainImage) acc.push(project.mainImage);
+          if (project.content) {
+            project.content.forEach(content => {
+              if (content.type === 'image' && content.url) {
+                acc.push(content.url);
+              }
+            });
+          }
+          return acc;
+        }, []);
+
+        await preloadImages(imageUrls);
+
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setLoading(false);
+      }
     };
 
     fetchProjects();
+
+    // Cleanup
+    return () => {
+      cursor.destroy();
+      ScrollTrigger.getAll().forEach(st => st.kill());
+    };
   }, []);
-
-  const onProjectsLoaded = () => {
-    preloadImages('.grid__item-img').then(() => {
-      document.body.classList.remove('loading');
-    });
-  };
-
-  useEffect(() => {
-    cursor = new Cursor(cursorRef.current);
-  }, []);
-
-  const handleCloseProjectOverlay = () => {
-    setSelectedProject(null);
-    // animate header back into view
-    gsap.to('.nav', { x: '0', duration: 0.3, ease: 'power2.out' });
-  };
-
-  const onHeaderAnimationEnd = () => {
-    setHeaderAnimationComplete(true);
-  }
-
-  const onResetProjects = () => {
-    setProjects(originalProjects);
-     setProjectReset(true);
-     // animate scroll up
-     gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
-     setTimeout(() => {
-       setProjectReset(false);
-     }, 100);
-  }
-
-  const filterProjectUse = (use, filter) => {
-    // use can be an array of strings or a single string
-    if (Array.isArray(use)) {
-      return use.some(use => use.toLowerCase() === filter.toLowerCase());
-    } else if (use.includes(',')) {
-      return use.split(',').some(use => use.toLowerCase() === filter.toLowerCase());
-    } else {
-      return use.toLowerCase() === filter.toLowerCase();
-    }
-  }
-
-  const onFilterProjects = (filter) => {
-    const filteredProjects = originalProjects.filter((project) => project.use && filterProjectUse(project.use, filter));
-     // debugger;
-     setProjects(filteredProjects);
-     // animate scroll up
-     gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
-     setProjectFilter(true);
-     setTimeout(() => {
-       setProjectFilter(false);
-     }, 100);
-  }
-
-  const handleShowInfoPage = (page) => {
-    setCurrentPage(page);
-    setIsInfoPageOpen(!!page);
-  };
-
-  const handleSectionChange = (section) => {
-    setCurrentPage(section);
-  };
-
-  const handleCloseInfoPage = () => {
-    setIsInfoPageOpen(false);
-    setCurrentPage(null);
-  };
-
-  const handleMobileMenuStateChange = (newState) => {
-    setMobileMenuState(newState);
-  };
 
   return (
-    <>
-      <Header 
-        onAnimationEnd={onHeaderAnimationEnd} 
-        projects={projects} 
-        resetProjects={onResetProjects} 
-        filterProjects={onFilterProjects}
-        onShowInfoPage={handleShowInfoPage}
-        isInfoPageOpen={isInfoPageOpen}
-        currentPage={currentPage}
+    <div className={styles.home}>
+      <div className="cursor"></div>
+      <Header
+        onAnimationComplete={() => setHeaderAnimationComplete(true)}
+        onProjectReset={() => setProjectReset(prev => !prev)}
+        onFilterChange={setProjectFilter}
         mobileMenuState={mobileMenuState}
-        onMobileMenuStateChange={handleMobileMenuStateChange}
+        onMobileMenuStateChange={setMobileMenuState}
       />
-      <div className={styles.leftSlateMobile} ref={leftSlateMobileRef}></div>
-      <main className={styles.pageWrapper}>
-        <section className={styles.listContainer}>
-          {/* <ProjectGrid
-            projects={projects}
-            // onProjectClick={handleGridItemClick}
-          /> */}
-          <HomeProjectList projects={projects} headerAnimationComplete={headerAnimationComplete} projectReset={projectReset} projectFilter={projectFilter} />
-        </section>
-      </main>
-
-      <svg className={styles.cursor} ref={cursorRef} width="40" height="40" viewBox="0 0 40 40">
-        <circle className="cursor__inner" cx="20" cy="20" r="10"/>
-      </svg>
-
-      <InfoPage 
-        isOpen={isInfoPageOpen}
-        onClose={handleCloseInfoPage}
-        currentPage={currentPage}
-        onSectionChange={handleSectionChange}
-        mobileMenuState={mobileMenuState}
-        onMobileMenuStateChange={handleMobileMenuStateChange}
-        filterProjects={onFilterProjects}
-        resetProjects={onResetProjects}
-      />
-
-      {/* {selectedProject && (
-        <ProjectOverlay
-          project={selectedProject}
-          onClose={() => handleCloseProjectOverlay()}
+      {!loading && (
+        <HomeProjectList
+          projects={projects}
+          headerAnimationComplete={headerAnimationComplete}
+          projectReset={projectReset}
+          projectFilter={projectFilter}
+          onFullScreenContent={setFullScreenContent}
         />
-      )} */}
-    </>
+      )}
+      {fullScreenContent && (
+        <div
+          className={styles.fullScreenOverlay}
+          onClick={() => setFullScreenContent(null)}
+        >
+          <div className={styles.fullScreenImageWrapper}>
+            <img
+              ref={(el) => (imageRefs.current[fullScreenContent.id] = el)}
+              data-project-id={fullScreenContent.id}
+              src={fullScreenContent.imageUrl}
+              alt="Full screen preview"
+              className={styles.fullScreenImage}
+            />
+          </div>
+          <div
+            className={styles.fullScreenDescription}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p>{fullScreenContent.description}</p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

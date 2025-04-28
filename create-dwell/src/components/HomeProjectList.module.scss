@@ -184,6 +184,12 @@
             text-align: left;
             position: relative;
 
+            @media screen and (max-width: 768px) 
+            {
+              min-width: calc(var(--grid-max-width-mobile) / 2);
+
+            }
+
             .projectHeaderTop {
               position: absolute;
               top: 0;
@@ -194,7 +200,8 @@
               z-index: 1;
 
               @media screen and (max-width: 768px) {
-                display: none;
+                // display: none;
+                background-color: transparent;
               }
 
             }
@@ -315,6 +322,12 @@
             }
           }
 
+          .projectHeader.projectHeaderDescription {
+            @media screen and (max-width: 768px) {
+              min-width: var(--grid-max-width-mobile);
+            }
+          }
+
           .projectText {
             font-size: 16px;
             line-height: 1.5;
@@ -430,7 +443,7 @@
 .mainImageWrapper {
   position: relative;
   overflow: hidden;
-  height: 100%;
+  height: 100%; height: auto;
   display: flex;
 
   @media screen and (max-width: 768px) {
@@ -471,7 +484,7 @@
     }
   }
 
-  .type {
+  .type, .projectType {
     color: #afaba6;
     padding-left: 2px;
     font-size: 13px;
@@ -850,16 +863,12 @@
 
 .scrollHint {
   position: absolute;
-  right: -62vw;
+  right: -50vw;
   top: 50%;
   transform: translateY(-50%);
   z-index: 5;
   opacity: 0;
   pointer-events: none;
-
-  background-color: white;
-  border-radius: 50%;
-  padding: 10px;
 
   svg {
     stroke: #f6ab0b;
