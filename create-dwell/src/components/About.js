@@ -6,10 +6,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { gsap } from 'gsap';
 
 import * as styles from './About.module.scss';
-import * as footerStyles from './Footer.module.scss';
-// import SwiperSection from './SwiperSection';
 import AboutSections from './AboutSections';
-import Footer from './Footer';
 
 const About = ({ parentScroller, openServices }) => {
   const aboutRef = useRef(null);
@@ -175,10 +172,9 @@ const About = ({ parentScroller, openServices }) => {
         <p className={styles.aboutParagraph}>{renderHighlightAbout(description)}</p>
       </div>
 
-      {/* <SwiperSection sections={sections} /> */}
-      < AboutSections sections={sections} openServices={openServices} />
+      < AboutSections sections={sections} openServices={openServices} aboutText={aboutText} imageUrl={imageUrl} />
 
-      {activeSection && (
+      {/* {activeSection && (
         <div className={styles.activeSection}>
           <div className={styles.activeSectionContent}>
             <h2>{activeSection.title}</h2>
@@ -247,14 +243,7 @@ const About = ({ parentScroller, openServices }) => {
             <button className={styles.closeButton} onClick={(e) => closeSectionInfo(e)} type='button'>Close</button>
           </div>
         </div>
-      )}
-
-      <div className={styles.container}>
-        <div className={styles.aboutImageContainer}>
-          {imageUrl && <img className={styles.aboutImage} src={imageUrl} alt="About" />}
-          <p className={styles.aboutParagraph}>{renderHighlightAbout(aboutText)}</p>
-        </div>
-      </div>
+      )} */}
 
     </section>
   );
