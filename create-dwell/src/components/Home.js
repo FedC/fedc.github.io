@@ -34,6 +34,8 @@ const Home = () => {
     isOpen: false,
     activeId: 'all'
   });
+  const [fullScreenContent, setFullScreenContent] = useState(null);
+
   let cursor = null;
   let cursorRef = useRef(null);
   let leftSlateMobileRef = useRef(null);
@@ -77,12 +79,12 @@ const Home = () => {
 
   const onResetProjects = () => {
     setProjects(originalProjects);
-     setProjectReset(true);
-     // animate scroll up
-     gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
-     setTimeout(() => {
-       setProjectReset(false);
-     }, 100);
+    setProjectReset(true);
+    // animate scroll up
+    gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
+    setTimeout(() => {
+      setProjectReset(false);
+    }, 100);
   }
 
   const filterProjectUse = (use, filter) => {
@@ -98,14 +100,14 @@ const Home = () => {
 
   const onFilterProjects = (filter) => {
     const filteredProjects = originalProjects.filter((project) => project.use && filterProjectUse(project.use, filter));
-     // debugger;
-     setProjects(filteredProjects);
-     // animate scroll up
-     gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
-     setProjectFilter(true);
-     setTimeout(() => {
-       setProjectFilter(false);
-     }, 100);
+    // debugger;
+    setProjects(filteredProjects);
+    // animate scroll up
+    gsap.to(window, { duration: 0.5, scrollTo: 0, ease: 'power2.out' });
+    setProjectFilter(true);
+    setTimeout(() => {
+      setProjectFilter(false);
+    }, 100);
   }
 
   const handleShowInfoPage = (page) => {
@@ -128,10 +130,10 @@ const Home = () => {
 
   return (
     <>
-      <Header 
-        onAnimationEnd={onHeaderAnimationEnd} 
-        projects={projects} 
-        resetProjects={onResetProjects} 
+      <Header
+        onAnimationEnd={onHeaderAnimationEnd}
+        projects={projects}
+        resetProjects={onResetProjects}
         filterProjects={onFilterProjects}
         onShowInfoPage={handleShowInfoPage}
         isInfoPageOpen={isInfoPageOpen}
@@ -146,15 +148,39 @@ const Home = () => {
             projects={projects}
             // onProjectClick={handleGridItemClick}
           /> */}
-          <HomeProjectList projects={projects} headerAnimationComplete={headerAnimationComplete} projectReset={projectReset} projectFilter={projectFilter} />
+          <HomeProjectList projects={projects} headerAnimationComplete={headerAnimationComplete} projectReset={projectReset} projectFilter={projectFilter}
+            fullScreenContent={fullScreenContent}
+            setFullScreenContent={setFullScreenContent}
+          />
         </section>
+
+        {fullScreenContent && (
+          <div
+            className={styles.fullScreenOverlay}
+            onClick={() => setFullScreenContent(null)} // Tap to close
+          >
+            <div className={styles.fullScreenImageWrapper}>
+              <img
+                className={styles.fullScreenImage}
+                src={fullScreenContent.imageUrl}
+                alt="Full screen preview"
+              />
+            </div>
+            <div
+              className={styles.fullScreenDescription}
+              onClick={(e) => e.stopPropagation()} // Prevent closing when scrolling
+            >
+              <p>{fullScreenContent.description}</p>
+            </div>
+          </div>
+        )}
       </main>
 
       <svg className={styles.cursor} ref={cursorRef} width="40" height="40" viewBox="0 0 40 40">
-        <circle className="cursor__inner" cx="20" cy="20" r="10"/>
+        <circle className="cursor__inner" cx="20" cy="20" r="10" />
       </svg>
 
-      <InfoPage 
+      <InfoPage
         isOpen={isInfoPageOpen}
         onClose={handleCloseInfoPage}
         currentPage={currentPage}
