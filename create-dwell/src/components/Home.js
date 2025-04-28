@@ -35,6 +35,7 @@ const Home = () => {
     activeId: 'all'
   });
   const [fullScreenContent, setFullScreenContent] = useState(null);
+  const [fullScreenImageLoaded, setFullScreenImageLoaded] = useState(false);
 
   let cursor = null;
   let cursorRef = useRef(null);
@@ -56,6 +57,17 @@ const Home = () => {
 
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    if (fullScreenContent) {
+      setFullScreenImageLoaded(false); // Reset when new content set
+      const img = new Image();
+      img.src = fullScreenContent.imageUrl;
+      img.onload = () => {
+        setFullScreenImageLoaded(true);
+      };
+    }
+  }, [fullScreenContent]);
 
   const onProjectsLoaded = () => {
     preloadImages('.grid__item-img').then(() => {
@@ -160,11 +172,18 @@ const Home = () => {
             onClick={() => setFullScreenContent(null)} // Tap to close
           >
             <div className={styles.fullScreenImageWrapper}>
-              <img
-                className={styles.fullScreenImage}
-                src={fullScreenContent.imageUrl}
-                alt="Full screen preview"
-              />
+              {!fullScreenImageLoaded ? (
+                <div className={styles.projectContentLoader}>
+                  <div className={styles.spinner}></div>
+                </div>
+              ) : (
+                <img
+                  className={styles.fullScreenImage}
+                  src={fullScreenContent.imageUrl}
+                  alt="Full screen preview"
+                  loading="lazy"
+                />
+              )}
             </div>
             <div
               className={styles.fullScreenDescription}
