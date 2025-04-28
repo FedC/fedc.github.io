@@ -112,23 +112,63 @@ async function updateProjects() {
 
     // const docid = '02rukrjrNlSZsOyKAfgu';
 
+    // projectsSnapshot.forEach((doc) => {
+    //   const project = doc.data();
+
+    //   if (project.id === ''
+    //     || project.title?.includes('Fede')
+    //     || project.title === ''
+    //     // && doc.id !== docid
+    //   ) {
+    //     const docRef = db.collection('projects').doc(doc.id);
+    //     batch.delete(docRef);
+    //   }
+    // });
+
+    // projectsSnapshot.forEach((doc) => {
+    //   const project = doc.data();
+      
+    //   if (typeof project.use === 'string') {
+    //     const docRef = db.collection('projects').doc(doc.id);
+    //     batch.update(docRef, {
+    //       use: [project.use]
+    //     });
+    //   }
+    // });
+
+    // projectsSnapshot.forEach((doc) => {
+    //   const project = doc.data();
+      
+    //   if (typeof project.projectType === 'string') {
+    //     const docRef = db.collection('projects').doc(doc.id);
+    //     batch.update(docRef, {
+    //       projectType: [project.projectType]
+    //     });
+    //   }
+    // });
+
+    // projectsSnapshot.forEach((doc) => {
+    //   const project = doc.data();
+      
+    //   if (project.title === "56 Court Addition" && project.published === false) {
+    //     const docRef = db.collection('projects').doc(doc.id);
+    //     batch.delete(docRef);
+    //   }
+    // });
+
     projectsSnapshot.forEach((doc) => {
       const project = doc.data();
-
-      if (project.id === ''
-        || project.title?.includes('Fede')
-        || project.title === ''
-        // && doc.id !== docid
-      ) {
+      
+      if (doc.id === "NR6Nr8g5H3TpKIdlLMhQ") {
         const docRef = db.collection('projects').doc(doc.id);
         batch.delete(docRef);
       }
     });
 
     await batch.commit();
-    console.log('All matching projects deleted successfully.');
+    console.log('All matching projects updated successfully.');
   } catch (error) {
-    console.error('Error deleting projects:', error);
+    console.error('Error updating projects:', error);
   }
 }
 
