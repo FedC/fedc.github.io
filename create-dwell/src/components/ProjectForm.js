@@ -186,7 +186,7 @@ const PROJECT_TYPE_OPTIONS = [
   'Renovation',
 ];
 
-const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
+const ProjectForm = ({ onClose, editingProject, onUpdateSuccess, onUnsavedChanges }) => {
   let globalProjectId = editingProject?.id;
 
   const [formData, setFormData] = useState({
@@ -234,9 +234,11 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
   }, [editingProject]);
 
   useEffect(() => {
+    if (!originalData) return;
     // Simple shallow comparison; for deep objects, use a deep equality check
     const isChanged = JSON.stringify(formData) !== JSON.stringify(originalData);
     setUnsaved(isChanged);
+    onUnsavedChanges(isChanged);
   }, [formData, originalData]);
 
   // Deep comparison utility
@@ -651,6 +653,7 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
 
       onUpdateSuccess('Project saved successfully');
       setOriginalData(dataToSubmit); // Update the original data snapshot
+      onUnsavedChanges(false);
 
     } catch (error) {
       console.error('Error saving project:', error);
@@ -717,12 +720,6 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess }) => {
           <span>{loading ? "Uploading..." : "Save Project"}</span>
         </button>
       </div>
-
-      {unsaved && (
-        <div className={styles.unsavedBanner}>
-          Unsaved changes
-        </div>
-      )}
 
       {loading && (
         <div className={styles.loadingOverlay}>

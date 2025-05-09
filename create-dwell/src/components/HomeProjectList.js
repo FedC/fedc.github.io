@@ -633,7 +633,10 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
               const projectContent = document.querySelector(`#project-${projectId} .${styles.projectContent}`);
 
               ScrollTrigger.refresh();
-              setupDraggable(projectId);
+
+              setTimeout(() => {
+                setupDraggable(projectId);
+              }, 1000);
 
               function handleScroll(e) {
                 const scrollingSideWays = Math.abs(e.deltaX) > Math.abs(e.deltaY);
@@ -1352,7 +1355,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
         </div>
       </div>
 
-      <div ref={footerRef}>
+      <div ref={footerRef} className={styles.footer}>
         <Footer showCredits={true} />
       </div>
     </>

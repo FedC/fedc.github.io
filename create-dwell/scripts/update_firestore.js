@@ -108,7 +108,11 @@ const db = admin.firestore();
 async function updateProjects() {
   try {
     const projectsSnapshot = await db.collection('projects').get();
+    const aboutSnapshot = await db.collection('about').get();
     const batch = db.batch();
+    
+
+    console.log(aboutSnapshot.docs);
 
     // const docid = '02rukrjrNlSZsOyKAfgu';
 
@@ -156,20 +160,66 @@ async function updateProjects() {
     //   }
     // });
 
-    projectsSnapshot.forEach((doc) => {
-      const project = doc.data();
+    // projectsSnapshot.forEach((doc) => {
+    //   const project = doc.data();
       
-      if (doc.id === "NR6Nr8g5H3TpKIdlLMhQ") {
-        const docRef = db.collection('projects').doc(doc.id);
-        batch.delete(docRef);
-      }
-    });
+    //   if (doc.id === "NR6Nr8g5H3TpKIdlLMhQ") {
+    //     const docRef = db.collection('projects').doc(doc.id);
+    //     batch.delete(docRef);
+    //   }
+    // });
 
-    await batch.commit();
+    // projectsSnapshot.forEach((doc) => {
+    //   const project = doc.data();
+      
+    //   if (project.title?.startsWith("Federico") || !project.title) {
+    //     const docRef = db.collection('projects').doc(doc.id);
+    //     batch.delete(docRef);
+    //   }
+    // });
+
+
+
+    // await batch.commit();
     console.log('All matching projects updated successfully.');
   } catch (error) {
     console.error('Error updating projects:', error);
   }
 }
 
-updateProjects();
+// updateProjects();
+
+
+async function fixContentToArray() {
+  try {
+    const docRef = db.collection('about').doc('main');
+    const docSnap = await docRef.get();
+
+    if (!docSnap.exists) {
+      console.error('Document not found.');
+      return;
+    }
+
+    const data = docSnap.data();
+    const sections = data.sections;
+
+    const targetIndex = sections.findIndex(
+      (s) => s.title === '' && s.content && !Array.isArray(s.content)
+    );
+
+    if (targetIndex === -1) {
+      console.log('No malformed content found.');
+      return;
+    }
+
+    const malformedContent = sections[targetIndex].content;
+    sections[targetIndex].content = [malformedContent];
+
+    await docRef.update({ sections });
+    console.log('Fixed malformed content into array.');
+  } catch (err) {
+    console.error('Error fixing content:', err);
+  }
+}
+
+fixContentToArray();

@@ -256,7 +256,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects, onSho
         <div className={styles.nav__inner} ref={navInnerRef}>
           <div className={styles.nav__logo}>
             <div ref={logoRef} className={styles.logoSvg}>
-              <Logo animate={typeof window !== 'undefined' && window.innerWidth <= 768 ? selectedFilter : undefined} />
+              <Logo animate={typeof window !== 'undefined' && window.innerWidth <= 768 ? selectedFilter : undefined} isInfoPageOpen={isInfoPageOpen} />
             </div>
           </div>
 

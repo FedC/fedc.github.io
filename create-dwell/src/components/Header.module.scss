@@ -86,7 +86,7 @@
     z-index: var(--nav-z-index);
     transform: translate3d(0, 0, 0);
     background-color: var(--color-link-transparent);
-    transition: transform .5s ease-out;
+    transition: transform .45s ease-out;
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
 

@@ -188,6 +188,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
           )}
 
           <motion.div 
+            id="info-page-content"
             className={styles.content} 
             ref={contentRef}
             initial={{ opacity: 0 }}
@@ -201,7 +202,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
             <div ref={servicesRef}>
               <Services />
             </div>
-            <div ref={contactRef}>
+            <div ref={contactRef} className={styles.contact}>
               <Contact />
             </div>
           </motion.div>

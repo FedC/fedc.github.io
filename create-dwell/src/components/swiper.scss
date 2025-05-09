@@ -13,7 +13,8 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 48px 20px;
+  // padding: 68px 20px;
+  // padding: 20px 75px;
 
   // @media (max-width: 600px) {
   //   padding: 48px 20px;
@@ -69,15 +70,20 @@
 
 .swiper-prev-top, .swiper-next-top,
 .swiper-prev-bottom, .swiper-next-bottom {
-  border: 1px solid white;
-  padding: 6px 30px;
+  // border: 1px solid var(--color-link);
+  background-color: var(--color-link);
+  padding: 10px;
   font-size: 20px;
-  border-radius: 50px;
+  border-radius: 50%;
   cursor: pointer;
-  background-color: transparent;
   transition: background 0.3s ease;
   position: relative;
   overflow: hidden;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &::after {
     content: '';
@@ -100,6 +106,11 @@
   }
 }
 
+.swiper-prev-top,
+.swiper-next-top {
+  pointer-events: all; // re-enable pointer events just for buttons
+}
+
 .swiper-prev-top:hover, .swiper-next-top:hover,
 .swiper-prev-bottom:hover, .swiper-next-bottom:hover {
 
@@ -115,12 +126,12 @@
 
 .swiper-prev-bottom svg,
 .swiper-prev-top svg {
-  transform: translate3d(5px, 3px, 0);
+  transform: translate3d(5px, 0px, 0);
 }
 
 .swiper-next-bottom svg,
 .swiper-next-top svg {
-  transform: translate3d(1px, 3px, 0);
+  transform: translate3d(1px, 0px, 0);
 }
 
 .swiper-button-disabled {
