@@ -1,10 +1,14 @@
 .processFlow {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #f8e4bb;
-  padding: 20px;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  justify-items: center;
+  padding: 40px 20px;
+
+  @media screen and (max-width: 1280px) {
+    // grid-template-columns: repeat(2, 1fr);
+    display: none;
+  }
 }
 
 .stepContainer {
@@ -67,23 +71,23 @@
 
 .approvalContainer {
   display: flex;
-  position: absolute;
-  top: 0;
-  left: 0;
+  flex-direction: column;
   align-items: center;
-  gap: 0;
-  transform: translate(0, -42px);
+  gap: 8px;
+  transform: none;
+  position: static;
 }
 
 .approvalCircle {
-  width: 80px;
-  height: 80px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   background-color: rgb(253, 236, 205);
+  // background-color: #fafafa;
 
   font-family: 'Poiret One', sans-serif;
   font-size: 16px;

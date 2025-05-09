@@ -168,8 +168,11 @@ const About = ({ parentScroller, openServices }) => {
   return (
     <section className={styles.about} ref={aboutRef}>
       <div className={styles.container}>
-        <h1 className={styles.heading}>{renderHighlightText(title)}</h1>
-        <p className={styles.aboutParagraph}>{renderHighlightAbout(description)}</p>
+        <h1>About us</h1>
+        <div className={styles.aboutContent}>
+          <h1 className={styles.heading}>{renderHighlightText(title)}</h1>
+          <p className={styles.aboutParagraph}>{renderHighlightAbout(description)}</p>
+        </div>
       </div>
 
       < AboutSections sections={sections} openServices={openServices} aboutText={aboutText} imageUrl={imageUrl} />

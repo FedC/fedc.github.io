@@ -381,7 +381,7 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
               />
 
               {/* Image Upload for Section */}
-              <div className={styles.imageUpload}>
+              {/* <div className={styles.imageUpload}>
                 {section.imageUrl ? (
                   <img
                     src={section.imageUrl instanceof File ? URL.createObjectURL(section.imageUrl) : section.imageUrl}
@@ -395,7 +395,7 @@ const AboutForm = ({ onUpdateSuccess, onClose }) => {
                 <label htmlFor={`section-image-upload-${sectionIndex}`} className={styles.uploadLabel}>Upload Image</label>
                 <input type="file" name="mainImage" id={`section-image-upload-${sectionIndex}`}
                   onChange={(e) => handleSectionImageFileChange(e, sectionIndex)} />
-              </div>
+              </div> */}
 
               <input
                 type="text"

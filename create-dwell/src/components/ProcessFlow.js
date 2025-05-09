@@ -29,10 +29,10 @@ const ProcessFlow = ({ circleClick, openedId, steps }) => {
           )}
           {(step.approval || step.permit) && (
             <div className={styles.approvalContainer}>
-              <svg className={styles.arrow} viewBox="0 0 50 10">
+              {/* <svg className={styles.arrow} viewBox="0 0 50 10">
                 <line x1="0" y1="5" x2="40" y2="5" stroke="rgb(246, 171, 11)" strokeWidth="2" />
                 <polygon points="40,5 30,10 30,0" fill="rgb(246, 171, 11)" />
-              </svg>
+              </svg> */}
               <div className={`${styles.approvalCircle} ${openedCircleId === step.id ? styles.selected : ""}`}
                 onClick={(e) => handleClick(e, step)}>{step.approval ? 'Approval' : 'Permit'}</div>
             </div>

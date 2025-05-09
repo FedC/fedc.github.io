@@ -1,6 +1,7 @@
 .contactWrapper {
   display: block;
-  padding: 20px;
+  max-width: 1200px;
+  margin: auto;
 
   @media screen and (min-width: 768px) {
     padding: 40px;
@@ -40,6 +41,18 @@
     max-width: 600px;
     margin: 0 auto;
   }
+}
+
+.contactBox {
+  max-width: 1200px;
+  margin: auto;
+  background-color: #feeece;
+  padding: 1px 40px;
+}
+
+.contactHeader {
+  max-width: 1200px;
+  margin: auto;
 }
 
 h1 {
@@ -241,10 +254,9 @@ p {
   align-items: flex-start;
 
   img {
+    object-fit: cover;
+    border-radius: 2px;
     width: 100%;
-    height: auto;
-    border-radius: 8px;
-    max-width: 500px;
   }
 }
 

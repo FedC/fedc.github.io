@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import * as styles from './Logo.module.scss';
 
-const Logo = ({ animate }) => {
+const Logo = ({ animate, isInfoPageOpen }) => {
   const textRef = useRef(null);
   const isMobile = window.innerWidth <= 768;
 
@@ -46,6 +46,31 @@ const Logo = ({ animate }) => {
       tl.kill();
     };
   }, [animate]);
+
+  useEffect(() => {
+    if (!textRef.current) return;
+
+    const textElement = textRef.current;
+    const tl = gsap.timeline();
+
+    if (isInfoPageOpen) {
+      tl.to(textElement, {
+        duration: 0.3,
+        opacity: 0,
+        ease: 'power2.inOut'
+      });
+    } else {
+      tl.to(textElement, {
+        duration: 0.3,
+        opacity: 1,
+        ease: 'power2.inOut'
+      });
+    }
+
+    return () => {
+      tl.kill();
+    };
+  }, [isInfoPageOpen]);
 
   return (
     <div className={styles.logo}>

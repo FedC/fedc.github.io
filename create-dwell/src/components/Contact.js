@@ -6,6 +6,7 @@ import Footer from './Footer';
 import SendIcon from './SendIcon';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../js/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 const Contact = ({ projects = [] }) => {
   const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ const Contact = ({ projects = [] }) => {
     email: '',
     message: '',
   });
-
+  const [contactImageUrl, setContactImageUrl] = useState('');
   const footerRef = useRef(null);
   const [featuredItems, setFeaturedItems] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -35,6 +36,22 @@ const Contact = ({ projects = [] }) => {
       });
     });
   }, [projects]);
+
+  useEffect(() => {
+    const fetchContactImage = async () => {
+      try {
+        const docRef = doc(db, 'about', 'main');
+        const snapshot = await getDoc(docRef);
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          if (data.mainImageUrl) setContactImageUrl(data.mainImageUrl);
+        }
+      } catch (err) {
+        console.error('Error fetching contact image:', err);
+      }
+    };
+    fetchContactImage();
+  }, []);
 
   useEffect(() => {
     if (footerRef.current) {
@@ -76,72 +93,79 @@ const Contact = ({ projects = [] }) => {
   return (
     <div className={styles.contactWrapper}>
 
-      <h1>Contact Us</h1>
-      <h2>Ready to create?</h2>
-      <p>We look forward to hearing from you.</p>
-
-      <div className={styles.contactContainer}>
-        <div>
-          <form onSubmit={handleSubmit} className={styles.contactForm} autoComplete="off">
-            <div className={styles.formGroup}>
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                minLength="2"
-                maxLength="50"
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="email">Email</label>
-              <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="message">Message</label>
-              <textarea
-                id="message"
-                name="message"
-                rows="5"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                minLength="10"
-                maxLength="500"
-              />
-            </div>
-
-            {/* honeypot field for spam prevention */}
-            <input type="text" name="_gotcha" style={{ display: 'none' }} />
-
-            {status === 'success' && (
-              <p className={styles.statusSuccess}>Thanks! We'll be in touch shortly.</p>
-            )}
-
-            {status === 'error' && (
-              <p className={styles.statusError}>Something went wrong. Please try again.</p>
-            )}
-
-            <button type="submit" className={styles.submitButton} disabled={status === 'loading' || status === 'success'}>
-              {status === 'loading' ? (
-                <span className={styles.loader} />
-              ) : status === 'success' ? (
-                <span className={styles.checkmark}>✔</span>
-              ) : (
-                <SendIcon />
-              )}
-            </button>
-
-          </form>
+      <div className={styles.contactBox}>
+        <div className={styles.contactHeader}>
+          <h1>Contact Us</h1>
+          <h2>Ready to create?</h2>
+          <p>We look forward to hearing from you!</p>
         </div>
 
-        <div className={styles.contactImage}>
-          <img src="https://s3-alpha-sig.figma.com/img/64a4/d5c5/63b937325165fa58cf1277f5a928fde8?Expires=1740355200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=IEyDJwvU4gpkQOhaoTAUrCJgVak4M3wYuA0vsGCQ4MQEydsd7z8YlGC0O9uxIvYxOhmS6rHKh9N1r-XSJla5irNhti0KBKNUg1FOToijnfVNjdI7SyQ94MDh-ulcf7HEsXLhJII0nQUgwWawpqjXSohKpXsuNpR0VMDgPZo4UoxQuA4MZ2Acto1jEUCTPMUaAAgwk9pwO~1yWHCWVKwxXefr0j91PQjgADFyaaTzkmvPZnSWsYRobC3cpRZnqdDcieb35Uf-MPxkT0VkdZjELWrWxDYCxQLhj6gU4Tczf6lkeJwns3Xq45Q78rkfLtwGpHF2W19JkzKVUfXTG4I9ig__" alt="Contact" />
+        <div className={styles.contactContainer}>
+          <div>
+            <form onSubmit={handleSubmit} className={styles.contactForm} autoComplete="off">
+              <div className={styles.formGroup}>
+                <label htmlFor="name">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  minLength="2"
+                  maxLength="50"
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="email">Email</label>
+                <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="message">Message</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="5"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  minLength="10"
+                  maxLength="500"
+                />
+              </div>
+
+              {/* honeypot field for spam prevention */}
+              <input type="text" name="_gotcha" style={{ display: 'none' }} />
+
+              {status === 'success' && (
+                <p className={styles.statusSuccess}>Thanks! We'll be in touch shortly.</p>
+              )}
+
+              {status === 'error' && (
+                <p className={styles.statusError}>Something went wrong. Please try again.</p>
+              )}
+
+              <button type="submit" className={styles.submitButton} disabled={status === 'loading' || status === 'success'}>
+                {status === 'loading' ? (
+                  <span className={styles.loader} />
+                ) : status === 'success' ? (
+                  <span className={styles.checkmark}>✔</span>
+                ) : (
+                  <SendIcon />
+                )}
+              </button>
+
+            </form>
+          </div>
+
+          <div className={styles.contactImage}>
+            <img
+              src={contactImageUrl || 'https://via.placeholder.com/400x300?text=Loading...'}
+              alt="Contact"
+            />
+          </div>
         </div>
       </div>
 

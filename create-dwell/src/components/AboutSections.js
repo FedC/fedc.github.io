@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import * as styles from "./AboutSections.module.scss";
-import { gsap } from "gsap";
 import HalfCircleText from "./HalfCircleText";
 import FullCircleText from "./FullCircleText";
 import FourCircles from "./FourCircles";
@@ -35,23 +34,17 @@ const AboutSections = ({ sections, openServices, aboutText, imageUrl }) => {
   const darkOrange = 'rgb(248, 192, 85)';
   const lightOrange = 'rgb(253, 236, 205)';
 
+  const groupSections = [
+    sections.filter(s => ["Why", "What"].includes(s.title)),
+    sections.filter(s => ["Integration", "Implementation"].includes(s.subTitle)),
+    sections.filter(s => ["Who"].includes(s.title)),
+  ];
+
   useEffect(() => {
-    // Animate sections as they appear
-    const handleScroll = () => {
-      const currentScroll = window.scrollY;
-      sectionRefs.current.forEach((section, index) => {
-        const rect = section.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.75 && rect.bottom > 0) {
-          gsap.to(section, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" });
-        }
-      });
-    };
+    console.log(sections);
+    console.log(groupSections);
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [sections]);
 
   const renderHighlightAbout = (text) => {
     const prepositions = [
@@ -189,6 +182,33 @@ const AboutSections = ({ sections, openServices, aboutText, imageUrl }) => {
               </>
             )}
 
+            {section.title === '' && section.subTitle === 'Integration' && (
+              <div className={styles.sectionContent}>
+                <h1 className={styles.title}>&nbsp;</h1>
+                <h2 className={styles.subtitle}>{section.subTitle}</h2>
+
+                <div className={styles.gridContainer}>
+                  <div className={styles.textContent}>
+                    <div className={styles.content}>
+                      <SectionContent content={section.content} name={section.title} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.imageContainer}>
+                  <FourCircles
+                    circles={[
+                      { text: ["Need", "Wants", "Budget"] },  // Top
+                      { text: ["Quality", "Size", "Cost"] }, // Bottom
+                      { text: ["Industry"] },  // Left
+                      { text: ["Site"] }, // Right
+                    ]}
+                  />
+                </div>
+
+              </div>
+            )}
+
             {section.title === 'How' && (
               <div className={styles.sectionContent}>
 
@@ -241,20 +261,23 @@ const AboutSections = ({ sections, openServices, aboutText, imageUrl }) => {
                   <div className={styles.imageContainer}>
                     <SevenCircles />
                   </div>
+                  <p className={styles.whoText}>
+                    *Common specialty consultants available for services related to: acoustics , audio/visual, communications, cost estimating, food service, indoor air quality, security, smart home, surveying, testing + engineering, traffic, and value engineering.
+                  </p>
                 </div>
-
-
-                <div className={styles.container}>
-                  <div className={styles.aboutImageContainer}>
-                    {imageUrl && <img className={styles.aboutImage} src={imageUrl} alt="About" />}
-                    <p className={styles.aboutParagraph}>{renderHighlightAbout(aboutText)}</p>
-                  </div>
-                </div>
-
               </div>
             )}
           </section>
         ))}
+
+        <section className={styles.section}>
+          <div className={styles.container}>
+            <div className={styles.aboutImageContainer}>
+              <p className={styles.aboutParagraph}>{renderHighlightAbout(aboutText)}</p>
+              {imageUrl && <img className={styles.aboutImage} src={imageUrl} alt="About" />}
+            </div>
+          </div>
+        </section>
       </SwiperSection>
     </div>
   );

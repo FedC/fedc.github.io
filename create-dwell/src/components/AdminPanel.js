@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Route, Routes, useNavigate, useParams, useLoca
 import ToastNotification from './ToastNotification';
 import AdminHeader from './AdminHeader';
 import ProjectForm from './ProjectForm';
+import NewProjectForm from './NewProjectForm';
 import ProjectList from './ProjectList';
 import AboutForm from './AboutForm';
-import FeaturedImages from './FeaturedImages';
+import ContactAdmin from './ContactAdmin';
 import { auth, db } from '../js/firebase';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import * as styles from './AdminPanel.module.scss';
@@ -99,6 +100,12 @@ const AdminPanel = () => {
     showToast(txt || 'Project saved successfully', 'success');
   };
 
+  const handleUnsavedChanges = (isChanged) => {
+    if (isChanged) {
+      showToast('Unsaved changes', 'warning');
+    }
+  };
+
   const closeModal = (options) => {
     setIsModalOpen(false);
     if (options?.updated) {
@@ -146,9 +153,8 @@ const AdminPanel = () => {
             path="/new-project"
             element={
               <div className={styles.adminContent}>
-                <ProjectForm
+                <NewProjectForm
                   onClose={() => navigate('/admin')}
-                  editingProject={null}
                   onUpdateSuccess={handleUpdateSuccess}
                 />
               </div>
@@ -162,6 +168,7 @@ const AdminPanel = () => {
                   onClose={() => navigate('/admin')}
                   editingProject={editingProject}
                   onUpdateSuccess={handleUpdateSuccess}
+                  onUnsavedChanges={handleUnsavedChanges}
                 />
               </div>
             }
@@ -175,10 +182,11 @@ const AdminPanel = () => {
             }
           />
           <Route
-            path="/featured"
+            path="/contact"
             element={
               <div className={styles.adminContent}>
-                <FeaturedImages onUpdateSuccess={handleUpdateSuccess} onClose={() => navigate('/admin')} />
+                {/* <FeaturedImages onUpdateSuccess={handleUpdateSuccess} onClose={() => navigate('/admin')} /> */}
+                <ContactAdmin onUpdateSuccess={handleUpdateSuccess} onClose={() => navigate('/admin')} />
               </div>
             }
           />

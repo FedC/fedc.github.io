@@ -13,12 +13,15 @@
 
 .navigationContainer {
   position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  left: 0;
+  width: 100%;
   display: flex;
-  gap: 40px;
+  justify-content: space-between;
+  padding: 0;
+  transform: translateY(-50%);
   z-index: 2;
+  pointer-events: none; // prevents nav container from blocking interactions
 }
 
 .navigationContainerBottom {
@@ -29,6 +32,9 @@
   gap: 40px;
   z-index: 2;
   bottom: -16px;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 32px;
 }
 
 .contentSection {

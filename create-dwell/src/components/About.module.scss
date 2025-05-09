@@ -46,10 +46,16 @@
   padding: 0 20px;
 }
 
+.aboutContent {
+  background-color: rgba(255, 251, 243, .5);
+  padding: 20px 24px;
+  // box-shadow: 0 3px 7px rgba(47, 47, 47, 0.1);
+  margin-bottom: 20px;
+}
+
 h1.heading {
   text-align: center;
-  margin-top: 32px;
-  margin-bottom: 0;
+  margin: 0 auto 20px auto;
   font-family: 'Poiret One', sans-serif;
   font-size: 38px;
   line-height: 44px;
@@ -66,10 +72,7 @@ h1.heading .highlight {
   letter-spacing: -0.45px;
   font-size: 20px;
   line-height: 1.8125;
-  margin-top: 100px;
-  margin-bottom: 100px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
   text-align: center;
 }
 

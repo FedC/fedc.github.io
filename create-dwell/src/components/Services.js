@@ -80,8 +80,8 @@ const Services = () => {
   }
 
   return (
-    <>
-      <div className={styles.servicesContainer}>
+    <div className={styles.servicesContainer}>
+      <div className={styles.servicesContainerInner}>
 
         <div className={styles.servicesContent}>
           <h1 className={styles.servicesTitle}>How</h1>
@@ -122,7 +122,7 @@ const Services = () => {
       {/* <div ref={footerRef}>
         <Footer />
       </div> */}
-    </>
+    </div>
   );
 };
 

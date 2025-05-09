@@ -1,6 +1,6 @@
 .servicesContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+  background-color: #feeece;
+  background-color: white;
 
   --services-text-color: #473d27;
 
@@ -14,17 +14,24 @@
   width: 100%;
   text-align: center;
   padding-bottom: 100px;
-  max-width: 1200px;
-  margin: 0 auto;
 
-  @media screen and (max-width: 1500px) {
-    grid-template-columns: 1fr 1fr;
-
-  }
-
-  @media screen and (max-width: 768px) {
-    grid-template-columns: 1fr;
-    
+  .servicesContainerInner {
+    max-width: 1200px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+    height: auto;
+    /* Allow content to dictate height */
+    overflow-y: visible;
+    /* Use the parent container for scrolling */
+    @media screen and (max-width: 1500px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  
+    @media screen and (max-width: 1280px) {
+      grid-template-columns: 1fr;
+      
+    }
   }
 
   .servicesContent {
