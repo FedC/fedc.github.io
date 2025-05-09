@@ -23,6 +23,22 @@
   }
 }
 
+button.backButton {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background-color: transparent !important;
+  border: 1px solid #ccc !important;
+  color: #4f4e4e !important;
+  text-transform: uppercase;
+
+  svg {
+    margin-right: 5px;
+    width: 14px;
+    fill: #4f4e4e;
+  }
+}
+
 .formContent {
   max-width: 600px;
   margin: 0 auto;
