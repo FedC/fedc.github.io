@@ -1,4 +1,6 @@
 .processFlow {
+  --color-inactive-circle: #feeac3;
+  --color-inactive-circle-alt: #f1f0f0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 32px 0;
@@ -9,9 +11,6 @@
     // grid-template-columns: repeat(2, 1fr);
     display: none;
   }
-
-  --color-inactive-circle: #feeac3;
-  --color-inactive-circle-alt: #f1f0f0;
 }
 
 .stepContainer {
