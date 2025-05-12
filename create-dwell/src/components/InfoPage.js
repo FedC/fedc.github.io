@@ -116,6 +116,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
   }, [isOpen, onSectionChange, visibleSection]);
 
   const handleMenuClick = (e, id) => {
+    debugger;
     if (['all', 'commercial', 'residential'].includes(id)) {
       // Trigger filtering in Home.js
       if (id === 'all') {

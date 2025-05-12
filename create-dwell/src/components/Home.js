@@ -30,6 +30,7 @@ const Home = () => {
   const [projectFilter, setProjectFilter] = useState('all');
   const [isInfoPageOpen, setIsInfoPageOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(null);
+  const [openProjects, setOpenProjects] = useState([]);
   const [mobileMenuState, setMobileMenuState] = useState({
     isOpen: false,
     activeId: 'all'
@@ -90,6 +91,7 @@ const Home = () => {
   }
 
   const onResetProjects = () => {
+    debugger;
     setProjects(originalProjects);
     setProjectReset(true);
     // animate scroll up
@@ -163,6 +165,8 @@ const Home = () => {
           <HomeProjectList projects={projects} headerAnimationComplete={headerAnimationComplete} projectReset={projectReset} projectFilter={projectFilter}
             fullScreenContent={fullScreenContent}
             setFullScreenContent={setFullScreenContent}
+            openProjects={openProjects}
+            setOpenProjects={setOpenProjects}
           />
         </section>
 

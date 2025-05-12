@@ -7,10 +7,9 @@ import * as styles from './HomeProjectList.module.scss';
 import Footer from './Footer';
 import * as footerStyles from './Footer.module.scss';
 
-const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, projectFilter, setFullScreenContent }) => {
+const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, projectFilter, setFullScreenContent, openProjects, setOpenProjects }) => {
   const listRef = useRef(null);
   const footerRef = useRef(null);
-  const [openProjects, setOpenProjects] = useState([]);
   const [loadingContentImages, setLoadingContentImages] = useState([]);
   const [imageAspectRatios, setImageAspectRatios] = useState({});
   const gridRef = useRef(null);
