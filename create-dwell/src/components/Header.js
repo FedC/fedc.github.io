@@ -178,7 +178,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects, onSho
 
   const handleCloseAll = () => {
     onShowInfoPage(null);
-    resetProjects();
+    initSmoothScrolling();
   };
 
   const setElementsVisibility = () => {
