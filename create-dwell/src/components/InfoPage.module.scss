@@ -8,6 +8,7 @@
   z-index: var(--info-page-z-index);
   overflow: hidden;
   background-color: #fbe4b7;
+  transition: transform .2s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity .2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   @media (min-width: 768px) {
     width: calc(100vw - 300px);
@@ -129,5 +130,22 @@
 } 
 
 .contact {
-  background-color: white;
+  background-color: #f7f5f2;
+
+  background-image: url(https://firebasestorage.googleapis.com/v0/b/create-dwell.appspot.com/o/contact%2Fcontact_large.jpg?alt=media&token=2685fded-cc77-4633-ad6c-5ddea863fe94);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  // parallax effect
+  background-attachment: fixed;
+
+  @media (max-width: 768px) {
+    background-attachment: scroll;
+  }
+
+  .contactContainer {
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    padding: 20px;
+  }
 }

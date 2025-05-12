@@ -26,14 +26,16 @@ const Footer = ({ showCredits = true }) => {
       <div className={footerStyles.footerInner}>
         <div className={footerStyles.footerContact}>
           <p>
-            <a href="mailto:carolina@create-dwell.com">carolina@create-dwell.com</a><br />
+            <a href="mailto:carolina@create-dwell.com">carolina@create-dwell.com</a>
             <a href="tel:9542100862">954–210–0862</a>
           </p>
         </div>
 
         <div className={footerStyles.footerCopyright}>
-          <p>2025 by Carolina Wiebe, RA, RID, LEED AP BD+C</p>
+          <p>
+          <small>2025 by Carolina Wiebe, RA, RID, LEED AP BD+C</small>
           {showCredits && (<small>Built by <a target="_blank" href="https://okcd.io">okcd.io</a></small>)}
+          </p>
         </div>
       </div>
     </footer>

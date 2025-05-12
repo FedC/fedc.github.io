@@ -790,7 +790,6 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
 
   const handleScrollHintClick = (e, projectId) => {
     e.stopPropagation();
-    debugger;
     const projectRef = projectRefs.current[projectId];
     if (!projectRef) return;
 

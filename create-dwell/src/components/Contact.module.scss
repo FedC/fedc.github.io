@@ -90,6 +90,10 @@ p {
   font-size: 18px;
   color: var(--dark-orange-text);
   margin-bottom: 30px;
+
+  @media screen and (max-width: 768px) {
+    font-size: 16px;
+  }
 }
 
 .contactForm {

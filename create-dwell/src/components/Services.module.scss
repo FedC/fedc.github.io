@@ -1,6 +1,6 @@
 .servicesContainer {
-  background-color: #feeece;
-  background-color: white;
+  background-color: #fcfcfc;
+  // background-color: white;
 
   --services-text-color: #473d27;
 
@@ -99,6 +99,10 @@
   @media screen and (max-width: 1280px) {
     font-size: 18px;
     line-height: 1.8125;
+  }
+
+  @media screen and (max-width: 768px) {
+    font-size: 16px;
   }
 }
 
