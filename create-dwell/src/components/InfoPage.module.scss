@@ -11,7 +11,7 @@
   transition: transform .2s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity .2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   @media (min-width: 768px) {
-    width: calc(100vw - 300px);
+    width: calc(100vw - 190px);
   }
 }
 
@@ -140,7 +140,7 @@
   background-attachment: fixed;
 
   @media (max-width: 768px) {
-    background-attachment: scroll;
+    background-attachment: fixed;
   }
 
   .contactContainer {

@@ -10,11 +10,12 @@ import Footer from './Footer';
 import gsap from 'gsap';
 import * as footerStyles from './Footer.module.scss';
 
-const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuState, onMobileMenuStateChange, filterProjects, resetProjects }) => {
+const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuState, onMobileMenuStateChange, filterProjects, resetProjects, contactImageUrl }) => {
   const aboutRef = useRef(null);
   const servicesRef = useRef(null);
   const contactRef = useRef(null);
   const contentRef = useRef(null);
+  const infoPageRef = useRef(null);
   const [visibleSection, setVisibleSection] = useState(null);
   const isScrollingRef = useRef(false);
   const hasInitializedRef = useRef(false);
@@ -23,9 +24,32 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
   const footerRef = useRef(null);
 
   useEffect(() => {
+    if (contactRef.current && contactImageUrl) {
+      contactRef.current.style.backgroundImage = `url(${contactImageUrl})`;
+      contactRef.current.style.backgroundSize = 'cover';
+      contactRef.current.style.backgroundPosition = 'center';
+      contactRef.current.style.backgroundRepeat = 'no-repeat';
+      contactRef.current.style.backgroundAttachment = 'fixed';
+    }
+
+  }, [contactImageUrl]);
+
+  useEffect(() => {
     if (isOpen && footerRef.current) {
       const curr = footerRef.current;
       gsap.to(curr.querySelector(`.${footerStyles.footer}`), { opacity: 1, duration: 0.5, delay: 0.5 });
+    }
+
+    if (isOpen) {
+      setTimeout(() => {
+        if (contactRef.current && contactImageUrl) {
+          contactRef.current.style.backgroundImage = `url(${contactImageUrl})`;
+          contactRef.current.style.backgroundSize = 'cover';
+          contactRef.current.style.backgroundPosition = 'center';
+          contactRef.current.style.backgroundRepeat = 'no-repeat';
+          contactRef.current.style.backgroundAttachment = 'fixed';
+        }
+      }, 800);
     }
   }, [isOpen]);
 
@@ -52,7 +76,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
 
       if (scrollToRef?.current) {
         isScrollingRef.current = true;
-        
+
         // If this is the first time opening, wait a bit for the animation to complete
         if (!hasInitializedRef.current) {
           setTimeout(() => {
@@ -89,11 +113,11 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
         const prevRect = prev.boundingClientRect;
         const currentRect = current.boundingClientRect;
         const viewportHeight = window.innerHeight;
-        
+
         // Calculate how close each element is to the center of the viewport
-        const prevDistance = Math.abs(prevRect.top + prevRect.height/2 - viewportHeight/2);
-        const currentDistance = Math.abs(currentRect.top + currentRect.height/2 - viewportHeight/2);
-        
+        const prevDistance = Math.abs(prevRect.top + prevRect.height / 2 - viewportHeight / 2);
+        const currentDistance = Math.abs(currentRect.top + currentRect.height / 2 - viewportHeight / 2);
+
         return prevDistance < currentDistance ? prev : current;
       });
 
@@ -126,6 +150,24 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
     };
   }, [isOpen, onSectionChange, visibleSection]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Check if the click is on a navigation link
+      const isNavLink = event.target.closest('a[href]') || 
+                       event.target.closest('button') ||
+                       event.target.closest(`.${styles.mobileMenuWrapper}`);
+
+      if (isOpen && infoPageRef.current && !infoPageRef.current.contains(event.target) && !isNavLink) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+
   const handleMenuClick = (e, id) => {
     if (['all', 'commercial', 'residential'].includes(id)) {
       // Trigger filtering in Home.js
@@ -148,11 +190,12 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
     <AnimatePresence mode="wait" transition={{ duration: 0.45, delay: 0, ease: [0.25, 0.46, 0.45, 0.94] }}>
       {isOpen && (
         <motion.div
+          ref={infoPageRef}
           className={styles.infoPage}
           initial={{ x: window.innerWidth > 768 ? -1000 : window.innerWidth }}
           animate={{ x: 0 }}
           exit={{ x: window.innerWidth > 768 ? -1000 : window.innerWidth }}
-          transition={{ 
+          transition={{
             type: 'tween',
             duration: .3,
             ease: 'easeOut'
@@ -175,8 +218,8 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
               />
             </div>
             <div className={styles.mobileMenuWrapper}>
-              <MobileMenu 
-                onMenuItemClick={handleMenuClick} 
+              <MobileMenu
+                onMenuItemClick={handleMenuClick}
                 mobileMenuState={mobileMenuState}
                 onMobileMenuStateChange={onMobileMenuStateChange}
                 selectedFilter={selectedFilter}
@@ -198,9 +241,9 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
             </motion.button>
           )} */}
 
-          <motion.div 
+          <motion.div
             id="info-page-content"
-            className={styles.content} 
+            className={styles.content}
             ref={contentRef}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -215,7 +258,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
             </div>
             <div ref={contactRef} className={styles.contact}>
               <div className={styles.contactContainer}>
-                <Contact />
+                <Contact contactImageUrl={contactImageUrl} />
               </div>
             </div>
 
