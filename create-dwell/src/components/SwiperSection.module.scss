@@ -9,19 +9,47 @@
   margin: 0;
   padding: 0;
   position: relative;
+  // height: 100vh;
+  display: flex;
+  align-items: center;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 150px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  &::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(255, 236, 218, 0.08), rgba(255, 236, 218, 0));
+  }
+
+  &::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(255, 236, 218, 0.08), rgba(255, 236, 218, 0));
+  }
 }
 
 .navigationContainer {
   position: absolute;
   top: 50%;
   left: 0;
-  width: 100%;
+  width: calc(100% + 136px);
   display: flex;
   justify-content: space-between;
   padding: 0;
-  transform: translateY(-50%);
+  transform: translateX(-68px) translateY(-50%);
   z-index: 2;
   pointer-events: none; // prevents nav container from blocking interactions
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
 }
 
 .navigationContainerBottom {

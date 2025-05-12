@@ -91,7 +91,6 @@ const Home = () => {
   }
 
   const onResetProjects = () => {
-    debugger;
     setProjects(originalProjects);
     setProjectReset(true);
     // animate scroll up
@@ -125,8 +124,8 @@ const Home = () => {
   }
 
   const handleShowInfoPage = (page) => {
-    setCurrentPage(page);
     setIsInfoPageOpen(!!page);
+    setCurrentPage(page);
   };
 
   const handleSectionChange = (section) => {

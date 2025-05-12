@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as styles from './Contact.module.scss';
-import * as footerStyles from './Footer.module.scss';
-import gsap from 'gsap';
-import Footer from './Footer';
 import SendIcon from './SendIcon';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../js/firebase';
@@ -15,7 +12,6 @@ const Contact = ({ projects = [] }) => {
     message: '',
   });
   const [contactImageUrl, setContactImageUrl] = useState('');
-  const footerRef = useRef(null);
   const [featuredItems, setFeaturedItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
@@ -52,14 +48,6 @@ const Contact = ({ projects = [] }) => {
     };
     fetchContactImage();
   }, []);
-
-  useEffect(() => {
-    if (footerRef.current) {
-      const curr = footerRef.current;
-      gsap.set(curr.querySelector(`.${footerStyles.footer}`), { marginTop: '40px' })
-      gsap.to(curr.querySelector(`.${footerStyles.footer}`), { opacity: 1, duration: 0.5, delay: 0.5 });
-    }
-  }, [footerRef]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -167,10 +155,6 @@ const Contact = ({ projects = [] }) => {
             />
           </div>
         </div>
-      </div>
-
-      <div ref={footerRef}>
-        <Footer />
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
+import { Navigation, Pagination } from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
 import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 import * as styles from './SwiperSection.module.scss';
 import './swiper.scss';
@@ -58,7 +59,20 @@ const SwiperSection = ({ children, onSwipe }) => {
           nextEl: '.swiper-next-top',
           prevEl: '.swiper-prev-top',
         }}
-        modules={[Navigation]}
+        pagination={{
+          clickable: true,
+          dynamicBullets: true,
+          bottom: 0,
+          top: 'auto',
+          left: 'auto',
+          right: 'auto',
+          bulletClass: 'swiper-pagination-bullet',
+          bulletActiveClass: 'swiper-pagination-bullet-active',
+          renderBullet: (index, className) => {
+            return `<span class="${className}"></span>`;
+          },
+        }}
+        modules={[Navigation, Pagination]}
         grabCursor={true}
         centeredSlides={false}
         speed={700}
@@ -68,7 +82,8 @@ const SwiperSection = ({ children, onSwipe }) => {
           768: { slidesPerView: 1, spaceBetween: 50 },
           1360: { slidesPerView: 2, spaceBetween: 100 },
         }}
-        autoHeight={true}
+        autoHeight={window.innerWidth <= 768}
+        updateOnWindowResize={true}
       >
         {React.Children.map(children, (child, index) => (
           <SwiperSlide key={index}>{child}</SwiperSlide>

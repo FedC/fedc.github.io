@@ -6,6 +6,9 @@ import Services from './Services';
 import * as styles from './InfoPage.module.scss';
 import HalfCircle from './HalfCircle';
 import MobileMenu from './MobileMenu';
+import Footer from './Footer';
+import gsap from 'gsap';
+import * as footerStyles from './Footer.module.scss';
 
 const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuState, onMobileMenuStateChange, filterProjects, resetProjects }) => {
   const aboutRef = useRef(null);
@@ -17,6 +20,14 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
   const hasInitializedRef = useRef(false);
   const orange = '#fbe4b7';
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const footerRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen && footerRef.current) {
+      const curr = footerRef.current;
+      gsap.to(curr.querySelector(`.${footerStyles.footer}`), { opacity: 1, duration: 0.5, delay: 0.5 });
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -116,7 +127,6 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
   }, [isOpen, onSectionChange, visibleSection]);
 
   const handleMenuClick = (e, id) => {
-    debugger;
     if (['all', 'commercial', 'residential'].includes(id)) {
       // Trigger filtering in Home.js
       if (id === 'all') {
@@ -135,7 +145,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
   };
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" transition={{ duration: 0.45, delay: 0, ease: [0.25, 0.46, 0.45, 0.94] }}>
       {isOpen && (
         <motion.div
           className={styles.infoPage}
@@ -175,7 +185,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
             </div>
           </div>
 
-          {window.innerWidth > 767 && (
+          {/* {window.innerWidth > 767 && (
             <motion.button 
               className={styles.closeButton} 
               onClick={onClose}
@@ -186,7 +196,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
             >
               <span>×</span>
             </motion.button>
-          )}
+          )} */}
 
           <motion.div 
             id="info-page-content"
@@ -204,7 +214,13 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
               <Services />
             </div>
             <div ref={contactRef} className={styles.contact}>
-              <Contact />
+              <div className={styles.contactContainer}>
+                <Contact />
+              </div>
+            </div>
+
+            <div ref={footerRef} className={styles.footer}>
+              <Footer />
             </div>
           </motion.div>
         </motion.div>
