@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../js/firebase';
 import Header from './Header';
 // import ProjectGrid from './ProjectGrid';
@@ -37,10 +37,45 @@ const Home = () => {
   });
   const [fullScreenContent, setFullScreenContent] = useState(null);
   const [fullScreenImageLoaded, setFullScreenImageLoaded] = useState(false);
+  const [featuredItems, setFeaturedItems] = useState([]);
+  const [contactImageUrl, setContactImageUrl] = useState('');
 
   let cursor = null;
   let cursorRef = useRef(null);
   let leftSlateMobileRef = useRef(null);
+
+  useEffect(() => {
+    const fetchContactImage = async () => {
+      try {
+        const docRef = doc(db, 'about', 'main');
+        const snapshot = await getDoc(docRef);
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          if (data.mainImageUrl) setContactImageUrl(data.mainImageUrl);
+        }
+      } catch (err) {
+        console.error('Error fetching contact image:', err);
+      }
+    };
+    fetchContactImage();
+  }, []);
+
+  useEffect(() => {
+    if (!projects || !projects.length) return;
+    const publishedProjects = projects.filter((project) => project.published);
+    const projectContents = publishedProjects.map((project) => {
+      return project.content;
+    });
+
+    projectContents.forEach((contents) => {
+      const featuredImages = contents.filter((content) => content.type === 'image' && content.featured);
+      featuredImages.forEach((image) => {
+        setFeaturedItems((prevItems) => {
+          return [...prevItems, { imageUrl: image.url }];
+        });
+      });
+    });
+  }, [projects]);
 
   useEffect(() => {
     document.body.classList.add('loading');
@@ -211,6 +246,7 @@ const Home = () => {
         onMobileMenuStateChange={handleMobileMenuStateChange}
         filterProjects={onFilterProjects}
         resetProjects={onResetProjects}
+        contactImageUrl={contactImageUrl}
       />
 
       {/* {selectedProject && (

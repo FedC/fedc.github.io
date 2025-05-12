@@ -3,51 +3,33 @@ import * as styles from './Contact.module.scss';
 import SendIcon from './SendIcon';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../js/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+// import { doc, getDoc } from 'firebase/firestore';
 
-const Contact = ({ projects = [] }) => {
+const Contact = ({ contactImageUrl = '' }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     message: '',
   });
-  const [contactImageUrl, setContactImageUrl] = useState('');
-  const [featuredItems, setFeaturedItems] = useState([]);
+  // const [contactImageUrl, setContactImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
 
-  useEffect(() => {
-    if (!projects || !projects.length) return;
-    const publishedProjects = projects.filter((project) => project.published);
-    const projectContents = publishedProjects.map((project) => {
-      return project.content;
-    });
-
-    projectContents.forEach((contents) => {
-      const featuredImages = contents.filter((content) => content.type === 'image' && content.featured);
-      featuredImages.forEach((image) => {
-        setFeaturedItems((prevItems) => {
-          return [...prevItems, { imageUrl: image.url }];
-        });
-      });
-    });
-  }, [projects]);
-
-  useEffect(() => {
-    const fetchContactImage = async () => {
-      try {
-        const docRef = doc(db, 'about', 'main');
-        const snapshot = await getDoc(docRef);
-        if (snapshot.exists()) {
-          const data = snapshot.data();
-          if (data.mainImageUrl) setContactImageUrl(data.mainImageUrl);
-        }
-      } catch (err) {
-        console.error('Error fetching contact image:', err);
-      }
-    };
-    fetchContactImage();
-  }, []);
+  // useEffect(() => {
+  //   const fetchContactImage = async () => {
+  //     try {
+  //       const docRef = doc(db, 'about', 'main');
+  //       const snapshot = await getDoc(docRef);
+  //       if (snapshot.exists()) {
+  //         const data = snapshot.data();
+  //         if (data.mainImageUrl) setContactImageUrl(data.mainImageUrl);
+  //       }
+  //     } catch (err) {
+  //       console.error('Error fetching contact image:', err);
+  //     }
+  //   };
+  //   fetchContactImage();
+  // }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -149,10 +131,10 @@ const Contact = ({ projects = [] }) => {
           </div>
 
           <div className={styles.contactImage}>
-            <img
-              src={contactImageUrl || 'https://via.placeholder.com/400x300?text=Loading...'}
+            {contactImageUrl && <img
+              src={contactImageUrl || ''}
               alt="Contact"
-            />
+            />}
           </div>
         </div>
       </div>
