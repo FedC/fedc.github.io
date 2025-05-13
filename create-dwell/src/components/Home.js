@@ -16,6 +16,7 @@ import { Draggable } from 'gsap/Draggable';
 import InertiaPlugin from './InertiaPlugin.js';
 import { Cursor } from '../js/cursor.js';
 import InfoPage from './InfoPage';
+import ArticleModal from './ArticleModal';
 
 gsap.registerPlugin(InertiaPlugin, ScrollTrigger, Draggable, CSSPlugin, ScrollToPlugin);
 
@@ -39,6 +40,7 @@ const Home = () => {
   const [fullScreenImageLoaded, setFullScreenImageLoaded] = useState(false);
   const [featuredItems, setFeaturedItems] = useState([]);
   const [contactImageUrl, setContactImageUrl] = useState('');
+  const [openArticle, setOpenArticle] = useState(null);
 
   let cursor = null;
   let cursorRef = useRef(null);
@@ -196,11 +198,16 @@ const Home = () => {
             projects={projects}
             // onProjectClick={handleGridItemClick}
           /> */}
-          <HomeProjectList projects={projects} headerAnimationComplete={headerAnimationComplete} projectReset={projectReset} projectFilter={projectFilter}
+          <HomeProjectList 
+            projects={projects} 
+            headerAnimationComplete={headerAnimationComplete} 
+            projectReset={projectReset} 
+            projectFilter={projectFilter}
             fullScreenContent={fullScreenContent}
             setFullScreenContent={setFullScreenContent}
             openProjects={openProjects}
             setOpenProjects={setOpenProjects}
+            setOpenArticle={setOpenArticle}
           />
         </section>
 
@@ -247,6 +254,12 @@ const Home = () => {
         filterProjects={onFilterProjects}
         resetProjects={onResetProjects}
         contactImageUrl={contactImageUrl}
+      />
+
+      <ArticleModal
+        open={!!openArticle}
+        onClose={() => setOpenArticle(null)}
+        article={openArticle}
       />
 
       {/* {selectedProject && (
