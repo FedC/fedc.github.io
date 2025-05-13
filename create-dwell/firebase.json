@@ -54,19 +54,19 @@
       },
       {
         "source": "/admin/edit-project/index.*.js",
-        "destination": "/index.5114679b.js"
+        "destination": "/index.3934a10c.js"
       },
       {
         "source": "/**/index.*.js",
-        "destination": "/index.5114679b.js"
+        "destination": "/index.3934a10c.js"
       },
       {
-        "source": "/admin/edit-project/index.0eb45d46.css",
-        "destination": "/index.0eb45d46.css"
+        "source": "/admin/edit-project/index.2254318b.css",
+        "destination": "/index.2254318b.css"
       },
       {
-        "source": "/**/index.0eb45d46.css",
-        "destination": "/index.0eb45d46.css"
+        "source": "/**/index.2254318b.css",
+        "destination": "/index.2254318b.css"
       },
       {
         "source": "/admin/edit-project/index.66e993a3.css",
