@@ -514,6 +514,17 @@
     }
   }
 
+  .use {
+    color: #afaba6;
+    padding-left: 2px;
+    font-size: 13px;
+    font-weight: 500;
+
+    @media screen and (max-width: 768px) {
+      color: #afaba6;
+    }
+  }
+
   .area {
     color: #afaba6;
     padding-left: 2px;
