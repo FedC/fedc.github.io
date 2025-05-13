@@ -113,10 +113,13 @@ const waitForProcessedFile = async (filePath) => {
 const USE_OPTIONS = [
   'Residential',
   'Commercial',
-  'Retail',
-  'Educational',
-  'Office',
   'Cultural',
+  'Planning',
+  'Educational',
+  'Branding',
+  'Retail',
+  'Office',
+  'Transportation',
 ];
 
 function MultiSelectDropdown({ options, selected, onChange, label }) {
@@ -502,13 +505,30 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess, onUnsavedChange
     console.log('Drag end:', { active: active, over: over });
     if (!over) return; // Prevent error if dragging outside droppable area
 
-    const activeIndex = parseInt(active.id.split('-')[2], 10);
-    const overIndex = parseInt(over.id.split('-')[2], 10);
+    const activeId = active.id;
+    const overId = over.id;
 
-    if (activeIndex !== overIndex) {
-      const reorderedContent = arrayMove(formData.content, activeIndex, overIndex);
-      setFormData((prevData) => ({ ...prevData, content: reorderedContent }));
-      handleSubmit();
+    // Handle content reordering
+    if (activeId.startsWith('content-item-')) {
+      const activeIndex = parseInt(activeId.split('-')[2], 10);
+      const overIndex = parseInt(overId.split('-')[2], 10);
+
+      if (activeIndex !== overIndex) {
+        const reorderedContent = arrayMove(formData.content, activeIndex, overIndex);
+        setFormData((prevData) => ({ ...prevData, content: reorderedContent }));
+        handleSubmit();
+      }
+    }
+    // Handle team reordering
+    else if (activeId.startsWith('team-')) {
+      const activeIndex = parseInt(activeId.split('-')[1], 10);
+      const overIndex = parseInt(overId.split('-')[1], 10);
+
+      if (activeIndex !== overIndex) {
+        const reorderedTeams = arrayMove(formData.teams, activeIndex, overIndex);
+        setFormData((prevData) => ({ ...prevData, teams: reorderedTeams }));
+        handleSubmit();
+      }
     }
 
     setDraggingContent(false);
@@ -791,35 +811,34 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess, onUnsavedChange
               }} />
             </div>
 
-            <div className="grid-two-col">
-              <div className={styles.formGroup}>
-                <label htmlFor="projectType">Project Type</label>
-                <MultiSelectToggleDrag
-                  options={PROJECT_TYPE_OPTIONS}
-                  selected={Array.isArray(formData.projectType) ? formData.projectType : (formData.projectType ? [formData.projectType] : [])}
-                  onChange={(selected) => {
-                    setFormData(prev => ({ ...prev, projectType: selected }));
-                  }}
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label htmlFor="status">Project Status</label>
-                <select name="status" onChange={handleInputChangeAndSubmit} value={formData.status}>
-                  <option value="">Select Status</option>
-                  <option value="Schematic Design">Schematic Design</option>
-                  <option value="Design Development">Design Development</option>
-                  <option value="Construction Documentation">Construction Documentation</option>
-                  <option value="Bidding and Negotiation">Bidding and Negotiation</option>
-                  <option value="Construction Administration">Construction Administration</option>
-                  <option value="In Permitting">In Permitting</option>
-                  <option value="Planned for Construction">Planned for Construction</option>
-                  <option value="Under Construction">Under Construction</option>
-                  <option value="Unbuilt">Unbuilt</option>
-                  <option value="Built">Built</option>
-                </select>
-              </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="projectType">Project Type</label>
+              <MultiSelectToggleDrag
+                options={PROJECT_TYPE_OPTIONS}
+                selected={Array.isArray(formData.projectType) ? formData.projectType : (formData.projectType ? [formData.projectType] : [])}
+                onChange={(selected) => {
+                  setFormData(prev => ({ ...prev, projectType: selected }));
+                }}
+              />
             </div>
+
+            <br />
+            <div className={styles.formGroup}>
+              <label htmlFor="status">Status</label>
+              <select name="status" onChange={handleInputChangeAndSubmit} value={formData.status}>
+                <option value="">Select Status</option>
+                <option value="Design in Progress">Design in Progress</option>
+                <option value="Construction Documentation in Progress">Construction Documentation in Progress</option>
+                <option value="Bidding & Negotiation in Progress">Bidding & Negotiation in Progress</option>
+                <option value="Construction Administration in Progress">Construction Administration in Progress</option>
+                <option value="Permitting in Progress">Permitting in Progress</option>
+                <option value="Planned for Construction">Planned for Construction</option>
+                <option value="Under Construction">Under Construction</option>
+                <option value="Unbuilt">Unbuilt</option>
+                <option value="Built">Built</option>
+              </select>
+            </div>
+
 
             <div className="grid-two-col">
               <div className={styles.formGroup}>
@@ -910,32 +929,65 @@ const ProjectForm = ({ onClose, editingProject, onUpdateSuccess, onUnsavedChange
           {/* Teams */}
           <div className={styles.contentSection}>
             <h3>Teams</h3>
-            {formData.teams?.map((team, index) => (
-              <div key={'team-' + index} className={styles.arrayItem}>
-                <select
-                  value={team.role}
-                  onChange={(e) => handleTeamChange(index, 'role', e.target.value)}
-                >
-                  <option value="">Select Role</option>
-                  {teamRoles.map((role, i) => (
-                    <option key={'role-' + index + i} value={role}>{role}</option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  placeholder="Team Name"
-                  value={team.name}
-                  onChange={(e) => handleTeamChange(index, 'name', e.target.value)}
-                />
-                <button type="button" onClick={() => removeTeam(index)} className='warn-btn'>Remove</button>
-              </div>
-            ))}
+            <DndContext collisionDetection={closestCenter} sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} onDragOver={handleDragOver}>
+              <SortableContext items={formData.teams?.map((_, index) => 'team-' + index) || []} strategy={verticalListSortingStrategy}>
+                {formData.teams?.map((team, index) => (
+                  <SortableItem key={'team-' + index} id={'team-' + index} isOver={hoveredItem === index}>
+                    <div id={'team-item-box-' + index} className={styles.arrayItem}>
+                      <div className={`grid-two-col ${styles.contentItemHeader} ${styles.noBorder}`}>
+                        <button className={styles.dragButton}>
+                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ccc">
+                            <path d="M480-80 310-250l57-57 73 73v-206H235l73 72-58 58L80-480l169-169 57 57-72 72h206v-206l-73 73-57-57 170-170 170 170-57 57-73-73v206h205l-73-72 58-58 170 170-170 170-57-57 73-73H520v205l72-73 58 58L480-80Z" />
+                          </svg>
+                        </button>
+
+                        <div className={styles.flexRightCenter}>
+                          <button type="button" onClick={() => removeTeam(index)} className='warn-btn'>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                              <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className={`${styles.contentItemBody} grid-two-col`}>
+                        <select
+                          value={team.role}
+                          onChange={(e) => handleTeamChange(index, 'role', e.target.value)}
+                          onPointerDown={(e) => e.stopPropagation()}
+                        >
+                          <option value="">Select Role</option>
+                          {teamRoles.map((role, i) => (
+                            <option key={'role-' + index + i} value={role}>{role}</option>
+                          ))}
+                        </select>
+                        <input
+                          type="text"
+                          placeholder="Team Name"
+                          value={team.name}
+                          onChange={(e) => handleTeamChange(index, 'name', e.target.value)}
+                          onPointerDown={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                    </div>
+                  </SortableItem>
+                ))}
+              </SortableContext>
+              <DragOverlay>
+                {draggingContent ? (
+                  <SortableItem id={'drag-overlay-team-' + activeIndex} overlay={activeIndex}>
+                    <p>Dragging team #{activeIndex}</p>
+                  </SortableItem>
+                ) : null}
+              </DragOverlay>
+            </DndContext>
             <div className={styles.flexRight}>
               <button type="button" onClick={addTeam} className={styles.iconButton}>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
                   <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
                 </svg>
-                Add Team</button>
+                Add Team
+              </button>
             </div>
           </div>
 
