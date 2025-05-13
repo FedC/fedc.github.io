@@ -1124,9 +1124,11 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                               <div className={styles.projectHeaderTop}>
                                 <h2>{project.title}</h2>
                                 <p className={styles.projectLocation}>{project.location}</p>
-                                {project.type && <p className={styles.type}>{project.type}</p>}
-                                {project.status && <p className={styles.status}>{project.status}</p>}
+                                {project.use && project.use.length > 0 && (
+                                  <p className={styles.use}>{project.use.join(', ')}</p>
+                                )}
                                 {project.area && <p className={styles.area}>{prettySqft(project.area)}</p>}
+                                {project.status && project.status !== 'Built' && <p className={styles.status}>{project.status}</p>}
                               </div>
                             </div>
                           </div>
@@ -1228,54 +1230,55 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                               return null;
                             })}
 
-                          <div className={styles.projectContentItem}>
-                            <div className={`${styles.projectHeader} ${styles.projectHeaderDescription} ${projectHasDescriptions(project) ? styles.hasAdditionalContent : ''}`}>
-                              <div className={styles.projectHeaderInner}>
-                                {project.description && (
-                                  <div className={styles.projectGeneralDescription}>
-                                    {formatTextToNumberedList(project.description)}
-                                  </div>
+                          {(project.description?.trim() || project.clientDescription?.trim() || project.challenge?.trim() || project.solution?.trim()) && (
+                            <div className={styles.projectContentItem}>
+                              <div className={`${styles.projectHeader} ${styles.projectHeaderDescription} ${projectHasDescriptions(project) ? styles.hasAdditionalContent : ''}`}>
+                                <div className={styles.projectHeaderInner}>
+                                  {project.description?.trim() && (
+                                    <div className={styles.projectGeneralDescription}>
+                                      {formatTextToNumberedList(project.description)}
+                                    </div>
+                                  )}
+                                  {project.clientDescription?.trim() && (
+                                    <div className={styles.projectGeneralDescription}>
+                                      {formatTextToNumberedList(project.clientDescription)}
+                                    </div>
+                                  )}
+                                  {project.challenge?.trim() && (
+                                    <div className={styles.projectGeneralDescription}>
+                                      {formatTextToNumberedList(project.challenge)}
+                                    </div>
+                                  )}
+                                  {project.solution?.trim() && (
+                                    <div className={styles.projectGeneralDescription}>
+                                      {formatTextToNumberedList(project.solution)}
+                                    </div>
+                                  )}
+                                </div>
+
+                                {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
+                                  <button className={styles.scrollUpButton} onClick={(e) => scrollProjectHeaderUp(e, project.id)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
+                                      <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
+                                    </svg>
+                                  </button>
                                 )}
-                                {project.clientDescription && (
-                                  <div className={styles.projectGeneralDescription}>
-                                    {formatTextToNumberedList(project.clientDescription)}
-                                  </div>
-                                )}
-                                {project.challenge && (
-                                  <div className={styles.projectGeneralDescription}>
-                                    {formatTextToNumberedList(project.challenge)}
-                                  </div>
-                                )}
-                                {project.solution && (
-                                  <div className={styles.projectGeneralDescription}>
-                                    {formatTextToNumberedList(project.solution)}
-                                  </div>
+
+                                {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
+                                  <button className={styles.scrollDownButton} onClick={(e) => scrollProjectHeader(e, project.id)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
+                                      <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+                                    </svg>
+                                  </button>
                                 )}
                               </div>
-
-                              {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
-                                <button className={styles.scrollUpButton} onClick={(e) => scrollProjectHeaderUp(e, project.id)}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
-                                    <path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z" />
-                                  </svg>
-                                </button>
-                              )}
-
-                              {isProjectHeaderInnerHeightBiggerThanProjectHeaderHeight(project.id) && (
-                                <button className={styles.scrollDownButton} onClick={(e) => scrollProjectHeader(e, project.id)}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#f6ab0b">
-                                    <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
-                                  </svg>
-                                </button>
-                              )}
                             </div>
-                          </div>
+                          )}
 
                           {/* add publications as content items: { title: '', link: '', date: '', imageUrl: '' } */}
                           {project.publications && project.publications.length > 0 && (
                             project.publications.map((publication, index) => (
                               <div key={'publication_' + index} className={`${styles.projectContentItem} ${styles.projectPublicationItem}`}>
-
 
                                 <a href={publication.link} target="_blank" rel="noopener noreferrer">
                                   <button className={styles.projectPublicationButton}>

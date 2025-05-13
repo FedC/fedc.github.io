@@ -350,10 +350,17 @@
             flex-direction: column;
             justify-content: center;
 
+            @media screen and (max-width: 768px) {
+              min-width: var(--grid-max-width-mobile);
+            }
+
             p {
               font-size: 16px;
               margin-top: 0;
               margin-bottom: 0;
+              @media screen and (max-width: 768px) {
+                font-size: 13px;
+              }
             }
 
             p.projectTeamRole {
@@ -365,23 +372,31 @@
               color: #4f4c4a;
             }
           }
-
-          .projectQuote {
-            font-size: 20px;
-            font-style: italic;
-            border-left: 5px solid #333;
-            min-width: calc(var(--grid-max-width) - 80px);
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-          }
         }
       }
     }
   }
+}
+
+.projectQuote {
+  font-size: 20px;
+  font-style: italic;
+  min-width: calc(var(--grid-max-width) - 80px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  margin-block: 1em;
+  margin-inline: 40px;
 }
 
 .projectList .projectItem .projectContent .projectContentHorizontal .projectContentItem {
@@ -428,15 +443,17 @@
         width: 100vw;
       }
     }
+  }
 
-    .projectText,
-    .projectQuote {
-      min-width: calc(var(--grid-max-width-mobile) - 40px);
-      max-width: calc(var(--grid-max-width-mobile) - 40px);
-      font-size: 13px;
-      line-height: 1.4;
-      letter-spacing: -.56px;
-    }
+  .projectText,
+  .projectQuote {
+    min-width: calc(var(--grid-max-width-mobile) - 40px);
+    max-width: calc(var(--grid-max-width-mobile) - 40px);
+    font-size: 13px;
+    line-height: 1.4;
+    letter-spacing: -.56px;
+    margin-block: 0;
+    margin-inline: 24px;
   }
   
 }
@@ -609,6 +626,14 @@
 
 .projectPublicationItem {
   position: relative;
+  min-width: var(--grid-max-width);
+
+  @media screen and (max-width: 768px) 
+  {
+    min-width: var(--grid-max-width-mobile);
+
+  }
+  
 
   .projectPublicationDescription {
     width: 100%;
@@ -620,6 +645,10 @@
     background-color: rgba(246, 171, 11, 0.8);
     -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
+
+    @media screen and (max-width: 768px) {
+      padding: 10px;
+    }
 
     a {
       color: white;
@@ -633,6 +662,10 @@
       font-family: 'Theinhardt', sans-serif;
       color: white;
       margin-bottom: 0;
+
+      @media screen and (max-width: 768px) {
+        font-size: 13px;
+      }
     }
 
     p {
@@ -640,6 +673,10 @@
       font-weight: bold;
       color: white;
       margin-top: 10px;
+
+      @media screen and (max-width: 768px) {
+        font-size: 10px;
+      }
     }
   }
 
