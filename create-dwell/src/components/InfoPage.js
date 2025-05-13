@@ -22,7 +22,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
   const orange = '#fbe4b7';
   const [selectedFilter, setSelectedFilter] = useState('all');
   const footerRef = useRef(null);
-
+  const formspreeId = 'manqwpov';
   useEffect(() => {
     if (contactRef.current && contactImageUrl) {
       contactRef.current.style.backgroundImage = `url(${contactImageUrl})`;
@@ -258,7 +258,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
             </div>
             <div ref={contactRef} className={styles.contact}>
               <div className={styles.contactContainer}>
-                <Contact contactImageUrl={contactImageUrl} />
+                <Contact contactImageUrl={contactImageUrl} formspreeId={formspreeId} />
               </div>
             </div>
 

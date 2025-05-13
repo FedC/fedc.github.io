@@ -54,19 +54,11 @@
       },
       {
         "source": "/admin/edit-project/index.*.js",
-        "destination": "/index.3934a10c.js"
+        "destination": "/index.a7b382d5.js"
       },
       {
         "source": "/**/index.*.js",
-        "destination": "/index.3934a10c.js"
-      },
-      {
-        "source": "/admin/edit-project/index.2254318b.css",
-        "destination": "/index.2254318b.css"
-      },
-      {
-        "source": "/**/index.2254318b.css",
-        "destination": "/index.2254318b.css"
+        "destination": "/index.a7b382d5.js"
       },
       {
         "source": "/admin/edit-project/index.66e993a3.css",
@@ -75,6 +67,14 @@
       {
         "source": "/**/index.66e993a3.css",
         "destination": "/index.66e993a3.css"
+      },
+      {
+        "source": "/admin/edit-project/index.f4c629d9.css",
+        "destination": "/index.f4c629d9.css"
+      },
+      {
+        "source": "/**/index.f4c629d9.css",
+        "destination": "/index.f4c629d9.css"
       },
       {
         "source": "**",

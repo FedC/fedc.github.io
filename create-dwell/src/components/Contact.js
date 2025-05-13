@@ -1,35 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as styles from './Contact.module.scss';
 import SendIcon from './SendIcon';
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../js/firebase';
-// import { doc, getDoc } from 'firebase/firestore';
 
-const Contact = ({ contactImageUrl = '' }) => {
+const Contact = ({ contactImageUrl = '', formspreeId = '' }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     message: '',
   });
-  // const [contactImageUrl, setContactImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
-
-  // useEffect(() => {
-  //   const fetchContactImage = async () => {
-  //     try {
-  //       const docRef = doc(db, 'about', 'main');
-  //       const snapshot = await getDoc(docRef);
-  //       if (snapshot.exists()) {
-  //         const data = snapshot.data();
-  //         if (data.mainImageUrl) setContactImageUrl(data.mainImageUrl);
-  //       }
-  //     } catch (err) {
-  //       console.error('Error fetching contact image:', err);
-  //     }
-  //   };
-  //   fetchContactImage();
-  // }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,19 +21,30 @@ const Contact = ({ contactImageUrl = '' }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (e.target._gotcha.value !== "") return; // honeypot trap
+
+    if (!formspreeId) {
+      console.error("Formspree ID is missing");
+      return;
+    }
+
     setStatus("loading");
 
     try {
-      await addDoc(collection(db, 'messages'), {
-        ...formData,
-        timestamp: new Date(),
+      const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData }),
       });
-      setStatus("success");
-      setFormData({
-        name: '',
-        email: '',
-        message: '',
-      });
+      
+      if (response.ok) {
+        setStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        console.error("Formspree submission failed", await response.text());
+        setStatus('error');
+      }
+
     } catch (error) {
       console.error('Error sending message:', error);
       setStatus("error");

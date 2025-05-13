@@ -7,7 +7,7 @@ import * as styles from './HomeProjectList.module.scss';
 import Footer from './Footer';
 import * as footerStyles from './Footer.module.scss';
 
-const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, projectFilter, setFullScreenContent, openProjects, setOpenProjects }) => {
+const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, projectFilter, setFullScreenContent, openProjects, setOpenProjects, setOpenArticle }) => {
   const listRef = useRef(null);
   const footerRef = useRef(null);
   const [loadingContentImages, setLoadingContentImages] = useState([]);
@@ -1279,21 +1279,19 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
                           {project.publications && project.publications.length > 0 && (
                             project.publications.map((publication, index) => (
                               <div key={'publication_' + index} className={`${styles.projectContentItem} ${styles.projectPublicationItem}`}>
-
-                                <a href={publication.link} target="_blank" rel="noopener noreferrer">
-                                  <button className={styles.projectPublicationButton}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z" /></svg>
-                                  </button>
-                                </a>
-
+                                <button
+                                  className={styles.projectPublicationButton}
+                                  onClick={() => setOpenArticle(publication)}
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z" /></svg>
+                                </button>
                                 <div className={styles.projectPublication}>
                                   <img src={publication.imageUrl} alt={publication.title} />
                                 </div>
-
                                 <div className={styles.projectPublicationDescription}>
-                                  <a href={publication.link} target="_blank" rel="noopener noreferrer">
+                                  {/* <button className={styles.projectPublicationTitle} onClick={() => setOpenArticle(publication)}> */}
                                     <h3>{publication.title}</h3>
-                                  </a>
+                                  {/* </button> */}
                                   <p>{publication.date}</p>
                                 </div>
                               </div>
@@ -1335,24 +1333,15 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
 
       <div className={styles.mark} ref={marqueeRef}>
         <div className={styles.mark__inner} ref={marqueeInnerRef}>
-
-          {
-            ['Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning', 'spacer',
-              'Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning', 'spacer',
-              'Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning',
-            ]
-              .map((item, index) => (
-                item === 'spacer' ?
-                  <div key={`spacer-${index}`} className={styles.spacer}></div>
-                  :
-                  <span key={`item-${index}`}>{item}</span>
-              ))}
-
-          {/* <span>Architecture</span>
-          <div className={styles.spacer}></div>
-          <span>Interior Design</span>
-          <div className={styles.spacer}></div>
-          <span>Planning</span> */}
+          {['Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning', 'spacer',
+            'Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning', 'spacer',
+            'Architecture', 'spacer', 'Interior Design', 'spacer', 'Planning',
+          ].map((item, index) => (
+            item === 'spacer' ?
+              <div key={`spacer-${index}`} className={styles.spacer}></div>
+              :
+              <span key={`item-${index}`}>{item}</span>
+          ))}
         </div>
       </div>
 
