@@ -57,7 +57,7 @@
 .swiper-pagination-bullet-active {
   opacity: 1;
   transform: scale(1.2);
-  background: white;
+  background: var(--color-link);
 }
 
 .swiper-button-next,
