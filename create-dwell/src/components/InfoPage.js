@@ -22,7 +22,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
   const orange = '#fbe4b7';
   const [selectedFilter, setSelectedFilter] = useState('all');
   const footerRef = useRef(null);
-  const formspreeId = 'manqwpov';
+  const formspreeId = 'manoavep';
   useEffect(() => {
     if (contactRef.current && contactImageUrl) {
       contactRef.current.style.backgroundImage = `url(${contactImageUrl})`;
