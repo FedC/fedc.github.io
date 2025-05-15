@@ -54,11 +54,11 @@
       },
       {
         "source": "/admin/edit-project/index.*.js",
-        "destination": "/index.800e9606.js"
+        "destination": "/index.81025ea7.js"
       },
       {
         "source": "/**/index.*.js",
-        "destination": "/index.800e9606.js"
+        "destination": "/index.81025ea7.js"
       },
       {
         "source": "/admin/edit-project/index.2fd98149.css",
