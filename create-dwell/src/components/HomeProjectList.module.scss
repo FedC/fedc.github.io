@@ -5,6 +5,15 @@
   --loading-z-index: 9999;
   --mark-z-index: 3;
   --grid-z-index: 2;
+  --font-sans: 'Theinhardt', sans-serif;
+  --font-size-xl: 1.2em;
+  --font-size-lg: 1em;
+  --font-size-base: 14px;
+  --font-weight-medium: 400;
+  --font-weight-normal: 400;
+  --line-height-tight: 1.5;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.5;
 }
 
 @mixin button-styles($name, $offset, $position) {
@@ -89,17 +98,19 @@
         }
         
         h2 {
-          font-family: Theinhardt, sans-serif;
-          font-size: 1.2em;
-          font-weight: 400;
-          line-height: 1.5;
+          font-family: var(--font-sans);
+          font-size: var(--font-size-xl);
+          font-weight: var(--font-weight-medium);
+          line-height: var(--line-height-tight);
           text-transform: uppercase;
           color: #5b5750;
           margin-top: 0;
           margin-bottom: 2px;
+          letter-spacing: -0.02em;
+
           @media screen and (max-width: 768px) {
             text-align: left;
-            font-size: 1em;
+            font-size: var(--font-size-lg);
           }
         }
       }
@@ -274,15 +285,16 @@
             h2 {
               margin-bottom: 2px;
               text-transform: uppercase;
-              font-weight: 400;
+              font-weight: var(--font-weight-medium);
               color: var(--color-link);
               margin-top: 0;
               text-align: left;
-              font-size: 1.2em;
-              line-height: 1.2;
+              font-size: var(--font-size-xl);
+              line-height: var(--line-height-tight);
+              letter-spacing: -0.02em;
 
               @media screen and (max-width: 768px) {
-                font-size: 1em;
+                font-size: var(--font-size-lg);
                 color: #4f4e4e;
               }
             }
@@ -310,15 +322,26 @@
 
             p, li {
               margin: 0;
-              text-transform: uppercase;
-              font-weight: 400;
-              font-size: 14px;
+              font-weight: var(--font-weight-normal);
+              font-size: var(--font-size-base);
               color: #5b5750;
               text-transform: none;
-              margin: 0;
-              font-family: Theinhardt, sans-serif;
-              font-size: 16px;
-              line-height: 1.5;
+              font-family: var(--font-sans);
+              line-height: var(--line-height-normal);
+              letter-spacing: -0.01em;
+            }
+
+            .projectLocation,
+            .status,
+            .type,
+            .projectType,
+            .use,
+            .area {
+              color: #afaba6;
+              padding-left: 2px;
+              font-size: var(--font-size-sm);
+              font-weight: var(--font-weight-medium);
+              letter-spacing: 0.01em;
             }
           }
 
@@ -329,8 +352,9 @@
           }
 
           .projectText {
-            font-size: 16px;
-            line-height: 1.5;
+            font-size: var(--font-size-base);
+            line-height: var(--line-height-normal);
+            letter-spacing: -0.01em;
             min-width: calc(var(--grid-max-width) - 80px);
             height: 100%;
             display: flex;
@@ -341,8 +365,9 @@
           }
 
           .projectTeamText {
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: var(--font-size-sm);
+            line-height: var(--line-height-normal);
+            letter-spacing: -0.01em;
             min-width: calc(var(--grid-max-width) - 80px);
             height: 100%;
             text-align: left;
@@ -355,20 +380,20 @@
             }
 
             p {
-              font-size: 16px;
+              font-size: var(--font-size-base);
               margin-top: 0;
               margin-bottom: 0;
               @media screen and (max-width: 768px) {
-                font-size: 13px;
+                font-size: var(--font-size-sm);
               }
             }
 
             p.projectTeamRole {
-              font-weight: 500;
+              font-weight: var(--font-weight-medium);
               color: #afaba6;
             }
             p.projectTeamName {
-              font-weight: 400;
+              font-weight: var(--font-weight-normal);
               color: #4f4c4a;
             }
           }
@@ -379,8 +404,10 @@
 }
 
 .projectQuote {
-  font-size: 20px;
+  font-size: var(--font-size-xl);
   font-style: italic;
+  line-height: var(--line-height-relaxed);
+  letter-spacing: -0.02em;
   min-width: calc(var(--grid-max-width) - 80px);
   height: 100%;
   display: flex;
@@ -484,8 +511,9 @@
   .projectLocation {
     color: #afaba6;
     padding-left: 2px;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.01em;
 
     @media screen and (max-width: 768px) {
       color: #afaba6;
@@ -495,8 +523,9 @@
   .status {
     color: #afaba6;
     padding-left: 2px;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.01em;
 
     @media screen and (max-width: 768px) {
       color: #afaba6;
@@ -506,8 +535,9 @@
   .type, .projectType {
     color: #afaba6;
     padding-left: 2px;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.01em;
 
     @media screen and (max-width: 768px) {
       color: #afaba6;
@@ -517,8 +547,9 @@
   .use {
     color: #afaba6;
     padding-left: 2px;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.01em;
 
     @media screen and (max-width: 768px) {
       color: #afaba6;
@@ -528,8 +559,9 @@
   .area {
     color: #afaba6;
     padding-left: 2px;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.01em;
 
     @media screen and (max-width: 768px) {
       color: #afaba6;
@@ -542,12 +574,13 @@
     padding-left: 2px;
 
     p {
-      font-family: 'Theinhardt', sans-serif;
+      font-family: var(--font-sans);
       color: #5b5750;
-      font-size: 16px;
-      line-height: 1.5;
+      font-size: var(--font-size-base);
+      line-height: var(--line-height-normal);
       margin: 0;
-      text-transform: none;;
+      text-transform: none;
+      letter-spacing: -0.01em;
     }
   }
 }

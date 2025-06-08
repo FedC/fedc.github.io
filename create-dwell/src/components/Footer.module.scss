@@ -32,8 +32,8 @@
     align-items: flex-start;
     flex-wrap: wrap;
     gap: 20px;
-    font-family: 'Poiret One', sans-serif;
-    font-size: 24px;
+    font-family: var(--font-alt);
+    font-size: var(--font-size-xl);
     color: var(--color-link);
     margin-top: 20px;
     text-align: center;
@@ -47,12 +47,12 @@
     }
   
     .license {
-      font-size: 12px;
+      font-size: var(--font-size-sm);
       color: #8B7355;
       letter-spacing: 0.5px;
       text-align: right;
       align-self: flex-end;
-      font-weight: 700;
+      font-weight: var(--font-weight-medium);
     }
   
     .spacer {
@@ -86,8 +86,8 @@
     align-items: flex-end;
     flex-wrap: wrap;
     padding: 30px 0;
-    font-family: 'Poiret One', sans-serif;
-    font-size: 14px;
+    font-family: var(--font-alt);
+    font-size: var(--font-size-base);
 
     p {
       margin-bottom: 0;
@@ -102,6 +102,8 @@
         color: #333333;
         margin-bottom: 4px;
         transition: color 0.2s ease;
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-normal);
 
         &:hover {
           color: var(--color-link);
@@ -111,9 +113,9 @@
   
     .footerCopyright {
       text-align: right;
-      font-size: 13px;
+      font-size: var(--font-size-sm);
       color: #8d8b8b;
-      font-family: 'Poppins', sans-serif;
+      font-family: var(--font-sans);
 
       p {
         color: inherit;
@@ -121,11 +123,11 @@
   
       small {
         color: inherit;
-        font-size: 12px;
+        font-size: var(--font-size-xs);
         display: block;
         margin: 4px 0;
         text-align: right;
-        font-size: 12px;
+        line-height: var(--line-height-normal);
       }
   
       a {
@@ -158,9 +160,10 @@
     padding: 0 20px 20px;
 
     small { 
-      font-size: 12px;
+      font-size: var(--font-size-xs);
       color: #444444;
-      font-family: 'Poiret One', sans-serif;
+      font-family: var(--font-alt);
+      line-height: var(--line-height-normal);
     }
   }
 }
