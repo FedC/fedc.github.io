@@ -6,7 +6,6 @@ const firebasePath = path.join(__dirname, "../firebase.json");
 
 const firebaseJson = require(firebasePath);
 
-// Match static files
 const jsFile = fs.readdirSync(distDir).find(f => /^index\..+\.js$/.test(f));
 const staticAssets = fs.readdirSync(distDir).filter(f =>
   /\.(png|jpe?g|gif|ico|svg|webp|avif|woff2?|ttf|eot|mp4|webm)$/.test(f)
@@ -17,10 +16,8 @@ if (!jsFile) {
   process.exit(1);
 }
 
-// Start building rewrites
 const rewrites = [];
 
-// Add rewrites for static assets
 staticAssets.forEach((file) => {
   rewrites.push({
     source: `**/${file}`,
@@ -28,7 +25,6 @@ staticAssets.forEach((file) => {
   });
 });
 
-// Add core rewrites
 rewrites.push(
   {
     source: "/admin/edit-project/index.*.js",
@@ -53,9 +49,47 @@ cssFiles.forEach(cssFile => {
   });
 });
 
+const functionRoutes = [
+  "/about",
+  "/services",
+  "/residential",
+  "/commercial",
+  "/cultural",
+  "/contact-us",
+  "/community",
+  "/branding",
+  "/residential-project/**",
+  "/project/**",
+  "/sitemap.xml",
+  "/robots.txt",
+];
+
+functionRoutes.forEach(route => {
+  const func = route.includes("sitemap") ? "sitemap" :
+               route.includes("robots") ? "robots" :
+               "prerender";
+  rewrites.push({ source: route, function: func });
+});
+
 rewrites.push({
-  source: "**",
+  source: "/",
   destination: "/index.html"
+});
+rewrites.push({
+  source: "/admin/edit-project/**",
+  destination: "/index.html"
+});
+rewrites.push({
+  source: "/admin/**",
+  destination: "/index.html"
+});
+rewrites.push({
+  source: "/admin",
+  destination: "/index.html"
+});
+rewrites.push({
+  source: "/**",
+  destination: "/404.html"
 });
 
 firebaseJson.hosting.rewrites = rewrites;
