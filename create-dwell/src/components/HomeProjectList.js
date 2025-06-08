@@ -800,11 +800,11 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
       ease: "power3.out",
     });
 
-    // Hide the scroll hint
-    const hint = scrollHintRefs.current[projectId];
-    if (hint) {
-      gsap.to(hint, { opacity: 0, duration: 0.5 });
-    }
+    // // Hide the scroll hint
+    // const hint = scrollHintRefs.current[projectId];
+    // if (hint) {
+    //   gsap.to(hint, { opacity: 0, duration: 0.5 });
+    // }
   };
 
   // const toggleProjectDescription = (projectId, event) => {
