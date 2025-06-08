@@ -4,6 +4,7 @@
   src: url('../fonts/Theinhardt-Medium.fc38eab.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -11,6 +12,15 @@
   src: url('../fonts/Theinhardt-Regular.b467019.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Theinhardt';
+  src: url('../fonts/Theinhardt-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -18,10 +28,14 @@
   src: url('../fonts/PoiretOne.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
-$font-sans: 'Theinhardt', sans-serif;
-$font-alt: 'Poiret One', sans-serif;
+// Add Inter as a fallback font
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+$font-sans: 'Theinhardt', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+$font-alt: 'Poiret One', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 
 // Root Variables (CSS custom properties)
 :root {
@@ -41,6 +55,27 @@ $font-alt: 'Poiret One', sans-serif;
   --nav-z-index: 700;
   --frame-z-index: 600;
   --info-page-z-index: 1001;
+
+  // Typography scale
+  --font-size-xs: 0.75rem;    // 12px
+  --font-size-sm: 0.875rem;   // 14px
+  --font-size-base: 1rem;     // 16px
+  --font-size-lg: 1.125rem;   // 18px
+  --font-size-xl: 1.25rem;    // 20px
+  --font-size-2xl: 1.5rem;    // 24px
+  --font-size-3xl: 1.875rem;  // 30px
+  --font-size-4xl: 2.25rem;   // 36px
+
+  // Line heights
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  // Font weights
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 }
 
 @mixin border-box() {
