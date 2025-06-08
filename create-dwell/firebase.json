@@ -15,6 +15,9 @@
   ],
   "hosting": {
     "public": "dist",
+    "errorPages": {
+      "404": "/404.html"
+    },
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -58,11 +61,11 @@
       },
       {
         "source": "/admin/edit-project/index.*.js",
-        "destination": "/index.f6783737.js"
+        "destination": "/index.9ba14d56.js"
       },
       {
         "source": "/**/index.*.js",
-        "destination": "/index.f6783737.js"
+        "destination": "/index.9ba14d56.js"
       },
       {
         "source": "/admin/edit-project/index.696ad0ea.css",
@@ -81,8 +84,72 @@
         "destination": "/index.d45e60fb.css"
       },
       {
-        "source": "**",
+        "source": "/about",
+        "function": "prerender"
+      },
+      {
+        "source": "/services",
+        "function": "prerender"
+      },
+      {
+        "source": "/residential",
+        "function": "prerender"
+      },
+      {
+        "source": "/commercial",
+        "function": "prerender"
+      },
+      {
+        "source": "/cultural",
+        "function": "prerender"
+      },
+      {
+        "source": "/contact-us",
+        "function": "prerender"
+      },
+      {
+        "source": "/community",
+        "function": "prerender"
+      },
+      {
+        "source": "/branding",
+        "function": "prerender"
+      },
+      {
+        "source": "/residential-project/**",
+        "function": "prerender"
+      },
+      {
+        "source": "/project/**",
+        "function": "prerender"
+      },
+      {
+        "source": "/sitemap.xml",
+        "function": "sitemap"
+      },
+      {
+        "source": "/robots.txt",
+        "function": "robots"
+      },
+      {
+        "source": "/",
         "destination": "/index.html"
+      },
+      {
+        "source": "/admin/edit-project/**",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/admin/**",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/admin",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/**",
+        "destination": "/404.html"
       }
     ]
   },

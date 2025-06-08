@@ -222,4 +222,60 @@ async function fixContentToArray() {
   }
 }
 
-fixContentToArray();
+// fixContentToArray();
+
+async function setServicesMain() {
+  const servicesDocRef = db.collection('services').doc('main');
+
+  const serviceData = {
+    title: 'Our Services',
+    description: 'Experienced in new construction and renovations, our various services are organized into six design phases. The scope of each project informs the phases required, as well as the services included within each phase.',
+    sections: [
+      {
+        title: 'Pre-Design',
+        description: 'Code research, site analysis, and programming (the identification of the owner\'s needs, wants, and desires) are the essential tasks that inform the requirements and concept for the project.'
+      },
+      {
+        title: 'Schematic Design',
+        description: 'The concept for a project is conceived and communicated via sketches and 3D renderings. Drawings map out the exterior, interior, and systems of the building.'
+      },
+      {
+        title: 'Owner/Stakeholder Approval (1)',
+        description: 'Drawings are ready for submittals to HOAs, city design boards, or community review groups. Preliminary cost estimates can also be generated.'
+      },
+      {
+        title: 'Design Development',
+        description: 'Engineers and consultants are added to the process. Materials, finishes, equipment, and fixtures are selected and specified.'
+      },
+      {
+        title: 'Owner/Stakeholder Approval (2)',
+        description: 'Updated drawings are reviewed again with owners and stakeholders before moving to final construction docs.'
+      },
+      {
+        title: 'Construction Documents',
+        description: 'Final permit drawings and documents are produced, compliant with all local codes.'
+      },
+      {
+        title: 'Permit',
+        description: 'Permit applications are submitted. Architects manage revisions and responses until permits are approved.'
+      },
+      {
+        title: 'Bidding & Negotiation',
+        description: 'Owner selects delivery method and contractor. Architect helps review bids and clarify scope.'
+      },
+      {
+        title: 'Construction Administration',
+        description: 'The architect ensures construction meets drawings. They handle change orders, RFIs, walkthroughs, and project closeout.'
+      }
+    ]
+  };
+
+  try {
+    await servicesDocRef.set(serviceData, { merge: true });
+    console.log('services/main document written successfully.');
+  } catch (error) {
+    console.error('Error writing services/main:', error);
+  }
+}
+
+setServicesMain();
