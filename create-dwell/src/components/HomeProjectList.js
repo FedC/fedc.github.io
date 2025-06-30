@@ -79,7 +79,7 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
       scrollTo: 0,
     });
 
-    if (headerAnimationComplete) {
+    if (headerAnimationComplete && projects?.length) {
       console.log('Header animation completed, starting project list animations');
       // Trigger any animations or effects for the project list here
       animation();
@@ -246,10 +246,13 @@ const HomeProjectList = ({ projects, headerAnimationComplete, projectReset, proj
 
   useEffect(() => {
     const loadResources = async () => {
+      console.log('loadResources');
+      console.log('projects', projects);
       if (!projects?.length) return;
       await preloadImages(`.${styles.projectMainImage}`);
 
       if (headerAnimationComplete) {
+        console.log('headerAnimationComplete', headerAnimationComplete);
         animation();
       }
     };

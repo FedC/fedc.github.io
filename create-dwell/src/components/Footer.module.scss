@@ -4,6 +4,10 @@
   background-color: #fcfcfc;
   padding: 30px 30px;
 
+  @media screen and (max-width: 768px) {
+    padding: 20px 0;
+  }
+
   .spacer {
     width: 10px;
     height: 10px;
@@ -38,7 +42,12 @@
     margin-top: 20px;
     text-align: center;
   
-    .serviceGroup {
+    .serviceGroup, .serviceLine {
+      font-family: 'Poiret One', cursive;
+      font-size: var(--font-size-lg);
+      font-weight: 600;
+      color: var(--color-link);
+      text-transform: lowercase;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -48,11 +57,14 @@
   
     .license {
       font-size: var(--font-size-sm);
-      color: #8B7355;
+      color: #8d8b8b;
       letter-spacing: 0.5px;
       text-align: right;
       align-self: flex-end;
       font-weight: var(--font-weight-medium);
+      font-size: 11px;
+      font-weight: 600;
+
     }
   
     .spacer {
@@ -65,13 +77,13 @@
 
     @media screen and (max-width: 768px) {
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       gap: 16px;
+      text-align: left;
 
       .license {
-        text-align: center;
-        align-self: center;
+        align-self: flex-start;
       }
 
       .spacer {
@@ -88,6 +100,12 @@
     padding: 30px 0;
     font-family: var(--font-alt);
     font-size: var(--font-size-base);
+
+    @media screen and (max-width: 768px) {
+      align-items: flex-start;
+      text-align: right;
+      display: block;
+    }
 
     p {
       margin-bottom: 0;
@@ -107,6 +125,14 @@
 
         &:hover {
           color: var(--color-link);
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        margin-bottom: 40px;
+
+        p {
+          text-align: left;
         }
       }
     }

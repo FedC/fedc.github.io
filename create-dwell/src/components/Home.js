@@ -25,6 +25,7 @@ initSmoothScrolling();
 const Home = () => {
   const [originalProjects, setOriginalProjects] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [projectsLoaded, setProjectsLoaded] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [headerAnimationComplete, setHeaderAnimationComplete] = useState(false);
   const [projectReset, setProjectReset] = useState(false);
@@ -110,6 +111,7 @@ const Home = () => {
   const onProjectsLoaded = () => {
     preloadImages('.grid__item-img').then(() => {
       document.body.classList.remove('loading');
+      setProjectsLoaded(true);
     });
   };
 
@@ -183,6 +185,7 @@ const Home = () => {
       <Header
         onAnimationEnd={onHeaderAnimationEnd}
         projects={projects}
+        projectsLoaded={projectsLoaded}
         resetProjects={onResetProjects}
         filterProjects={onFilterProjects}
         onShowInfoPage={handleShowInfoPage}
