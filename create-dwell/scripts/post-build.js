@@ -96,3 +96,33 @@ firebaseJson.hosting.rewrites = rewrites;
 
 fs.writeFileSync(firebasePath, JSON.stringify(firebaseJson, null, 2));
 console.log("✅ firebase.json rewrites updated:", jsFile, cssFiles, staticAssets);
+
+const robotsTxtPath = path.join(distDir, "robots.txt");
+const robotsTxtContent = `User-agent: *
+Allow: /
+Sitemap: https://create-dwell.com/sitemap.xml
+`;
+
+fs.writeFileSync(robotsTxtPath, robotsTxtContent);
+console.log("✅ dist/robots.txt created.");
+
+const indexHtmlPath = path.join(distDir, "index.html");
+const prerenderHtmlPath = path.join(distDir, "prerender.html");
+
+if (fs.existsSync(indexHtmlPath) && fs.existsSync(prerenderHtmlPath)) {
+  const indexHtml = fs.readFileSync(indexHtmlPath, "utf8");
+  const prerenderHtml = fs.readFileSync(prerenderHtmlPath, "utf8");
+
+  const match = prerenderHtml.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  const prerenderBody = match ? match[1].trim() : "";
+
+  const updatedHtml = indexHtml.replace(
+    /<div id="root"><\/div>/,
+    `<div id="root"><div class="ssr-only">\n${prerenderBody}\n</div></div>`
+  );
+
+  fs.writeFileSync(indexHtmlPath, updatedHtml, "utf8");
+  console.log("✅ Injected prerendered HTML into index.html");
+} else {
+  console.warn("⚠️ prerender.html or index.html not found — skipping injection");
+}

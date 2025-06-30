@@ -7,14 +7,15 @@
     "dev": "npm run start",
     "clean": "rm -rf dist/* && rm -rf .parcel-cache",
     "build:parcel": "parcel build src/*.html --no-cache --no-source-maps --public-url ./ --dist-dir dist",
-    "build:update": "node scripts/post-build.js",
+    "build:update": "npm run render:full && node scripts/post-build.js",
     "build": "npm run clean && npm run build:parcel && npm run build:update",
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "firebase serve",
     "emulate": "firebase emulators:start",
     "deploy": "firebase deploy --only hosting",
     "deploy:all": "firebase deploy",
-    "deploy:functions": "firebase deploy --only functions"
+    "deploy:functions": "firebase deploy --only functions",
+    "render:full": "node scripts/renderFullToHtml.js"
   },
   "keywords": [],
   "author": "",

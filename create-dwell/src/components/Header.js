@@ -9,7 +9,7 @@ import HomeIcon from './HomeIcon';
 import MobileMenu from './MobileMenu';
 import Logo from './Logo';
 
-const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects, onShowInfoPage, isInfoPageOpen, currentPage, mobileMenuState, onMobileMenuStateChange }) => {
+const Header = ({ onAnimationEnd, projects, projectsLoaded, resetProjects, filterProjects, onShowInfoPage, isInfoPageOpen, currentPage, mobileMenuState, onMobileMenuStateChange }) => {
   const orange = 'rgb(246, 171, 11)';
 
   const navRef = useRef(null);
@@ -36,16 +36,45 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects, onSho
     if (entryAnimation) {
       return;
     }
-    entryAnimation = true;
-    const originalInnerNavWidth = navRef.current.offsetWidth;
+    const originalInnerNavWidth = 90; // navRef.current.offsetWidth;
+    console.log('originalInnerNavWidth', originalInnerNavWidth);
+
     const navLinks = [homeButtonRef.current, aboutLinkRef.current, servicesLinkRef.current, contactLinkRef.current];
 
     gsap.set(topbarRef.current, { opacity: 0 });
     gsap.set(navLinks, { opacity: 0 });
 
-    if (window.matchMedia('(max-width: 767px)').matches) {
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+
+    if (isMobile) {
       gsap.set(mobileMenuRef.current, { opacity: 0, x: 100 });
     }
+
+    const orangeHalf = document.querySelector('.js-orange-half');
+    const logoDwell = document.querySelector('.js-logo-dwell');
+
+    gsap.set(navRef.current, {
+      width: isMobile ? '90px' : '50%',
+    });
+
+    if (isMobile) {
+      gsap.set(navRef.current, { height: '100vh' });
+    }
+
+    gsap.set(logoRef.current, {
+      y: window.innerHeight * 8 / 10,
+    });
+    gsap.set(logoRef.current.querySelectorAll('svg'), { scale: isDesktop ? 2.5 : 1, x: isMobile ? 0 : 105 });
+
+    gsap.set(logoDwell, { fill: 'rgba(246, 171, 11, 0.65)', opacity: 1 });
+    gsap.set(orangeHalf, { fill: 'rgba(246, 171, 11, 0.65)' });
+
+    if (!projectsLoaded) {
+      return;
+    }
+
+    entryAnimation = true;
 
     const tl = gsap.timeline({
       onUpdate: function () {
@@ -157,7 +186,7 @@ const Header = ({ onAnimationEnd, projects, resetProjects, filterProjects, onSho
     });
 
     return () => mm.revert();
-  }, []);
+  }, [projectsLoaded]);
 
   useEffect(() => {
     const mm = gsap.matchMedia();

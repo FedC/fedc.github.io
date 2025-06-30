@@ -930,4 +930,8 @@
 .footer {
   padding-left: 100px;
   padding-right: 20px;
+
+  @media screen and (max-width: 768px) {
+    padding-left: 91px;
+  }
 }

@@ -262,7 +262,7 @@ const InfoPage = ({ isOpen, onClose, currentPage, onSectionChange, mobileMenuSta
               </div>
             </div>
 
-            <div ref={footerRef}>
+            <div ref={footerRef} className={styles.footer}>
               <Footer />
             </div>
           </motion.div>
