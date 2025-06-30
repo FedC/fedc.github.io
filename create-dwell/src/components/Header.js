@@ -8,6 +8,7 @@ import ServicesIcon from './ServicesIcon';
 import HomeIcon from './HomeIcon';
 import MobileMenu from './MobileMenu';
 import Logo from './Logo';
+import { Link } from 'react-router-dom';
 
 const Header = ({ onAnimationEnd, projects, projectsLoaded, resetProjects, filterProjects, onShowInfoPage, isInfoPageOpen, currentPage, mobileMenuState, onMobileMenuStateChange }) => {
   const orange = 'rgb(246, 171, 11)';
@@ -336,14 +337,30 @@ const Header = ({ onAnimationEnd, projects, projectsLoaded, resetProjects, filte
 
       <nav className={styles.nav__topbar} id="topbar" ref={topbarRef}>
         <div className={styles.nav__topbarInner}>
-          <a className={`${styles.nav__link} ${selectedFilter === 'all' ? styles.active : ''}`} 
-            ref={(el) => navTopBarEls.current[1] = el} onClick={(e) => onTopBarLinkClick(e, 'all')}>All</a>
-
-          <a className={`${styles.nav__link} ${selectedFilter === 'residential' ? styles.active : ''}`} 
-            ref={(el) => navTopBarEls.current[2] = el} onClick={(e) => onTopBarLinkClick(e, 'residential') }>Residential</a>
-
-          <a className={`${styles.nav__link} ${selectedFilter === 'commercial' ? styles.active : ''}`}
-            ref={(el) => navTopBarEls.current[3] = el} onClick={(e) => onTopBarLinkClick(e, 'commercial')}>Commercial</a>
+          <Link
+            to="/"
+            className={`${styles.nav__link} ${selectedFilter === 'all' ? styles.active : ''}`}
+            ref={(el) => navTopBarEls.current[1] = el}
+            onClick={(e) => onTopBarLinkClick(e, 'all')}
+          >
+            All
+          </Link>
+          <Link
+            to="/residential"
+            className={`${styles.nav__link} ${selectedFilter === 'residential' ? styles.active : ''}`}
+            ref={(el) => navTopBarEls.current[2] = el}
+            onClick={(e) => onTopBarLinkClick(e, 'residential')}
+          >
+            Residential
+          </Link>
+          <Link
+            to="/commercial"
+            className={`${styles.nav__link} ${selectedFilter === 'commercial' ? styles.active : ''}`}
+            ref={(el) => navTopBarEls.current[3] = el}
+            onClick={(e) => onTopBarLinkClick(e, 'commercial')}
+          >
+            Commercial
+          </Link>
         </div>
       </nav>
 
