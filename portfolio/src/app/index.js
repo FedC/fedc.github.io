@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import GSAP from 'gsap'
+import { gsap as GSAP } from 'gsap'
 
 import Animations from './Animations'
 import SmoothScroll from './SmoothScroll'
@@ -192,7 +192,11 @@ class ScrollStage {
   onLoad() {
     document.body.classList.remove('loading')
 
-    this.animations = new Animations(this.element, this.camera)
+    try {
+      this.animations = new Animations(this.element, this.camera)
+    } catch (error) {
+      console.warn('Animations initialization failed:', error)
+    }
   }
 
   onMouseMove(event) {
