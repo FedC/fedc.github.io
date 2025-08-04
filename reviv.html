@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>3D License Plate — Scroll + Awwwards-Style Input (No Shift)</title>
+<style>
+  :root{
+    --bg:#0b0e12; --ink:#0b0f18; --glow:#7bdcff; --acc:#9d7bff;
+  }
+  html,body{height:100%;margin:0;background:var(--bg);color:#a8b2c1;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  .wrap{position:fixed;inset:0;display:grid;place-items:center;perspective:1200px;overflow:hidden}
+  .spacer{height:300vh}
+  .hint{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;padding:8px 12px;border-radius:999px;font-size:13px;background:rgba(255,255,255,.06);backdrop-filter:blur(6px)}
+
+  /* Awwwards-style input + button (center WITHOUT width changes) */
+  .ui{
+    position:fixed; top:20px; left:0; right:0; margin:0 auto;   /* center via margins */
+    width:min(760px,92vw);                                      /* fixed container width */
+    display:flex; gap:10px; align-items:center; z-index:4;
+    padding:10px; border-radius:16px;
+    background:rgba(255,255,255,.06); backdrop-filter: blur(8px);
+    box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.08);
+  }
+  .ui input{
+    flex:1; min-width:0;                                      /* prevents reflow on blur/focus */
+    padding:14px 16px; font-size:14px; letter-spacing:.02em;
+    color:#e8eef9; background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12); border-radius:12px; outline:none;
+  }
+  .ui input::placeholder{color:#a8b2c1}
+  .btn{
+    flex:0 0 auto;                                            /* fixed button sizing */
+    position:relative; isolation:isolate;
+    padding:14px 18px; border-radius:28px; border:none; cursor:pointer;
+    text-transform:uppercase; font-weight:700; letter-spacing:.08em; font-size:12px;
+    color:#0b0f18;
+    background:linear-gradient(90deg,var(--glow),var(--acc));
+    box-shadow:0 8px 25px rgba(121,200,255,.35), 0 2px 0 rgba(0,0,0,.3) inset;
+    transition:filter .15s ease;                               /* no scale to avoid width jitter */
+  }
+  .btn:before{
+    content:""; position:absolute; inset:-2px; z-index:-1; border-radius:inherit;
+    background:conic-gradient(from 0deg at 50% 50%, var(--glow), var(--acc), var(--glow));
+    filter:blur(18px); opacity:.55; transition:opacity .25s ease;
+  }
+  .btn:hover:before{opacity:.9}
+  .btn:active{transform:none}                                   /* disable active scaling */
+
+  /* 3D plate */
+  .plate{
+    position:relative;width:min(78vmin,820px);aspect-ratio:12/6;
+    transform-style:preserve-3d; transform:rotateX(-2deg) rotateY(0deg) translateZ(0);
+    transition:transform .1s linear;
+  }
+  .edge{
+    position:absolute;inset:-0.5% -0.5%;
+    background:linear-gradient(180deg,#f6f9ff,#e8edf6);
+    border-radius:1.5vmin;
+    box-shadow:0 20px 50px rgba(0,0,0,.55), inset 0 0 0 .45vmin #1b4b8d, inset 0 0 0 .7vmin #e6ecf7;
+    transform:translateZ(-1.2vmin);
+  }
+  .edge::after{content:"";position:absolute;inset:0;border-radius:inherit;background:
+    radial-gradient(50% 50% at 12% 18%, rgba(0,0,0,.16), transparent 60%),
+    radial-gradient(50% 50% at 88% 18%, rgba(0,0,0,.16), transparent 60%),
+    radial-gradient(50% 50% at 12% 82%, rgba(0,0,0,.16), transparent 60%),
+    radial-gradient(50% 50% at 88% 82%, rgba(0,0,0,.16), transparent 60%); filter:blur(.4vmin)}
+  .face,.back{position:absolute;inset:0;border-radius:1.2vmin;overflow:hidden;box-shadow:inset 0 0 0 .55vmin #1b4b8d;transform:translateZ(0.9vmin);background:#eef3fb}
+  .back{transform:rotateY(180deg) translateZ(0.9vmin);backface-visibility:hidden}
+  .bolt{position:absolute;width:2.4vmin;height:2.4vmin;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #cdd5e3 0 35%, #9aa3b2 36% 100%);
+    box-shadow:0 .2vmin .5vmin rgba(0,0,0,.4), inset 0 .2vmin .4vmin rgba(0,0,0,.3);
+    transform:translateZ(1.3vmin)}
+  .bolt::after{content:"";position:absolute;inset:32% 32%;border-radius:50%;background:#6c7382;box-shadow:inset 0 .15vmin .25vmin rgba(0,0,0,.45)}
+  .bolt.tl{left:4%; top:6%} .bolt.tr{right:4%; top:6%} .bolt.bl{left:4%; bottom:6%} .bolt.br{right:4%; bottom:6%}
+  .shadow{position:absolute;inset:auto 0 8vh;height:8vh;filter:blur(20px);background:radial-gradient(60% 100% at 50% 0%, rgba(0,0,0,.6), transparent 70%);transform:translateZ(-10vmin)}
+  svg{width:100%;height:100%;display:block}
+  .bgGrad stop:first-child{stop-color:#f8fbff}
+  .bgGrad stop:last-child{stop-color:#e9eef7}
+  .stars{position:fixed;inset:0;pointer-events:none;background:
+    radial-gradient(1200px 600px at 20% -20%,rgba(56,86,174,.25),transparent 70%),
+    radial-gradient(1200px 600px at 120% 120%,rgba(56,86,174,.18),transparent 70%);opacity:.5}
+</style>
+</head>
+<body>
+<form class="ui" id="sloganForm" autocomplete="off">
+  <input id="sloganInput" type="text" placeholder='Type a slogan (e.g., "GARDEN STATE")' />
+  <button class="btn" type="submit"><span>Update</span></button>
+</form>
+
+<div class="wrap">
+  <div class="plate" id="plate">
+    <div class="edge"></div>
+
+    <div class="face">
+      <svg viewBox="0 0 2048 1024" aria-label="License Plate Front">
+        <defs><linearGradient id="bg" x1="0" x2="0" y1="0" y2="1" class="bgGrad"><stop offset="0%"/><stop offset="100%"/></linearGradient></defs>
+        <rect x="0" y="0" width="2048" height="1024" fill="url(#bg)"/>
+        <rect x="20" y="20" width="2008" height="984" fill="none" stroke="#ffffff" opacity=".35" stroke-width="8"/>
+        <text x="1024" y="180" font-family="Segoe UI,system-ui,Arial" font-weight="700" font-size="140" fill="#1b4b8d" text-anchor="middle" id="stateTxt">O'RION STATE</text>
+        <rect x="1620" y="40" width="170" height="120" fill="#0c1222" opacity=".08" rx="10"/>
+        <rect x="250"  y="40" width="170" height="120" fill="#0c1222" opacity=".08" rx="10"/>
+        <text x="1024" y="650" font-family="ui-monospace,Consolas,Menlo,monospace" font-weight="800" font-size="420" fill="#0b0f18" text-anchor="middle" letter-spacing="8" id="codeTxt">ABC1234</text>
+        <text x="1024" y="930" font-family="Segoe UI,system-ui,Arial" font-weight="600" font-size="120" fill="#2a313c" text-anchor="middle" id="sloganTxt">Stuck in traffic</text>
+        <g fill="#9097a6">
+          <circle cx="150" cy="150" r="28"/><circle cx="1898" cy="150" r="28"/>
+          <circle cx="150" cy="874" r="28"/><circle cx="1898" cy="874" r="28"/>
+          <g fill="#646b7a"><circle cx="150" cy="150" r="12"/><circle cx="1898" cy="150" r="12"/><circle cx="150" cy="874" r="12"/><circle cx="1898" cy="874" r="12"/></g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="back" aria-hidden="true">
+      <svg viewBox="0 0 2048 1024">
+        <rect x="0" y="0" width="2048" height="1024" fill="#eef3fb"/>
+        <rect x="20" y="20" width="2008" height="984" fill="none" stroke="#1b4b8d" stroke-width="12" opacity=".6"/>
+        <text x="1024" y="580" font-family="ui-monospace,Consolas,Menlo,monospace" font-weight="800" font-size="380" fill="#11182622" text-anchor="middle" id="codeBack">ABC • 1234</text>
+      </svg>
+    </div>
+
+    <div class="bolt tl"></div><div class="bolt tr"></div><div class="bolt bl"></div><div class="bolt br"></div>
+    <div class="shadow"></div>
+  </div>
+</div>
+
+<div class="spacer"></div>
+<div class="hint">Scroll to rotate • Drag to look • Update slogan above</div>
+<div class="stars"></div>
+
+<script>
+(() => {
+  const plate = document.getElementById('plate');
+  const sloganTxt = document.getElementById('sloganTxt');
+  const stateTxt  = document.getElementById('stateTxt');
+  const codeTxt   = document.getElementById('codeTxt');
+  const codeBack  = document.getElementById('codeBack');
+
+  // Hash customization: #STATE|SLOGAN|CODE
+  function applyFromHash(){
+    const h = decodeURIComponent(location.hash.slice(1));
+    if(!h) return;
+    const [state, slogan, code] = h.split('|');
+    if(state) stateTxt.textContent = state;
+    if(slogan) sloganTxt.textContent = slogan;
+    if(code){ codeTxt.textContent = code; codeBack.textContent = code; }
+  }
+  addEventListener('hashchange', applyFromHash);
+  applyFromHash();
+
+  // Scroll -> rotation
+  let target = 0, spin = 0, vel = 0, yaw = 0, pitch = -0.04;
+  function onScroll(){
+    const max = Math.max(1, document.body.scrollHeight - innerHeight);
+    target = (scrollY / max) * Math.PI * 4;
+  }
+  addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // Drag to look
+  let down=false, lx=0, ly=0;
+  addEventListener('pointerdown', e => { down=true; lx=e.clientX; ly=e.clientY; }, {passive:true});
+  addEventListener('pointerup',   () => { down=false; }, {passive:true});
+  addEventListener('pointermove', e => {
+    if(!down) return;
+    const dx=e.clientX-lx, dy=e.clientY-ly; lx=e.clientX; ly=e.clientY;
+    yaw += dx * 0.003;
+    pitch = Math.max(-0.6, Math.min(0.2, pitch + dy*0.003));
+  }, {passive:true});
+
+  // Animate
+  let last = performance.now();
+  function tick(now){
+    const dt = Math.min(0.033, (now-last)/1000); last=now;
+    const k=12, d=6, err=target-spin, acc=k*err - d*vel; vel += acc*dt; spin += vel*dt;
+    const rx = pitch*20; const ry = (spin + yaw) * 180/Math.PI;
+    plate.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  // Slogan form (no layout shift)
+  const form  = document.getElementById('sloganForm');
+  const input = document.getElementById('sloganInput');
+
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const val = (input.value || '').trim();
+    if(!val) return;
+    sloganTxt.textContent = val;
+
+    // Keep hash without triggering a hashchange scroll/jump
+    const parts = decodeURIComponent(location.hash.slice(1)).split('|');
+    if(parts.length < 3) parts.length = 3;
+    parts[1] = val;
+    const newHash = encodeURIComponent(parts.join('|'));
+    history.replaceState(null, '', '#' + newHash);
+
+    form.animate([{transform:'translateY(0)'},{transform:'translateY(-2px)'},{transform:'translateY(0)'}],{duration:180});
+  });
+})();
+</script>
+</body>
+</html>
