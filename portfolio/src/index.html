@@ -4,10 +4,11 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Federico Commisso | Web Developer</title>
-	<meta name="description" content="Federico Commisso's portfolio showcasing web development skills and projects." />
+	<title>Federico Commisso | Web Developer &amp; Interaction Designer</title>
+	<meta name="description"
+		content="Frontend engineer for interactive web experiences — motion, product UI, platforms, and animation systems." />
 	<meta name="keywords"
-		content="webgl, three.js, on scroll, animation, three.js, gsap, javascript, web developer, Federico Commisso" />
+		content="interaction design, web developer, JavaScript, TypeScript, React, Angular, Next.js, GSAP, Framer Motion, Federico Commisso" />
 	<meta name="author" content="Federico Commisso" />
 	<link rel="shortcut icon" href="favicon.ico">
 	<link rel="stylesheet" type="text/css" href="./styles/base.css" />
@@ -17,194 +18,208 @@
 
 <body class="loading">
 	<main>
-		<div class="frame">
+		<header class="frame">
 			<div class="frame__title-wrap">
-				<h1 class="frame__title">Okcd.io</h1>
+				<p class="frame__title">Okcd.io</p>
 			</div>
-			<nav class="frame__links">
-				<!-- <a href="#about" class="page-link">About</a> -->
-				<!-- <a href="#work" class="page-link">Work</a> -->
+			<nav class="frame__links site-nav" aria-label="Primary">
+				<a href="#work" class="page-link">Work</a>
+				<a href="#playground" class="page-link">Playground</a>
+				<a href="#about" class="page-link">About</a>
 				<a href="#contact" class="page-link">Contact</a>
 			</nav>
-		</div>
+		</header>
 		<div class="content">
 			<div class="scroll__stage">
 				<div class="scroll__content">
-					<section class="section" id="home">
-						<div class="section__title">
-							<!-- <h1 class="section__title-number">01</h1> -->
-							<!-- <h2 class="section__title-text"></h2> -->
-							<div class="scroll-hint">
-								<p class="scroll-hint__text">Scroll Down</p>
-								<div class="scroll-arrows">
-									<span class="scroll-arrow scroll-arrow--1">➤</span>
-									<span class="scroll-arrow scroll-arrow--2">➤</span>
-									<span class="scroll-arrow scroll-arrow--3">➤</span>
+					<section class="section" id="home" aria-label="Introduction">
+						<div class="hero">
+							<p class="hero__eyebrow js-animate-in">Web Developer &amp; Interaction Designer</p>
+							<h1 class="hero__headline js-animate-in">Frontend Engineer for Interactive Web Experiences</h1>
+							<div class="hero__intro js-animate-in">
+								<p class="hero__lede">I build polished, interactive web experiences, from motion-heavy sites to complex product platforms.</p>
+							</div>
+							<div class="hero__actions js-animate-in">
+								<a href="#work" class="btn btn--primary page-link">View work</a>
+								<a href="#contact" class="btn btn--ghost page-link">Contact</a>
+							</div>
+							<div class="hero__scroll js-animate-in" aria-hidden="true">
+								<div class="scroll-hint">
+									<p class="scroll-hint__text">Scroll</p>
+									<div class="scroll-arrows">
+										<span class="scroll-arrow scroll-arrow--1">➤</span>
+										<span class="scroll-arrow scroll-arrow--2">➤</span>
+										<span class="scroll-arrow scroll-arrow--3">➤</span>
+									</div>
 								</div>
 							</div>
 						</div>
-						<p class="section__paragraph">
-							<!-- Hi! I'm a passionate web developer with a background in computer science,
-							experienced in building scalable applications at startups
-							such as Squeeze.com and Cloud.com.
-							<br /><br /> -->
-							<!-- <a href="#contact" class="section__button page-link">Let's Connect</a> -->
-						</p>
-					</section>
-					<!-- <section class="section" id="about">
-						<div class="section__title">
-							<h1 class="section__title-number">02</h1>
-							<h2 class="section__title-text">About Me</h2>
-						</div>
-						<p class="section__paragraph">
-							I specialize in JavaScript and its ecosystem, working with technologies
-							like Node.js, React, Angular, MongoDB, Express, and TypeScript
-							to build scalable, high-performance web applications.
-							npm run clean					</p>
-						<br><br>
-						<p class="section__paragraph">
-							I thrive in dynamic startup environments,
-							turning innovative ideas into functional,
-							beautiful web applications.
-						</p>
-					</section> -->
-					<!-- <section class="section" id="work">
-						<div class="section__title">
-							<h1 class="section__title-number">02</h1>
-							<h2 class="section__title-text">Work</h2>
-						</div>
-						<div class="section__paragraph">
-							<h3>Tech Lead | Frontend Web Developer at Squeeze.com</h3>
-							<p class="section__paragraph">
-								Focused on building performant web applications with Angular and Node.js.
-							</p>
-							<div class="section__link-container">
-								<a href="https://squeeze.com/" target="_blank" class="section__link">Squeeze.com</a>
-							</div>
-						</div>
-						<div class="section__paragraph">
-							<h3>Sr. Software Engineer at Citrix Systems Cloud.com</h3>
-							<p class="section__paragraph">
-								Worked on cloud.com's web services.
-								Developed scalable web solutions using
-								Firebase-like in-house web technologies,
-								WebRTC, Javascript framworks & MongoDB,
-								optimizing for user experience and accessibility.
-							</p>
-							<div class="section__link-container">
-								<a href="https://cloud.com/" target="_blank" class="section__link">Cloud.com</a>
-							</div>
-						</div>
-					</section> -->
-					<section class="section" id="contact">
-						<div class="section__title">
-							<!-- <h1 class="section__title-number">03</h1> -->
-							<!-- <h2 class="section__title-text">Contact</h2> -->
-						</div>
-						<!-- <p class="section__paragraph">
-							Let's build something together!
-						</p> -->
-
-						<form action="https://formspree.io/f/xpwzwrev" method="POST" id="contact-form">
-
-							<span class="input input--haruki">
-								<input class="input__field input__field--haruki" type="email" name="email" id="email-input" />
-								<label class="input__label input__label--haruki" for="email-input">
-									<span class="input__label-content input__label-content--haruki">Your Email</span>
-								</label>
-							</span>
-
-							<span class="input input--haruki">
-								<textarea class="input__field input__field--haruki" id="message-input" name="message"></textarea>
-								<label class="input__label input__label--haruki" for="message-input">
-									<span class="input__label-content input__label-content--haruki">Your Message</span>
-								</label>
-							</span>
-
-							<button type="submit">Send</button>
-
-							<p id="form-response" style="display: none;"></p>
-						</form>
 					</section>
 
-					<script type="text/javascript">
-						// Add your JavaScript here
-						document.addEventListener('DOMContentLoaded', function () {
-							document.getElementById('contact-form').addEventListener('submit', function (event) {
-								event.preventDefault(); // Prevent the default form submission
+					<section class="section" id="work" aria-labelledby="work-heading">
+						<header class="section-heading js-reveal">
+							<span class="section-heading__label">Selected work</span>
+							<h2 class="section-heading__title" id="work-heading">Product surfaces, end to end</h2>
+							<p class="section-heading__desc">Headless commerce, dense workflows, and embeddable flows — built for clarity under real data and real traffic.</p>
+						</header>
+						<div class="work-grid">
+							<article class="work-card js-reveal work-card--spotlight">
+								<h3 class="work-card__title">Reviver.com</h3>
+								<p class="work-card__desc">Headless Shopify storefront with a tactile, interactive frontend — performance budgets, editorial layouts, and motion that stays out of the way.</p>
+								<div class="work-card__tags">
+									<span class="tag">Next.js</span>
+									<span class="tag">Shopify</span>
+									<span class="tag">Animation</span>
+								</div>
+							</article>
+							<article class="work-card js-reveal work-card--spotlight">
+								<h3 class="work-card__title">Futiki.app</h3>
+								<p class="work-card__desc">Pickup soccer platform — scheduling, discovery, and product UI tuned for quick decisions on small screens.</p>
+								<div class="work-card__tags">
+									<span class="tag">React</span>
+									<span class="tag">Product UI</span>
+									<span class="tag">Maps &amp; state</span>
+								</div>
+							</article>
+							<article class="work-card js-reveal work-card--spotlight">
+								<h3 class="work-card__title">Squeeze Insurance Verify SDK</h3>
+								<p class="work-card__desc">Embeddable verification flow for partners — narrow API surface, resilient error states, and a UI that still feels native inside host apps.</p>
+								<div class="work-card__tags">
+									<span class="tag">TypeScript</span>
+									<span class="tag">SDK design</span>
+									<span class="tag">Embeds</span>
+								</div>
+							</article>
+							<article class="work-card js-reveal work-card--spotlight">
+								<h3 class="work-card__title">myyellow.ai</h3>
+								<p class="work-card__desc">Workflow-heavy product platform — dense tables, approvals, and keyboard paths without the enterprise hangover.</p>
+								<div class="work-card__tags">
+									<span class="tag">Platform UI</span>
+									<span class="tag">Angular</span>
+									<span class="tag">State at scale</span>
+								</div>
+							</article>
+						</div>
+					</section>
 
-								const form = event.target;
-								const formData = new FormData(form); // Collect form data
-								const xhr = new XMLHttpRequest();
+					<section class="section" id="playground" aria-labelledby="playground-heading">
+						<header class="section-heading js-reveal">
+							<span class="section-heading__label">Interaction lab</span>
+							<h2 class="section-heading__title" id="playground-heading">Playground</h2>
+							<p class="section-heading__desc">Small experiments in motion, depth, and feedback — the same primitives I use when shipping, isolated here for texture.</p>
+						</header>
+						<div class="playground-grid">
+							<div class="play-tile js-reveal">
+								<span class="play-tile__label">Magnetic</span>
+								<p class="play-tile__title">Button pull</p>
+								<div class="play-tile__body">
+									<div class="magnetic-wrap">
+										<button type="button" class="magnetic-btn" data-magnetic>Enter orbit</button>
+									</div>
+								</div>
+							</div>
+							<div class="play-tile js-reveal">
+								<span class="play-tile__label">Depth</span>
+								<p class="play-tile__title">Tilt card</p>
+								<div class="play-tile__body">
+									<div class="tilt-card js-tilt" data-tilt-strength="14">
+										<span class="tilt-card__cap">Parallax plane</span>
+									</div>
+								</div>
+							</div>
+							<div class="play-tile js-reveal">
+								<span class="play-tile__label">Light</span>
+								<p class="play-tile__title">Cursor glow</p>
+								<div class="play-tile__body play-glow-zone" data-glow-zone>
+									<span class="play-glow-zone__glow" data-glow aria-hidden="true"></span>
+									<span class="play-glow-zone__hint">Move inside the frame</span>
+								</div>
+							</div>
+							<div class="play-tile js-reveal">
+								<span class="play-tile__label">Distortion</span>
+								<p class="play-tile__title">Hover skew</p>
+								<div class="play-tile__body">
+									<div class="distort-card">Soft skew on hover — cheap thrills, controlled range.</div>
+								</div>
+							</div>
+							<div class="play-tile js-reveal">
+								<span class="play-tile__label">Micro</span>
+								<p class="play-tile__title">Ripple chip</p>
+								<div class="play-tile__body">
+									<button type="button" class="chip-ripple" data-chip-ripple>Tap me</button>
+								</div>
+							</div>
+							<div class="play-tile js-reveal">
+								<span class="play-tile__label">Reveal</span>
+								<p class="play-tile__title">Scroll staging</p>
+								<div class="play-tile__body">
+									<p class="play-tile__note">Sections use a light intersection fade as you move down the page — tuned for low noise.</p>
+								</div>
+							</div>
+						</div>
+					</section>
 
-								// Display loading message or spinner here if needed
-								const responseElement = document.getElementById('form-response');
-								responseElement.style.display = 'block';
-								responseElement.textContent = 'Sending...';
+					<section class="section" id="about" aria-labelledby="about-heading">
+						<header class="section-heading js-reveal">
+							<span class="section-heading__label">About</span>
+							<h2 class="section-heading__title" id="about-heading">Capabilities</h2>
+							<p class="section-heading__desc">Shipping interfaces that stay fast, legible, and honest under real traffic — from first prototype to long-term product maintenance.</p>
+						</header>
+						<div class="about-layout">
+							<div class="about-copy js-reveal">
+								<p>I work across the JavaScript ecosystem and whatever stack the product already committed to — less dogma, more craft. Details below are the usual suspects; the playground above is where I stress-test motion and micro-interactions in isolation.</p>
+								<p>If you need someone to own complex UI, tighten a flow, or ship a credible motion pass without breaking schedules, we should talk.</p>
+							</div>
+							<div class="capability-grid js-reveal">
+								<div class="capability">
+									<h3 class="capability__title">Frontend Engineering</h3>
+									<p class="capability__text">JavaScript, TypeScript, React, Angular, Next.js, component architecture, responsive UI.</p>
+								</div>
+								<div class="capability">
+									<h3 class="capability__title">Interaction &amp; Motion</h3>
+									<p class="capability__text">GSAP, ScrollTrigger, Framer Motion, animated interfaces, micro-interactions, scroll-driven experiences.</p>
+								</div>
+								<div class="capability">
+									<h3 class="capability__title">Product Platforms</h3>
+									<p class="capability__text">Dashboards, workflows, API integrations, forms, SDKs, admin tools, multi-role applications.</p>
+								</div>
+							</div>
+						</div>
+					</section>
 
-								// Set up the XHR request
-								xhr.open('POST', form.action, true);
-								xhr.setRequestHeader('Accept', 'application/json'); // Expect JSON response
+					<section class="section contact-section" id="contact" aria-labelledby="contact-heading">
+						<header class="section-heading js-reveal">
+							<span class="section-heading__label">Contact</span>
+							<h2 class="section-heading__title" id="contact-heading">Say hello</h2>
+							<p class="section-heading__desc">New product, hard UI problem, or motion pass on something live — drop a line. Short briefs beat long intros.</p>
+						</header>
+						<div class="contact-panel js-reveal">
+							<form action="https://formspree.io/f/xpwzwrev" method="POST" id="contact-form">
+								<div class="input input--haruki">
+									<input class="input__field input__field--haruki" type="email" name="email" id="email-input" required autocomplete="email" />
+									<label class="input__label input__label--haruki" for="email-input">
+										<span class="input__label-content input__label-content--haruki">Your email</span>
+									</label>
+								</div>
 
-								// Define what happens when the request is successful
-								xhr.onload = function () {
-									if (xhr.status === 200) {
-										// Success! Display success message
-										responseElement.textContent = 'Thank you! Your message has been sent successfully.';
-										responseElement.style.color = 'green';
-										form.reset(); // Reset form
-									} else if (xhr.status === 422) {
-										try {
-											var errorText = JSON.parse(xhr.responseText);
-											var errorResponse = JSON.parse(xhr.response);
-											var field = errorResponse.errors[0].field;
-											if (field === 'email') {
-												responseElement.textContent = 'Please enter a valid email address.';
-											} else {
-												responseElement.textContent = errorResponse.errors[0].message;
-											}
-											responseElement.style.color = 'red';
-											debugger;
-										} catch (e) {
-											console.error('Error parsing JSON response:', e);
-											responseElement.textContent = 'Oops! There was a problem submitting your message. Please try again.';
-											responseElement.style.color = 'red';
-										}
-									} else if (xhr.status === 400) {
-										// Failure! Handle the error
-										responseElement.textContent = 'Oops! There was a problem submitting your message. Please try again.';
-										responseElement.style.color = 'red';
-									}
-								};
+								<div class="input input--haruki">
+									<textarea class="input__field input__field--haruki" id="message-input" name="message" required></textarea>
+									<label class="input__label input__label--haruki" for="message-input">
+										<span class="input__label-content input__label-content--haruki">Your message</span>
+									</label>
+								</div>
 
-								// Define what happens in case of an error
-								xhr.onerror = function () {
-									responseElement.textContent = 'Error: Unable to send your message at the moment. Please check your network.';
-									responseElement.style.color = 'red';
-								};
+								<button type="submit">Send</button>
 
-								// Send the form data
-								xhr.send(formData);
-							});
-
-							var inputs = document.querySelectorAll('.input__field');
-							inputs.forEach(function (input) {
-								input.addEventListener('focus', function () {
-									input.classList.add('input--filled');
-								});
-								input.addEventListener('blur', function () {
-									if (input.value === '') {
-										input.classList.remove('input--filled');
-									}
-								});
-							});
-						});
-					</script>
+								<p id="form-response" style="display: none;" role="status" aria-live="polite"></p>
+							</form>
+						</div>
+					</section>
 
 				</div>
 			</div>
 			<div class="layout__line"></div>
-			<div class="layout__footer"><a class="layout__footer-link" href="https://fedc.github.io/"><span id="footer-year">2025</span> &copy; Federico
+			<div class="layout__footer"><a class="layout__footer-link" href="https://fedc.github.io/"><span id="footer-year">2026</span> &copy; Federico
 					Commisso</a></div>
 		</div>
 	</main>
