@@ -8,6 +8,11 @@
 	font-size: 15px;
 }
 
+/* Fixed chrome + in-page anchors land below header */
+html {
+	scroll-padding-top: 5.5rem;
+}
+
 body {
 	margin: 0;
 	--color-text: white;
@@ -101,6 +106,51 @@ a:focus-visible {
 	z-index: 1000;
 }
 
+/* Keep nav / title above full-viewport scroll layer; stay fixed on small screens too */
+@media screen and (max-width: 52.99em) {
+	.frame {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		z-index: 5000;
+		padding: 1rem 1.25rem;
+		text-align: left;
+		pointer-events: none;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem 1rem;
+		background: linear-gradient(
+			180deg,
+			rgba(0, 0, 0, 0.82) 0%,
+			rgba(0, 0, 0, 0.45) 65%,
+			transparent 100%
+		);
+	}
+
+	.frame__title-wrap {
+		flex: 0 1 auto;
+		min-width: 0;
+	}
+
+	.frame__title {
+		margin: 0;
+	}
+
+	.frame__links {
+		flex: 1 1 auto;
+		display: flex;
+		justify-content: flex-end;
+		min-width: 0;
+	}
+
+	.frame a {
+		pointer-events: auto;
+	}
+}
+
 .frame__title {
 	font-size: 1rem;
 	margin: 0 0 1rem;
@@ -126,6 +176,9 @@ a:focus-visible {
 }
 
 .content {
+	position: relative;
+	z-index: 0;
+	isolation: isolate;
 	width: 100%;
 	height: calc(100vh - 13rem);
 }
@@ -134,7 +187,7 @@ a:focus-visible {
 	.frame {
 		position: fixed;
 		text-align: left;
-		z-index: 100;
+		z-index: 5000;
 		top: 0;
 		left: 0;
 		display: grid;
@@ -144,6 +197,7 @@ a:focus-visible {
 		height: 100vh;
 		padding: 1.75rem;
 		pointer-events: none;
+		background: transparent;
 		grid-template-columns: 66% 34%;
 		grid-template-rows: auto auto auto;
 		grid-template-areas: 'title links'
@@ -185,6 +239,7 @@ a:focus-visible {
 form {
 	display: flex;
 	flex-direction: column;
+	align-items: stretch;
 	background: rgba(255, 255, 255, 0.25);
 	backdrop-filter: blur(10px);
 	border: 1px solid rgba(255, 255, 255, 0.3);
@@ -194,6 +249,7 @@ form {
 	max-width: 600px;
 	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	transition: all 0.3s ease;
+	min-width: 0;
 }
 
 form:hover {
@@ -212,10 +268,11 @@ textarea {
 .input {
 	position: relative;
 	z-index: 1;
-	display: inline-block;
+	display: block;
 	margin: 1.5em 0;
 	max-width: 100%;
 	width: 100%;
+	min-width: 0;
 	vertical-align: top;
 }
 
@@ -224,6 +281,7 @@ textarea {
 	display: block;
 	padding: 1.2em 1em;
 	width: 100%;
+	min-width: 0;
 	border: 2px solid rgba(255, 255, 255, 0.4);
 	border-radius: 12px;
 	background: rgba(255, 255, 255, 0.2);
@@ -330,7 +388,7 @@ textarea {
 }
 
 .input__field--haruki:focus + .input__label--haruki,
-.input--filled + .input__label--haruki {
+.input__field.input--filled + .input__label--haruki {
 	top: -0.5em;
 	left: 0.8em;
 	font-size: 0.75rem;
@@ -341,7 +399,7 @@ textarea {
 }
 
 .input__field--haruki:focus + .input__label--haruki .input__label-content--haruki,
-.input--filled + .input__label--haruki .input__label-content--haruki {
+.input__field.input--filled + .input__label--haruki .input__label-content--haruki {
 	transform: none;
 }
 
