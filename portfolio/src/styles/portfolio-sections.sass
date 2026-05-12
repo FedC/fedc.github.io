@@ -403,6 +403,9 @@ $max-read: 42rem
   width: 100%
   margin: 0 auto
 
+  @media (max-width: 64em)
+    max-width: 100%
+
   .section-heading
     text-align: center
     margin-left: auto
@@ -463,15 +466,16 @@ $max-read: 42rem
     font-size: 1.05rem
     font-weight: 500
     font-family: inherit
-    background: rgba(252, 252, 254, 0.96)
+    background: rgba(252, 252, 254, 0.1)
     color: #0a0a10
+    border-width: 1px
     border-color: rgba(255, 255, 255, 0.5)
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset
 
   .input__field--haruki:focus,
   .input__field--haruki:hover
-    background: #fff
-    color: #0a0a10
+    background: rgba(252, 252, 254, 0.2)
+    color: #fff
 
   textarea.input__field--haruki,
   #message-input.input__field--haruki
@@ -487,7 +491,7 @@ $max-read: 42rem
     top: 1.15em
     right: auto
     z-index: 2
-    color: rgba(22, 22, 32, 0.62)
+    color: rgba(252, 252, 254, 1)
     font-weight: 600
 
   .input__field--haruki:focus + .input__label--haruki,
