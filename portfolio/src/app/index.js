@@ -5,6 +5,7 @@ import Animations from './Animations'
 import SmoothScroll from './SmoothScroll'
 import { initPlayground } from './playground'
 import { initContactForm } from './contactForm'
+import { initWorkModal } from './workModal'
 
 import vertexShader from './shaders/vertex.glsl'
 import fragmentShader from './shaders/fragment.glsl'
@@ -274,6 +275,7 @@ new ScrollStage()
 document.addEventListener('DOMContentLoaded', function () {
   initPlayground()
   initContactForm()
+  initWorkModal()
 
   document.querySelectorAll('.page-link').forEach(function (link) {
     link.addEventListener('click', function (e) {

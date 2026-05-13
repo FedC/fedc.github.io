@@ -209,6 +209,31 @@ $max-read: 42rem
     margin-top: auto
     padding-top: 0.25rem
 
+  &[data-work]
+    cursor: pointer
+
+    &:focus
+      outline: none
+
+    &:focus-visible
+      outline: 2px solid rgba(114, 195, 233, 0.85)
+      outline-offset: 3px
+
+    &::after
+      content: 'Details'
+      position: absolute
+      top: 1rem
+      right: 1rem
+      font-size: 0.58rem
+      letter-spacing: 0.14em
+      text-transform: uppercase
+      color: rgba(255, 255, 255, 0.35)
+      opacity: 0
+      transition: opacity 0.3s ease
+
+    &:hover::after
+      opacity: 1
+
 .tag
   font-size: 0.62rem
   letter-spacing: 0.06em
