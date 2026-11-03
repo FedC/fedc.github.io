@@ -30,13 +30,12 @@ export const SERVICES_PLAN = {
       title: 'Mobile Applications',
       benefit: 'Meet people on the devices they already live in.',
       summary:
-        'Cross-platform mobile product work with Flutter, progressive web apps, and API-connected experiences.',
+        'Cross-platform mobile product work with native iOS/Android, progressive web apps, and API-connected experiences.',
       examples: [
-        'Flutter applications',
-        'Cross-platform iOS and Android development',
+        'Native iOS and Android development',
         'Progressive Web Apps (PWAs)',
         'Mobile-first product experiences',
-        'API-connected mobile applications',
+        'API-connected mobile applications (REST, GraphQL, etc.)',
       ],
       value:
         'Extend a product beyond the browser when the workflow needs native reach — presented as a real capability, not a padded client portfolio.',
