@@ -13,11 +13,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@parcel/packager-raw-url": "2.13.3",
-    "@parcel/transformer-glsl": "2.13.3",
-    "@parcel/transformer-jsonld": "2.13.3",
-    "@parcel/transformer-sass": "2.13.3",
-    "parcel": "2.13.3"
+    "@parcel/packager-raw-url": "2.16.4",
+    "@parcel/transformer-glsl": "2.16.4",
+    "@parcel/transformer-jsonld": "2.16.4",
+    "@parcel/transformer-sass": "2.16.4",
+    "parcel": "2.16.4"
   },
   "dependencies": {
     "animejs": "^3.2.2",
@@ -28,4 +28,3 @@
     "base-x": "3.0.11"
   }
 }
-
