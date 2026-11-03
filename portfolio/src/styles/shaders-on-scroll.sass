@@ -289,22 +289,47 @@ canvas.webgl
     z-index: 200
     pointer-events: none
 
-  &__footer-link
+  &__footer-meta
     pointer-events: auto
+    margin: 0
+    display: inline-flex
+    flex-wrap: wrap
+    align-items: center
+    justify-content: center
+    gap: 0.55rem 0.75rem
+
+  &__footer-sep
+    color: rgba(244, 246, 250, 0.35)
+    font-size: 0.72rem
+
+  &__footer-link,
+  &__footer-gem
     display: inline-block
     font-size: 0.72rem
     letter-spacing: 0.14em
     text-transform: uppercase
-    color: rgba(244, 246, 250, 0.82)
     text-decoration: none
-    border-bottom: 1px solid rgba($color-2, 0.35)
     transition: color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease
+
+  &__footer-link
+    color: rgba(244, 246, 250, 0.82)
+    border-bottom: 1px solid rgba($color-2, 0.35)
 
     &:hover,
     &:focus-visible
       color: $color-white
       border-bottom-color: rgba($color-white, 0.45)
 
+  &__footer-gem
+    color: rgba(244, 246, 250, 0.48)
+    border-bottom: 1px solid transparent
+
+    &:hover,
     &:focus-visible
-      outline: 2px solid $color-2
-      outline-offset: 4px
+      color: rgba(244, 246, 250, 0.82)
+      border-bottom-color: rgba($color-2, 0.35)
+
+  &__footer-link:focus-visible,
+  &__footer-gem:focus-visible
+    outline: 2px solid $color-2
+    outline-offset: 4px

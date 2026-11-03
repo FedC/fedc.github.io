@@ -1,5 +1,5 @@
 /**
- * Insights / blog architecture (Phase 2A).
+ * Insights / blog architecture.
  * Content lives in portfolio/content/insights/*.md and is compiled
  * to static HTML by scripts/build-insights.mjs — no CMS or database.
  */
@@ -7,10 +7,17 @@ export const INSIGHTS_PLAN = {
   route: '/insights/',
   status: 'architecture',
   purpose: [
-    'Practical web development advice',
+    'Practical engineering and product advice',
     'Organic search support',
-    'Demonstrate SEO, analytics, and automation expertise',
+    'Demonstrate software, mobile, SEO, analytics, and automation expertise',
     'Support lead generation via related-services CTAs',
+  ],
+  categories: [
+    'Web Engineering',
+    'Mobile Development',
+    'Software Architecture',
+    'Analytics & SEO',
+    'Automation & Integrations',
   ],
   articleFields: [
     'title',

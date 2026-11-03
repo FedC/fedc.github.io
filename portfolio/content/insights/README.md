@@ -19,7 +19,7 @@ slug: "url-slug"
 description: "Meta description for search and social."
 date: "2026-04-01"
 updated: "2026-04-01"
-category: "SEO"
+category: "Web Engineering"  # Web Engineering | Mobile Development | Software Architecture | Analytics & SEO | Automation & Integrations
 author: "Federico Commisso"
 featuredImage: ""          # optional path or absolute URL
 draft: false               # true = excluded from build, sitemap, index

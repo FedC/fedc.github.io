@@ -56,7 +56,11 @@ function chrome(activePath) {
 
 function footer(assetPrefix) {
   return `<footer class="site-footer">
-		<a class="site-footer__link" href="https://fedc.github.io/"><span id="footer-year">2026</span> &copy; Federico Commisso</a>
+		<p class="site-footer__meta">
+			<a class="site-footer__link" href="https://fedc.github.io/"><span id="footer-year">2026</span> &copy; Federico Commisso</a>
+			<span class="site-footer__sep" aria-hidden="true">·</span>
+			<a class="site-footer__gem" href="/#playground">Playground</a>
+		</p>
 	</footer>
 	<script type="module" src="${assetPrefix}app/sitePage.js"></script>
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-KZHL6J943T"></script>
@@ -152,7 +156,7 @@ function readArticles() {
 function writeIndex(articles) {
   const list =
     articles.length === 0
-      ? `<p class="insights-empty js-reveal">Practical articles on websites, SEO, analytics, and automation will appear here after editorial review. Nothing is published yet.</p>`
+      ? `<p class="insights-empty js-reveal">Practical articles on web engineering, mobile, software architecture, analytics, and automation will appear here after editorial review. Nothing is published yet.</p>`
       : `<ul class="insights-list">
 ${articles
   .map(
@@ -170,14 +174,16 @@ ${articles
     '@type': 'CollectionPage',
     name: 'OKCoded Insights',
     url: `${SITE}/insights/`,
-    description: 'Practical web development, SEO, analytics, and automation notes from OKCoded.',
+    description:
+      'Practical notes on web engineering, mobile, software architecture, analytics, and automation from OKCoded.',
     isPartOf: { '@type': 'WebSite', name: 'OKCoded', url: `${SITE}/` },
   })
 
   const assetPrefix = '../'
   const html = `${head({
     title: 'Insights | OKCoded',
-    description: 'Practical web development, SEO, analytics, and automation notes from OKCoded.',
+    description:
+      'Practical notes on web engineering, mobile, software architecture, analytics, and automation from OKCoded.',
     canonical: `${SITE}/insights/`,
     jsonLd,
     assetPrefix,
@@ -187,8 +193,8 @@ ${articles
 	<main class="site-main">
 		<header class="page-hero js-reveal">
 			<span class="page-hero__label">Insights</span>
-			<h1 class="page-hero__title">Notes on building and improving the web</h1>
-			<p class="page-hero__lede">Short, practical writing on websites, search, measurement, and the systems behind them.</p>
+			<h1 class="page-hero__title">Notes on building digital products</h1>
+			<p class="page-hero__lede">Short, practical writing on web engineering, mobile, software architecture, measurement, and automation.</p>
 		</header>
 		${list}
 		${relatedCta([{ label: 'Services', href: '/services/' }])}
