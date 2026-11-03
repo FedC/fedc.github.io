@@ -1,77 +1,105 @@
 /**
- * Formspree contact form — preserves existing endpoint and XHR behavior.
+ * Formspree contact form — endpoint preserved; honeypot + loading/disabled UX.
+ * Extra fields can be added to the form markup without changing submit wiring.
  */
 export function initContactForm() {
   const form = document.getElementById('contact-form')
   const responseElement = document.getElementById('form-response')
+  const submitBtn = document.getElementById('contact-submit')
   if (!form || !responseElement) return
+
+  let isSubmitting = false
+
+  function setStatus(message, type) {
+    responseElement.hidden = !message
+    responseElement.textContent = message || ''
+    responseElement.classList.remove('contact-status--success', 'contact-status--error', 'contact-status--pending')
+    if (type) responseElement.classList.add('contact-status--' + type)
+  }
+
+  function setSubmitting(busy) {
+    isSubmitting = busy
+    if (!submitBtn) return
+    submitBtn.disabled = busy
+    submitBtn.setAttribute('aria-busy', busy ? 'true' : 'false')
+    const label = submitBtn.querySelector('.contact-submit__label')
+    if (label) label.textContent = busy ? 'Sending…' : 'Send message'
+  }
 
   form.addEventListener('submit', function (event) {
     event.preventDefault()
+    if (isSubmitting) return
+
+    const email = form.querySelector('[name="email"]')
+    const message = form.querySelector('[name="message"]')
+    if (email && !email.checkValidity()) {
+      setStatus('Please enter a valid email address.', 'error')
+      email.focus()
+      return
+    }
+    if (message && !message.checkValidity()) {
+      setStatus('Please include a short message.', 'error')
+      message.focus()
+      return
+    }
 
     const formData = new FormData(form)
     const xhr = new XMLHttpRequest()
 
-    responseElement.style.display = 'block'
-    responseElement.textContent = 'Sending...'
-    responseElement.style.color = ''
+    setSubmitting(true)
+    setStatus('Sending…', 'pending')
 
     xhr.open('POST', form.action, true)
     xhr.setRequestHeader('Accept', 'application/json')
 
     xhr.onload = function () {
+      setSubmitting(false)
+
       if (xhr.status === 200) {
-        responseElement.textContent = 'Thank you — message sent.'
-        responseElement.style.color = 'rgb(144, 238, 144)'
+        setStatus("Thanks for reaching out. I'll get back to you soon.", 'success')
         form.reset()
-        form.querySelectorAll('.input__field').forEach(function (field) {
-          field.classList.remove('input--filled')
-        })
-      } else if (xhr.status === 422) {
+        return
+      }
+
+      if (xhr.status === 422) {
         try {
           const data = JSON.parse(xhr.responseText)
           const err = data.errors && data.errors[0]
           if (err && err.field === 'email') {
-            responseElement.textContent = 'Please enter a valid email address.'
+            setStatus('Please enter a valid email address.', 'error')
           } else if (err && err.message) {
-            responseElement.textContent = err.message
+            setStatus(err.message, 'error')
           } else {
-            responseElement.textContent = 'Could not send — please check the fields.'
+            setStatus('Could not send — please check the fields and try again.', 'error')
           }
-          responseElement.style.color = 'rgb(255, 160, 160)'
         } catch (e) {
-          console.error('Error parsing Formspree response:', e)
-          responseElement.textContent = 'Something went wrong. Try again in a moment.'
-          responseElement.style.color = 'rgb(255, 160, 160)'
+          setStatus(
+            'Something went wrong. Please try again or email hello@okcd.io directly.',
+            'error'
+          )
         }
-      } else if (xhr.status === 400) {
-        responseElement.textContent = 'Could not send — please try again.'
-        responseElement.style.color = 'rgb(255, 160, 160)'
-      } else {
-        responseElement.textContent = 'Unexpected response. Please try again.'
-        responseElement.style.color = 'rgb(255, 160, 160)'
+        return
       }
+
+      if (xhr.status === 429) {
+        setStatus('Too many attempts. Please wait a moment, then try again.', 'error')
+        return
+      }
+
+      setStatus(
+        'Something went wrong. Please try again or email hello@okcd.io directly.',
+        'error'
+      )
     }
 
     xhr.onerror = function () {
-      responseElement.textContent = 'Network error — check your connection and retry.'
-      responseElement.style.color = 'rgb(255, 160, 160)'
+      setSubmitting(false)
+      setStatus(
+        'Network error — check your connection, or email hello@okcd.io directly.',
+        'error'
+      )
     }
 
     xhr.send(formData)
-  })
-
-  form.querySelectorAll('.input__field').forEach(function (input) {
-    if (input.value) {
-      input.classList.add('input--filled')
-    }
-    input.addEventListener('focus', function () {
-      input.classList.add('input--filled')
-    })
-    input.addEventListener('blur', function () {
-      if (input.value === '') {
-        input.classList.remove('input--filled')
-      }
-    })
   })
 }

@@ -229,29 +229,63 @@
 						<header class="section-heading js-reveal">
 							<span class="section-heading__label">Contact</span>
 							<h2 class="section-heading__title" id="contact-heading">Say hello</h2>
-							
+							<p class="section-heading__desc">New product, hard UI problem, or motion pass on something live — drop a line. Short briefs beat long intros.</p>
 						</header>
 						<div class="contact-panel js-reveal">
-							<p class="section-heading__desc">New product, hard UI problem, or motion pass on something live — drop a line. Short briefs beat long intros.</p>
-							<br>
+							<p class="contact-panel__alt">
+								Prefer email?
+								<a href="mailto:hello@okcd.io">hello@okcd.io</a>
+							</p>
 							<form action="https://formspree.io/f/xpwzwrev" method="POST" id="contact-form">
-								<div class="input input--haruki">
-									<input class="input__field input__field--haruki" type="email" name="email" id="email-input" required autocomplete="email" />
-									<label class="input__label input__label--haruki" for="email-input">
-										<span class="input__label-content input__label-content--haruki">Your email</span>
-									</label>
+								<!-- Formspree honeypot: leave empty. Hidden from assistive tech. -->
+								<div class="contact-honeypot" aria-hidden="true">
+									<label for="contact-gotcha">Company website</label>
+									<input type="text" name="_gotcha" id="contact-gotcha" tabindex="-1" autocomplete="off" />
 								</div>
 
-								<div class="input input--haruki">
-									<textarea class="input__field input__field--haruki" id="message-input" name="message" required></textarea>
-									<label class="input__label input__label--haruki" for="message-input">
-										<span class="input__label-content input__label-content--haruki">Your message</span>
+								<input type="hidden" name="_subject" value="OKCoded contact form" />
+
+								<div class="contact-field">
+									<label class="contact-field__label" for="email-input">
+										Email <span class="contact-field__req" aria-hidden="true">*</span>
+										<span class="visually-hidden"> (required)</span>
 									</label>
+									<input
+										class="contact-field__control"
+										type="email"
+										name="email"
+										id="email-input"
+										required
+										autocomplete="email"
+										inputmode="email"
+										spellcheck="false"
+										aria-required="true"
+										aria-describedby="form-response"
+									/>
 								</div>
 
-								<button type="submit">Send</button>
+								<div class="contact-field">
+									<label class="contact-field__label" for="message-input">
+										Message <span class="contact-field__req" aria-hidden="true">*</span>
+										<span class="visually-hidden"> (required)</span>
+									</label>
+									<textarea
+										class="contact-field__control contact-field__control--area"
+										id="message-input"
+										name="message"
+										required
+										rows="6"
+										autocomplete="off"
+										aria-required="true"
+										aria-describedby="form-response"
+									></textarea>
+								</div>
 
-								<p id="form-response" style="display: none;" role="status" aria-live="polite"></p>
+								<button type="submit" class="contact-submit" id="contact-submit">
+									<span class="contact-submit__label">Send message</span>
+								</button>
+
+								<p id="form-response" class="contact-status" role="status" aria-live="polite" hidden></p>
 							</form>
 						</div>
 					</section>
