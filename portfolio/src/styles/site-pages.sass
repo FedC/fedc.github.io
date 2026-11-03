@@ -374,6 +374,246 @@
     color: var(--okcd-text-muted)
     line-height: 1.5
 
+  .btn + .btn
+    margin-left: 0.65rem
+
+.about-page
+  max-width: min(68rem, calc(100vw - 2rem))
+
+.about-intro
+  display: grid
+  gap: clamp(1.5rem, 4vw, 2.75rem)
+  align-items: center
+  margin-bottom: clamp(2.75rem, 7vw, 4.5rem)
+
+  @media (min-width: 860px)
+    grid-template-columns: minmax(14rem, 0.9fr) minmax(0, 1.35fr)
+    gap: clamp(2rem, 5vw, 3.5rem)
+
+  &__media
+    min-width: 0
+
+  &__portrait,
+  &__photo
+    display: block
+    width: 100%
+    max-width: 22rem
+    margin: 0 auto
+    aspect-ratio: 4 / 5
+    border-radius: 1.35rem
+    object-fit: cover
+
+  &__portrait
+    display: grid
+    place-items: center
+    background: radial-gradient(ellipse 80% 70% at 30% 20%, rgba(114, 195, 233, 0.28), transparent 55%), linear-gradient(160deg, #141820 0%, #07090f 100%)
+    border: 1px solid rgba(255, 255, 255, 0.16)
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45)
+
+  &__monogram
+    font-size: clamp(3rem, 8vw, 4.5rem)
+    font-weight: 500
+    letter-spacing: -0.04em
+    color: rgba(244, 246, 250, 0.92)
+
+  &__copy
+    min-width: 0
+
+  &__eyebrow
+    display: block
+    margin: 0 0 0.75rem
+    font-size: 0.68rem
+    letter-spacing: 0.22em
+    text-transform: uppercase
+    color: rgba(244, 246, 250, 0.7)
+
+  &__title
+    margin: 0
+    font-size: clamp(2.1rem, 5vw, 3.25rem)
+    font-weight: 500
+    letter-spacing: -0.035em
+    line-height: 1.02
+
+  &__role
+    margin: 0.55rem 0 0
+    font-size: 0.95rem
+    letter-spacing: 0.04em
+    color: var(--okcd-accent)
+
+  &__lede
+    margin: 1.25rem 0 0
+    max-width: 38rem
+    font-size: clamp(1.05rem, 2.2vw, 1.2rem)
+    line-height: 1.55
+    color: rgba(244, 246, 250, 0.92)
+
+  &__body
+    margin: 1rem 0 0
+    max-width: 40rem
+    font-size: 1rem
+    line-height: 1.6
+    color: var(--okcd-text-muted)
+
+    a
+      color: var(--okcd-accent)
+      text-decoration: underline
+      text-underline-offset: 0.16em
+
+      &:hover,
+      &:focus-visible
+        color: #fff
+
+.about-section-head
+  margin: 0 0 clamp(1.35rem, 3vw, 1.85rem)
+  max-width: 42rem
+
+  &__label
+    display: block
+    margin: 0 0 0.65rem
+    font-size: 0.68rem
+    letter-spacing: 0.2em
+    text-transform: uppercase
+    color: rgba(244, 246, 250, 0.68)
+
+  &__title
+    margin: 0
+    font-size: clamp(1.45rem, 3vw, 2rem)
+    font-weight: 500
+    letter-spacing: -0.025em
+    line-height: 1.15
+
+  &__lede
+    margin: 0.75rem 0 0
+    color: var(--okcd-text-muted)
+    line-height: 1.55
+
+.about-expertise
+  margin-bottom: clamp(2.75rem, 7vw, 4.5rem)
+
+.expertise-grid
+  display: grid
+  gap: 1.15rem 1.5rem
+  margin-bottom: clamp(1.75rem, 4vw, 2.5rem)
+
+  @media (min-width: 720px)
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+
+.expertise-item
+  padding: 0 0 0 1rem
+  border-left: 2px solid rgba(114, 195, 233, 0.45)
+
+  &__title
+    margin: 0 0 0.4rem
+    font-size: 1.05rem
+    font-weight: 500
+    color: var(--okcd-text)
+
+  &__text
+    margin: 0
+    font-size: 0.95rem
+    line-height: 1.55
+    color: var(--okcd-text-muted)
+
+.stack-panel
+  padding: clamp(1.2rem, 3vw, 1.65rem)
+  border: 1px solid rgba(255, 255, 255, 0.14)
+  border-radius: 1.15rem
+  background: rgba(8, 10, 16, 0.72)
+
+  &__title
+    margin: 0 0 0.35rem
+    font-size: 1rem
+    font-weight: 500
+
+  &__note
+    margin: 0 0 1.15rem
+    font-size: 0.9rem
+    color: var(--okcd-text-muted)
+    line-height: 1.45
+
+.stack-groups
+  display: grid
+  gap: 1.15rem 1.5rem
+
+  @media (min-width: 640px)
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+
+  @media (min-width: 980px)
+    grid-template-columns: repeat(4, minmax(0, 1fr))
+
+.stack-group
+  &__label
+    margin: 0 0 0.55rem
+    font-size: 0.65rem
+    letter-spacing: 0.16em
+    text-transform: uppercase
+    color: rgba(244, 246, 250, 0.62)
+
+  &__list
+    list-style: none
+    margin: 0
+    padding: 0
+    display: flex
+    flex-wrap: wrap
+    gap: 0.4rem
+
+    li
+      padding: 0.35rem 0.65rem
+      border: 1px solid rgba(255, 255, 255, 0.16)
+      border-radius: 999px
+      font-size: 0.8rem
+      color: rgba(244, 246, 250, 0.88)
+      background: rgba(0, 0, 0, 0.28)
+
+.process-timeline
+  list-style: none
+  margin: 0
+  padding: 0
+  display: grid
+  gap: 1rem
+
+  @media (min-width: 860px)
+    grid-template-columns: repeat(4, minmax(0, 1fr))
+    gap: 1.15rem
+    position: relative
+
+    &::before
+      content: ''
+      position: absolute
+      top: 1.15rem
+      left: 4%
+      right: 4%
+      height: 1px
+      background: linear-gradient(90deg, transparent, rgba(114, 195, 233, 0.45), transparent)
+      pointer-events: none
+
+  &__step
+    position: relative
+    z-index: 1
+    padding: 0.15rem 0 0
+
+  &__index
+    display: block
+    margin-bottom: 0.55rem
+    font-size: 0.68rem
+    letter-spacing: 0.18em
+    color: var(--okcd-accent)
+
+  &__title
+    margin: 0 0 0.35rem
+    font-size: 1.05rem
+    font-weight: 500
+
+  &__text
+    margin: 0
+    font-size: 0.9rem
+    line-height: 1.45
+    color: var(--okcd-text-muted)
+
+.about-process
+  .contact-cta
+    margin-top: clamp(2rem, 5vw, 3rem)
+
 .site-footer
   padding: 1.5rem 1rem 2rem
   text-align: center
