@@ -7,6 +7,7 @@ import { initContactForm } from './contactForm'
 import { initWorkModal } from './workModal'
 import { initSiteChrome } from './siteChrome'
 import { initReveals } from './reveals'
+import { initAnalytics } from './analytics'
 import { initWorkCardSpotlight } from './playground'
 import {
   prefersReducedMotion,
@@ -380,6 +381,7 @@ document.addEventListener('DOMContentLoaded', function () {
   initWorkModal()
   initWorkCardSpotlight()
   initReveals()
+  initAnalytics()
 
   document.querySelectorAll('.page-link').forEach(function (link) {
     link.addEventListener('click', function (e) {

@@ -5,11 +5,21 @@
  * Honeypot (`_gotcha`) must remain empty for legitimate users. Never copy other
  * field values into it. Delayed clears defeat browser autofill without removing
  * bot protection for values set after the settle window.
+ *
+ * GA4: contact_form_start / contact_form_submit / generate_lead / contact_form_error.
+ * Never send email, message, or other free-text/PII.
  */
+import {
+  trackEvent,
+  sanitizeProjectType,
+  resolveFormLocation,
+} from './analytics'
+
 const IDLE_LABEL = 'Send project inquiry'
 const BUSY_LABEL = 'Sending…'
 const HONEYPOT_NAME = '_gotcha'
 const AUTOFILL_CLEAR_MS = [0, 50, 250, 1000]
+const FORM_TYPE = 'project_inquiry'
 
 export function getHoneypotInput(form) {
   return form.querySelector('input[name="' + HONEYPOT_NAME + '"]')
@@ -33,6 +43,11 @@ export function buildContactFormData(form) {
   return new FormData(form)
 }
 
+function readProjectType(form) {
+  const selected = form.querySelector('input[name="project_type"]:checked')
+  return sanitizeProjectType(selected ? selected.value : '')
+}
+
 export function initContactForm() {
   const form = document.getElementById('contact-form')
   const responseElement = document.getElementById('form-response')
@@ -40,12 +55,38 @@ export function initContactForm() {
   if (!form || !responseElement) return
 
   let isSubmitting = false
+  let formStartSent = false
+  let leadSentForAttempt = false
+  const formLocation = resolveFormLocation()
 
   resetHoneypot(form)
   AUTOFILL_CLEAR_MS.forEach(function (ms) {
     setTimeout(function () {
       resetHoneypot(form)
     }, ms)
+  })
+
+  function markFormStart() {
+    if (formStartSent) return
+    formStartSent = true
+    trackEvent('contact_form_start', {
+      form_location: formLocation,
+      form_type: FORM_TYPE,
+    })
+  }
+
+  // User engagement only (input/change) — not programmatic focus.
+  form.addEventListener('input', function (event) {
+    const t = event.target
+    if (!t || !t.name) return
+    if (t.name === 'email' || t.name === 'message' || t.name === 'project_type') {
+      markFormStart()
+    }
+  })
+  form.addEventListener('change', function (event) {
+    const t = event.target
+    if (!t || t.name !== 'project_type') return
+    markFormStart()
   })
 
   function setStatus(message, type) {
@@ -76,19 +117,36 @@ export function initContactForm() {
     const message = form.querySelector('[name="message"]')
     if (email && !email.checkValidity()) {
       setStatus('Please enter a valid email address.', 'error')
+      trackEvent('contact_form_error', {
+        form_location: formLocation,
+        error_type: 'validation',
+      })
       email.focus()
       return
     }
     if (message && !message.checkValidity()) {
       setStatus('Please include a short project description.', 'error')
+      trackEvent('contact_form_error', {
+        form_location: formLocation,
+        error_type: 'validation',
+      })
       message.focus()
       return
     }
 
     // Do not clear `_gotcha` here — a filled honeypot is a bot signal for Formspree.
     // Also do not assign email/message/project_type into it.
+    const projectType = readProjectType(form)
     const formData = buildContactFormData(form)
     const xhr = new XMLHttpRequest()
+    leadSentForAttempt = false
+
+    const submitParams = {
+      form_location: formLocation,
+      form_type: FORM_TYPE,
+    }
+    if (projectType) submitParams.project_type = projectType
+    trackEvent('contact_form_submit', submitParams)
 
     setSubmitting(true)
     setStatus('Sending…', 'pending')
@@ -100,6 +158,17 @@ export function initContactForm() {
       setSubmitting(false)
 
       if (xhr.status === 200) {
+        // Primary conversion — Formspree accepted the HTTP submission.
+        // Limitation: client-side cannot verify Inbox vs spam folder placement.
+        if (!leadSentForAttempt) {
+          leadSentForAttempt = true
+          const leadParams = {
+            form_location: formLocation,
+            form_type: FORM_TYPE,
+          }
+          if (projectType) leadParams.project_type = projectType
+          trackEvent('generate_lead', leadParams)
+        }
         setStatus("Thanks for reaching out. I'll get back to you soon.", 'success')
         form.reset()
         resetHoneypot(form)
@@ -107,6 +176,10 @@ export function initContactForm() {
       }
 
       if (xhr.status === 422) {
+        trackEvent('contact_form_error', {
+          form_location: formLocation,
+          error_type: 'validation',
+        })
         try {
           const data = JSON.parse(xhr.responseText)
           const err = data.errors && data.errors[0]
@@ -127,10 +200,18 @@ export function initContactForm() {
       }
 
       if (xhr.status === 429) {
+        trackEvent('contact_form_error', {
+          form_location: formLocation,
+          error_type: 'server',
+        })
         setStatus('Too many attempts. Please wait a moment, then try again.', 'error')
         return
       }
 
+      trackEvent('contact_form_error', {
+        form_location: formLocation,
+        error_type: 'server',
+      })
       setStatus(
         'Something went wrong. Please try again or email hello@okcd.io directly.',
         'error'
@@ -139,6 +220,10 @@ export function initContactForm() {
 
     xhr.onerror = function () {
       setSubmitting(false)
+      trackEvent('contact_form_error', {
+        form_location: formLocation,
+        error_type: 'network',
+      })
       setStatus(
         'Network error — check your connection, or email hello@okcd.io directly.',
         'error'
