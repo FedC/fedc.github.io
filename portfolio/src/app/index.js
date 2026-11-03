@@ -1,8 +1,11 @@
 import * as THREE from 'three'
-import GSAP from 'gsap'
+import { gsap as GSAP } from 'gsap'
 
 import Animations from './Animations'
 import SmoothScroll from './SmoothScroll'
+import { initPlayground } from './playground'
+import { initContactForm } from './contactForm'
+import { initWorkModal } from './workModal'
 
 import vertexShader from './shaders/vertex.glsl'
 import fragmentShader from './shaders/fragment.glsl'
@@ -192,7 +195,11 @@ class ScrollStage {
   onLoad() {
     document.body.classList.remove('loading')
 
-    this.animations = new Animations(this.element, this.camera)
+    try {
+      this.animations = new Animations(this.element, this.camera)
+    } catch (error) {
+      console.warn('Animations initialization failed:', error)
+    }
   }
 
   onMouseMove(event) {
@@ -265,19 +272,23 @@ class ScrollStage {
 
 new ScrollStage()
 
-document.addEventListener("DOMContentLoaded", function() {
-  var hrefs = document.querySelectorAll('.page-link');
-  hrefs.forEach(function(href) {
-    href.addEventListener('click', function(e) {
-      e.preventDefault();
-      var target = this.getAttribute('href');
-      var targetElement = document.querySelector(target);
-      var targetPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+document.addEventListener('DOMContentLoaded', function () {
+  initPlayground()
+  initContactForm()
+  initWorkModal()
 
+  document.querySelectorAll('.page-link').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      var href = this.getAttribute('href')
+      if (!href || href.charAt(0) !== '#') return
+      var targetElement = document.querySelector(href)
+      if (!targetElement) return
+      e.preventDefault()
+      var targetPosition = targetElement.getBoundingClientRect().top + window.scrollY
       window.scrollTo({
         top: targetPosition,
         behavior: 'smooth'
-      });
-    });
-  });
-});
+      })
+    })
+  })
+})

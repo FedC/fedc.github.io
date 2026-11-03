@@ -1,4 +1,0 @@
-# Redirect all requests to index.html for React Router
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^ index.html [QSA,L]
