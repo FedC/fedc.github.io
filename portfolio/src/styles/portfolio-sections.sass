@@ -611,8 +611,13 @@ $max-read: 42rem
     resize: vertical
     line-height: 1.55
 
-// Beat base.css `button[type=submit]` (pink → peach) with higher specificity
-button.contact-submit[type='submit']
+// Parcel 2.16 HTML minify drops type="submit" (form default). Do not require
+// [type=submit] or these rules never match and the control falls back to UA styles.
+// Class selector still wins over base.css `button[type=submit]` via cascade order
+// when the attribute is present.
+button.contact-submit
+  -webkit-appearance: none
+  appearance: none
   width: 100%
   margin-top: 0.25rem
   min-height: 3.15rem
