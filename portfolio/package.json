@@ -7,8 +7,11 @@
     "clean": "rm -rf dist",
     "build:parcel": "parcel build src/index.html --no-source-maps --public-url ./",
     "build": "npm run clean && npm run build:parcel",
-    "copy-dist-to-root": "cp -r dist/* ../"
+    "prepare-publish": "node scripts/prepare-publish.mjs",
+    "build:publish": "npm run build && npm run prepare-publish",
+    "copy-dist-to-root": "echo \"DEPRECATED: use GitHub Actions Pages deploy (npm run build:publish). Root copy kept only for emergency rollback.\" && cp -r dist/* ../"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",

@@ -1,0 +1,108 @@
+# Phase 1D: build validation on PRs; deploy to GitHub Pages on master only.
+# Does not deploy from pull requests.
+name: Portfolio pages
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'portfolio/**'
+      - '.github/workflows/portfolio-pages.yml'
+  pull_request:
+    paths:
+      - 'portfolio/**'
+      - '.github/workflows/portfolio-pages.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: portfolio-pages-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Install, build publish artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: portfolio
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: portfolio/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build publish artifact
+        run: npm run build:publish
+
+      - name: Verify publish artifact
+        run: |
+          test -f build-out/index.html
+          test -f build-out/CNAME
+          test -f build-out/robots.txt
+          test -f build-out/sitemap.xml
+          test -f build-out/site.webmanifest
+          test -f build-out/404.html
+          test -f build-out/about.html
+          grep -qi 'noindex' build-out/about.html
+          grep -q 'https://okcd.io/' build-out/about.html
+          test -n "$(find build-out -name '*.js' -type f | head -1)"
+          test -n "$(find build-out -name '*.css' -type f | head -1)"
+          test ! -e build-out/geltenpro.html
+          test ! -e build-out/nutridentist.html
+          echo "Publish contents:"
+          ls -la build-out
+
+      # PR / non-master: regular artifact for validation only (never deployed).
+      - name: Upload CI artifact
+        if: github.event_name != 'push' || github.ref != 'refs/heads/master'
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-build-out
+          path: portfolio/build-out/
+          if-no-files-found: error
+          retention-days: 14
+
+      # Master only: Pages artifact consumed by the deploy job.
+      - name: Configure GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: portfolio/build-out
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages-production
+      cancel-in-progress: false
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
