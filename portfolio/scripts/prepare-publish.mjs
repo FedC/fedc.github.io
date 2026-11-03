@@ -24,7 +24,7 @@ const distDir = join(root, 'dist')
 const staticDir = join(root, 'publish-static')
 const outDir = join(root, 'build-out')
 
-const PUBLIC_ROUTES = ['/', '/services/', '/work/', '/insights/', '/about/', '/contact/']
+const PUBLIC_ROUTES = ['/', '/services/', '/work/', '/insights/', '/playground/', '/about/', '/contact/']
 
 function fail(msg) {
   console.error(`prepare-publish: ${msg}`)
@@ -95,6 +95,7 @@ const required = [
   'services/index.html',
   'work/index.html',
   'insights/index.html',
+  'playground/index.html',
   'about/index.html',
   'contact/index.html',
   'about.html',

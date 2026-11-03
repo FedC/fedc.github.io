@@ -59,7 +59,7 @@ function footer(assetPrefix) {
 		<p class="site-footer__meta">
 			<a class="site-footer__link" href="https://fedc.github.io/"><span id="footer-year">2026</span> &copy; Federico Commisso</a>
 			<span class="site-footer__sep" aria-hidden="true">·</span>
-			<a class="site-footer__gem" href="/#playground">Playground</a>
+			<a class="site-footer__gem" href="/playground/">Playground</a>
 		</p>
 	</footer>
 	<script type="module" src="${assetPrefix}app/sitePage.js"></script>

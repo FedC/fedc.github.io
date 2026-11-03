@@ -3,7 +3,6 @@ import { gsap as GSAP } from 'gsap'
 
 import Animations from './Animations'
 import SmoothScroll from './SmoothScroll'
-import { initPlayground } from './playground'
 import { initContactForm } from './contactForm'
 import { initWorkModal } from './workModal'
 import { initSiteChrome } from './siteChrome'
@@ -375,7 +374,6 @@ new ScrollStage()
 
 document.addEventListener('DOMContentLoaded', function () {
   initSiteChrome()
-  initPlayground()
   initContactForm()
   initWorkModal()
 

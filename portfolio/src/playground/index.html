@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Playground | OKCoded</title>
+	<meta name="description" content="OKCoded interaction playground — small experiments in motion, depth, and feedback." />
+	<link rel="canonical" href="https://okcd.io/playground/" />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="OKCoded" />
+	<meta property="og:url" content="https://okcd.io/playground/" />
+	<meta property="og:title" content="Playground | OKCoded" />
+	<meta property="og:description" content="Small experiments in motion, depth, and feedback from the OKCoded interaction lab." />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="Playground | OKCoded" />
+	<meta name="twitter:description" content="Small experiments in motion, depth, and feedback from the OKCoded interaction lab." />
+	<meta name="theme-color" content="#000000" />
+	<link rel="manifest" href="https://okcd.io/site.webmanifest" />
+	<link rel="shortcut icon" href="https://okcd.io/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../styles/base.css" />
+	<link rel="stylesheet" type="text/css" href="../styles/shaders-on-scroll.sass" />
+</head>
+<body class="site-page">
+	<header class="frame">
+		<div class="frame__title-wrap">
+			<p class="frame__title"><a href="/" data-nav>Okcd.io</a></p>
+		</div>
+		<nav class="frame__links site-nav" aria-label="Primary">
+			<a href="/services/" data-nav>Services</a>
+			<a href="/work/" data-nav>Work</a>
+			<a href="/insights/" data-nav>Insights</a>
+			<a href="/about/" data-nav>About</a>
+			<a href="/contact/" data-nav>Contact</a>
+		</nav>
+	</header>
+
+	<main class="site-main">
+		<header class="page-hero js-reveal">
+			<span class="page-hero__label">Interaction lab</span>
+			<h1 class="page-hero__title">Playground</h1>
+			<p class="page-hero__lede">Small experiments in motion, depth, and feedback — the same primitives used when shipping, isolated here for texture.</p>
+		</header>
+
+		<div class="playground-grid">
+			<div class="play-tile js-reveal">
+				<span class="play-tile__label">Magnetic</span>
+				<p class="play-tile__title">Button pull</p>
+				<div class="play-tile__body">
+					<div class="magnetic-wrap">
+						<button type="button" class="magnetic-btn" data-magnetic>Enter orbit</button>
+					</div>
+				</div>
+			</div>
+			<div class="play-tile js-reveal">
+				<span class="play-tile__label">Depth</span>
+				<p class="play-tile__title">Tilt card</p>
+				<div class="play-tile__body">
+					<div class="tilt-card js-tilt" data-tilt-strength="14">
+						<span class="tilt-card__cap">Parallax plane</span>
+					</div>
+				</div>
+			</div>
+			<div class="play-tile js-reveal">
+				<span class="play-tile__label">Light</span>
+				<p class="play-tile__title">Cursor glow</p>
+				<div class="play-tile__body play-glow-zone" data-glow-zone>
+					<span class="play-glow-zone__glow" data-glow aria-hidden="true"></span>
+					<span class="play-glow-zone__hint">Move inside the frame</span>
+				</div>
+			</div>
+			<div class="play-tile js-reveal">
+				<span class="play-tile__label">Distortion</span>
+				<p class="play-tile__title">Hover skew</p>
+				<div class="play-tile__body">
+					<div class="distort-card">Soft skew on hover — cheap thrills, controlled range.</div>
+				</div>
+			</div>
+			<div class="play-tile js-reveal">
+				<span class="play-tile__label">Micro</span>
+				<p class="play-tile__title">Ripple chip</p>
+				<div class="play-tile__body">
+					<button type="button" class="chip-ripple" data-chip-ripple>Tap me</button>
+				</div>
+			</div>
+			<div class="play-tile js-reveal">
+				<span class="play-tile__label">Reveal</span>
+				<p class="play-tile__title">Scroll staging</p>
+				<div class="play-tile__body">
+					<p class="play-tile__note">Sections use a light intersection fade as you move down the page — tuned for low noise.</p>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer class="site-footer">
+		<p class="site-footer__meta">
+			<a class="site-footer__link" href="https://fedc.github.io/"><span id="footer-year">2026</span> &copy; Federico Commisso</a>
+			<span class="site-footer__sep" aria-hidden="true">·</span>
+			<a class="site-footer__gem" href="/playground/" aria-current="page">Playground</a>
+		</p>
+	</footer>
+
+	<script type="module" src="../app/playgroundPage.js"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-KZHL6J943T"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){ dataLayer.push(arguments); }
+		gtag('js', new Date());
+		gtag('config', 'G-KZHL6J943T');
+	</script>
+</body>
+</html>

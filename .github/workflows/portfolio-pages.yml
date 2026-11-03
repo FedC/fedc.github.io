@@ -53,9 +53,11 @@ jobs:
           test -f build-out/services/index.html
           test -f build-out/work/index.html
           test -f build-out/insights/index.html
+          test -f build-out/playground/index.html
           test -f build-out/about/index.html
           test -f build-out/contact/index.html
           grep -q 'https://okcd.io/insights/' build-out/sitemap.xml
+          grep -q 'https://okcd.io/playground/' build-out/sitemap.xml
           test -f build-out/CNAME
           test -f build-out/robots.txt
           test -f build-out/sitemap.xml
