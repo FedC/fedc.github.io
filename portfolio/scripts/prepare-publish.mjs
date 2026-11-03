@@ -56,6 +56,28 @@ const insightArticles = existsSync(insightManifestPath)
   ? JSON.parse(readFileSync(insightManifestPath, 'utf8')).articles || []
   : []
 
+// Drop stale article dirs left by Parcel cache / interrupted serves when drafts
+// are unpublished or Markdown sources are removed.
+const insightsOutDir = join(outDir, 'insights')
+const allowedInsightSlugs = new Set(insightArticles.map((a) => a.slug))
+if (existsSync(insightsOutDir)) {
+  for (const name of readdirSync(insightsOutDir)) {
+    const abs = join(insightsOutDir, name)
+    if (!statSync(abs).isDirectory()) continue
+    if (!allowedInsightSlugs.has(name)) {
+      rmSync(abs, { recursive: true, force: true })
+      console.log(`prepare-publish: pruned stale insights article ${name}/`)
+    }
+  }
+}
+
+for (const article of insightArticles) {
+  const articleIndex = join(insightsOutDir, article.slug, 'index.html')
+  if (!existsSync(articleIndex)) {
+    fail(`published insight missing from build-out: insights/${article.slug}/index.html`)
+  }
+}
+
 const sitemapRoutes = [
   ...PUBLIC_ROUTES,
   ...insightArticles.map((a) => a.path || `/insights/${a.slug}/`),
