@@ -1,8 +1,5 @@
 import anime from 'animejs'
-
-function prefersReducedMotion() {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
+import { prefersReducedMotion } from './motion'
 
 /** UTM params appended to outbound project URLs for referral analytics. */
 const REFERRAL_UTM = {
@@ -102,10 +99,45 @@ export function initWorkModal() {
   let isClosing = false
   let openTimeline = null
 
+  function getFocusable() {
+    return Array.from(
+      sheet.querySelectorAll(
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter(function (el) {
+      return !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true'
+    })
+  }
+
   function onDocumentKey(e) {
     if (e.key === 'Escape') {
       e.preventDefault()
       closeModal()
+      return
+    }
+
+    if (e.key !== 'Tab' || !root.classList.contains('is-open')) return
+
+    const focusable = getFocusable()
+    if (!focusable.length) {
+      e.preventDefault()
+      closeBtn.focus()
+      return
+    }
+
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    const active = document.activeElement
+
+    if (e.shiftKey && active === first) {
+      e.preventDefault()
+      last.focus()
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault()
+      first.focus()
+    } else if (!sheet.contains(active)) {
+      e.preventDefault()
+      first.focus()
     }
   }
 

@@ -1,6 +1,4 @@
-function prefersReducedMotion() {
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
+import { prefersReducedMotion, onReducedMotionChange } from './motion'
 
 function initMagneticButtons() {
   if (prefersReducedMotion()) return
@@ -8,6 +6,9 @@ function initMagneticButtons() {
   document.querySelectorAll('[data-magnetic]').forEach(function (btn) {
     const wrap = btn.closest('.magnetic-wrap') || btn.parentElement
     if (!wrap) return
+
+    // Hover-driven; coarse/touch pointers simply never fire mousemove.
+    if (window.matchMedia('(hover: none)').matches) return
 
     const strength = 0.35
     let raf = 0
@@ -33,6 +34,7 @@ function initMagneticButtons() {
 
 function initTiltCards() {
   if (prefersReducedMotion()) return
+  if (window.matchMedia('(hover: none)').matches) return
 
   document.querySelectorAll('.js-tilt').forEach(function (card) {
     const max = parseFloat(card.getAttribute('data-tilt-strength') || '12')
@@ -55,6 +57,7 @@ function initTiltCards() {
 
 function initGlowZones() {
   if (prefersReducedMotion()) return
+  if (window.matchMedia('(hover: none)').matches) return
 
   document.querySelectorAll('[data-glow-zone]').forEach(function (zone) {
     const glow = zone.querySelector('[data-glow]')
@@ -76,6 +79,8 @@ function initGlowZones() {
 }
 
 function initWorkCardSpotlight() {
+  if (window.matchMedia('(hover: none)').matches) return
+
   document.querySelectorAll('.work-card--spotlight').forEach(function (card) {
     card.addEventListener('mousemove', function (e) {
       const r = card.getBoundingClientRect()
@@ -106,19 +111,21 @@ function initChipRipple() {
   })
 }
 
+function revealAll() {
+  document.querySelectorAll('.js-reveal').forEach(function (el) {
+    el.classList.add('is-visible')
+  })
+}
+
 function initScrollReveal() {
   if (prefersReducedMotion()) {
-    document.querySelectorAll('.js-reveal').forEach(function (el) {
-      el.classList.add('is-visible')
-    })
+    revealAll()
     return
   }
 
   const els = document.querySelectorAll('.js-reveal')
   if (!els.length || !('IntersectionObserver' in window)) {
-    els.forEach(function (el) {
-      el.classList.add('is-visible')
-    })
+    revealAll()
     return
   }
 
@@ -146,4 +153,8 @@ export function initPlayground() {
   initWorkCardSpotlight()
   initChipRipple()
   initScrollReveal()
+
+  onReducedMotionChange(function (reduced) {
+    if (reduced) revealAll()
+  })
 }

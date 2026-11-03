@@ -1,4 +1,5 @@
 import { gsap as GSAP } from 'gsap'
+import { prefersReducedMotion } from './motion'
 
 export default class {
   constructor(element, camera) {
@@ -12,6 +13,15 @@ export default class {
 
   animateIn() {
     try {
+      if (prefersReducedMotion()) {
+        this.heroItems.forEach(function (el) {
+          el.style.opacity = ''
+          el.style.visibility = ''
+          el.style.transform = ''
+        })
+        return
+      }
+
       const tl = GSAP.timeline({
         defaults: {
           ease: 'expo.out'
@@ -37,6 +47,11 @@ export default class {
       }
     } catch (error) {
       console.warn('Animation failed:', error)
+      this.heroItems.forEach(function (el) {
+        el.style.opacity = ''
+        el.style.visibility = ''
+        el.style.transform = ''
+      })
     }
   }
 }
