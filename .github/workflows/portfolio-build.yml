@@ -1,0 +1,62 @@
+# Phase 0B: build verification only. Does NOT deploy to GitHub Pages.
+name: Portfolio build
+
+on:
+  push:
+    branches:
+      - master
+      - 'okcoded/**'
+    paths:
+      - 'portfolio/**'
+      - '.github/workflows/portfolio-build.yml'
+  pull_request:
+    paths:
+      - 'portfolio/**'
+      - '.github/workflows/portfolio-build.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: portfolio-build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Install, build, upload artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: portfolio
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: portfolio/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Parcel app
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          test -f dist/index.html
+          test -n "$(find dist -name '*.js' -type f | head -1)"
+          test -n "$(find dist -name '*.css' -type f | head -1)"
+          echo "Build contents:"
+          ls -la dist
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-dist
+          path: portfolio/dist/
+          if-no-files-found: error
+          retention-days: 14
