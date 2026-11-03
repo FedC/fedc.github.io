@@ -6,6 +6,8 @@ import SmoothScroll from './SmoothScroll'
 import { initContactForm } from './contactForm'
 import { initWorkModal } from './workModal'
 import { initSiteChrome } from './siteChrome'
+import { initReveals } from './reveals'
+import { initWorkCardSpotlight } from './playground'
 import {
   prefersReducedMotion,
   prefersLeanGpu,
@@ -376,6 +378,8 @@ document.addEventListener('DOMContentLoaded', function () {
   initSiteChrome()
   initContactForm()
   initWorkModal()
+  initWorkCardSpotlight()
+  initReveals()
 
   document.querySelectorAll('.page-link').forEach(function (link) {
     link.addEventListener('click', function (e) {
