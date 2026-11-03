@@ -151,6 +151,20 @@ for (const [k, ok] of Object.entries(aboutChecks)) {
 const contactPage = readFileSync(join(outDir, 'contact/index.html'), 'utf8')
 if (!contactPage.includes('formspree.io/f/xpwzwrev')) fail('contact page missing Formspree')
 if (!contactPage.includes('G-KZHL6J943T')) fail('contact page missing GA4')
+if (!contactPage.includes('name="_gotcha"') && !contactPage.includes("name=_gotcha")) {
+  fail('contact page missing Formspree honeypot _gotcha')
+}
+if (/company\s+website/i.test(contactPage)) {
+  fail('contact page honeypot must not use "Company website" label (autofill trap)')
+}
+
+const homePage = readFileSync(join(outDir, 'index.html'), 'utf8')
+if (!homePage.includes('name="_gotcha"') && !homePage.includes('name=_gotcha')) {
+  fail('homepage missing Formspree honeypot _gotcha')
+}
+if (/company\s+website/i.test(homePage)) {
+  fail('homepage honeypot must not use "Company website" label (autofill trap)')
+}
 
 const assets = walkFiles(outDir).filter((f) => /\.(css|js)$/.test(f))
 if (!assets.some((f) => f.endsWith('.css'))) fail('no CSS in build-out')

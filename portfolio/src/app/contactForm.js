@@ -1,9 +1,37 @@
 /**
  * Formspree project inquiry — endpoint preserved; honeypot + loading/disabled UX.
  * Extra fields (e.g. project_type radios) submit via FormData automatically.
+ *
+ * Honeypot (`_gotcha`) must remain empty for legitimate users. Never copy other
+ * field values into it. Delayed clears defeat browser autofill without removing
+ * bot protection for values set after the settle window.
  */
 const IDLE_LABEL = 'Send project inquiry'
 const BUSY_LABEL = 'Sending…'
+const HONEYPOT_NAME = '_gotcha'
+const AUTOFILL_CLEAR_MS = [0, 50, 250, 1000]
+
+export function getHoneypotInput(form) {
+  return form.querySelector('input[name="' + HONEYPOT_NAME + '"]')
+}
+
+/** Ensure the honeypot is empty and not editable by accident. */
+export function resetHoneypot(form) {
+  const gotcha = getHoneypotInput(form)
+  if (!gotcha) return null
+  gotcha.value = ''
+  gotcha.setAttribute('readonly', 'readonly')
+  gotcha.setAttribute('autocomplete', 'new-password')
+  return gotcha
+}
+
+/**
+ * Build FormData for Formspree. Does not invent or remap `_gotcha`.
+ * Exported for regression tests.
+ */
+export function buildContactFormData(form) {
+  return new FormData(form)
+}
 
 export function initContactForm() {
   const form = document.getElementById('contact-form')
@@ -12,6 +40,13 @@ export function initContactForm() {
   if (!form || !responseElement) return
 
   let isSubmitting = false
+
+  resetHoneypot(form)
+  AUTOFILL_CLEAR_MS.forEach(function (ms) {
+    setTimeout(function () {
+      resetHoneypot(form)
+    }, ms)
+  })
 
   function setStatus(message, type) {
     responseElement.hidden = !message
@@ -50,7 +85,9 @@ export function initContactForm() {
       return
     }
 
-    const formData = new FormData(form)
+    // Do not clear `_gotcha` here — a filled honeypot is a bot signal for Formspree.
+    // Also do not assign email/message/project_type into it.
+    const formData = buildContactFormData(form)
     const xhr = new XMLHttpRequest()
 
     setSubmitting(true)
@@ -65,6 +102,7 @@ export function initContactForm() {
       if (xhr.status === 200) {
         setStatus("Thanks for reaching out. I'll get back to you soon.", 'success')
         form.reset()
+        resetHoneypot(form)
         return
       }
 
