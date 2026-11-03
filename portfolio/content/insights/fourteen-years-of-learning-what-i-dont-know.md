@@ -21,13 +21,23 @@ I started developing software in 2012. Nearly fourteen years later, I still enco
 
 If anything, experience has made me more aware of how much I don't know.
 
-Early in my career, I thought becoming a better developer meant learning more programming languages, mastering frameworks, and understanding increasingly complex technologies. The more I knew, the better equipped I'd be to solve whatever came my way.
+My career began working with Ruby on Rails as a frontend developer at Cloud.com, part of Citrix Systems. I was one of three web developers in a startup-style environment, surrounded by a growing engineering team that went from roughly fifteen to forty-five developers working across different platforms.
 
-And while those things still matter, I've gradually come to appreciate something else.
+Being surrounded by engineers with different backgrounds and specialties was an incredible opportunity to learn.
 
-Knowing how to build something isn't necessarily the same as knowing what to build, whether it's worth building, or how to approach it responsibly.
+Even back then, I didn't believe becoming a better developer meant learning as many programming languages or frameworks as possible. The idea of constantly having to learn something new just to keep up felt overwhelming, and I wasn't convinced it was the best way to grow.
 
-Today, artificial intelligence is challenging that distinction in ways I couldn't have imagined when I first started writing code.
+Instead, I wanted to really understand one language, become proficient with it, and learn how to use it to solve increasingly complex problems.
+
+To me, programming languages were simply different ways of achieving an outcome. Learning another language wasn't necessarily going to make me a better engineer if I hadn't developed a deeper understanding of what I was trying to accomplish.
+
+I didn't have everything figured out then, and I certainly don't now. But looking back, I think that early instinct shaped how I approach software development today.
+
+The tools have changed dramatically. Artificial intelligence is perhaps the biggest shift I've experienced since entering the industry.
+
+And in many ways, it's reinforcing something I've believed for a long time: the real challenge in software engineering isn't simply knowing how to write code.
+
+It's understanding what you're trying to build, why you're building it, and how to make thoughtful decisions along the way.
 
 I use AI regularly in my own work. It helps me explore ideas, accelerate development, investigate problems, and experiment with solutions. I'm genuinely excited about what it makes possible.
 
