@@ -4,16 +4,16 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Work | OKCoded</title>
-	<meta name="description" content="Selected OKCoded work — product surfaces, storefronts, and dense application UI built for real traffic." />
+	<meta name="description" content="Featured OKCoded work — Reviver.com, a headless commerce storefront with careful interaction design." />
 	<link rel="canonical" href="https://okcd.io/work/" />
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="OKCoded" />
 	<meta property="og:url" content="https://okcd.io/work/" />
 	<meta property="og:title" content="Work | OKCoded" />
-	<meta property="og:description" content="Selected product surfaces, storefronts, and application UI from OKCoded." />
+	<meta property="og:description" content="Featured OKCoded work — Reviver.com, a headless commerce storefront with careful interaction design." />
 	<meta name="twitter:card" content="summary" />
 	<meta name="twitter:title" content="Work | OKCoded" />
-	<meta name="twitter:description" content="Selected product surfaces, storefronts, and application UI from OKCoded." />
+	<meta name="twitter:description" content="Featured OKCoded work — Reviver.com, a headless commerce storefront with careful interaction design." />
 	<meta name="theme-color" content="#000000" />
 	<link rel="manifest" href="https://okcd.io/site.webmanifest" />
 	<link rel="shortcut icon" href="https://okcd.io/favicon.ico">
@@ -25,7 +25,14 @@
 		"@type": "CollectionPage",
 		"name": "OKCoded Work",
 		"url": "https://okcd.io/work/",
-		"isPartOf": { "@type": "WebSite", "name": "OKCoded", "url": "https://okcd.io/" }
+		"description": "Curated featured work from OKCoded.",
+		"isPartOf": { "@type": "WebSite", "name": "OKCoded", "url": "https://okcd.io/" },
+		"mainEntity": {
+			"@type": "CreativeWork",
+			"name": "Reviver.com",
+			"url": "https://reviver.com",
+			"description": "Headless commerce storefront with interactive frontend craft."
+		}
 	}
 	</script>
 </head>
@@ -44,49 +51,27 @@
 
 	<main class="site-main">
 		<header class="page-hero js-reveal">
-			<span class="page-hero__label">Selected work</span>
-			<h1 class="page-hero__title">Product surfaces, end to end</h1>
-			<p class="page-hero__lede">Headless commerce, dense workflows, and embeddable flows — built for clarity under real data and real traffic.</p>
+			<span class="page-hero__label">Work</span>
+			<h1 class="page-hero__title">Featured project</h1>
+			<p class="page-hero__lede">A deliberate shortlist. Additional case studies will be added when they are ready to represent the studio clearly.</p>
 		</header>
 
-		<div class="work-grid">
-			<article class="js-reveal work-card work-card--spotlight" data-work="reviver" tabindex="0" role="button" aria-expanded="false">
+		<div class="work-featured js-reveal">
+			<article class="work-card work-card--featured work-card--spotlight" data-work="reviver" tabindex="0" role="button" aria-expanded="false">
+				<p class="work-card__eyebrow">Headless commerce</p>
 				<h2 class="work-card__title">Reviver.com</h2>
-				<p class="work-card__desc">Storefront with a tactile, interactive frontend with a motion layer that stays out of the way.</p>
+				<p class="work-card__desc">Storefront with a tactile, interactive frontend and a motion layer that stays out of the way — built for clarity under real catalog and traffic constraints.</p>
 				<div class="work-card__tags">
 					<span class="tag">Integration</span>
 					<span class="tag">Animation</span>
-				</div>
-			</article>
-			<article class="js-reveal work-card work-card--spotlight" data-work="futiki" tabindex="0" role="button" aria-expanded="false">
-				<h2 class="work-card__title">Futiki.app</h2>
-				<p class="work-card__desc">Optimistic client state, server reconciliation, and explicit handling.</p>
-				<div class="work-card__tags">
-					<span class="tag">Product UI</span>
-					<span class="tag">Maps &amp; state</span>
-				</div>
-			</article>
-			<article class="js-reveal work-card work-card--spotlight" data-work="squeeze" tabindex="0" role="button" aria-expanded="false">
-				<h2 class="work-card__title">Squeeze.com</h2>
-				<p class="work-card__desc">Automation and orchestration between systems and dense UIX with layout discipline for multi-step work.</p>
-				<div class="work-card__tags">
-					<span class="tag">Automation</span>
-					<span class="tag">Embedded UX</span>
-				</div>
-			</article>
-			<article class="js-reveal work-card work-card--spotlight" data-work="myyellow" tabindex="0" role="button" aria-expanded="false">
-				<h2 class="work-card__title">MyYellow.ai</h2>
-				<p class="work-card__desc">Multi-step status-heavy UIX keeping server truth, optimistic edits, and document state aligned across sessions.</p>
-				<div class="work-card__tags">
-					<span class="tag">Document</span>
-					<span class="tag">Realtime</span>
+					<span class="tag">Website development</span>
 				</div>
 			</article>
 		</div>
 
 		<section class="contact-cta js-reveal" aria-labelledby="work-cta-title">
-			<h2 class="contact-cta__title" id="work-cta-title">Building something similar?</h2>
-			<p class="contact-cta__text">Tell me about the product surface, traffic, or workflow you need to support.</p>
+			<h2 class="contact-cta__title" id="work-cta-title">Building a storefront or product UI?</h2>
+			<p class="contact-cta__text">Tell me about the surface, the audience, and what “done” should feel like.</p>
 			<a class="btn btn--primary" href="/contact/">Start a conversation</a>
 		</section>
 	</main>

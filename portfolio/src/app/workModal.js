@@ -1,6 +1,6 @@
 import anime from 'animejs'
 import { prefersReducedMotion } from './motion'
-import { PROJECTS } from './data/projects'
+import { getProject } from './data/projects'
 
 /** UTM params appended to outbound project URLs for referral analytics. */
 const REFERRAL_UTM = {
@@ -32,9 +32,9 @@ function siteHostname(siteUrl) {
   }
 }
 
-/** Map schema → modal view model (preserves prior modal field names). */
+/** Map public schema → modal view model (preserves prior modal field names). */
 function projectForModal(slug) {
-  const p = PROJECTS[slug]
+  const p = getProject(slug)
   if (!p) return null
   return {
     theme: p.theme,
@@ -162,11 +162,12 @@ export function initWorkModal() {
   }
 
   function openModal(slug) {
-    if (!PROJECTS[slug] || isClosing) return
+    const project = getProject(slug)
+    if (!project || isClosing) return
     if (root.classList.contains('is-open')) return
 
     populate(slug)
-    root.dataset.art = PROJECTS[slug].theme
+    root.dataset.art = project.theme
 
     lastFocus = document.activeElement
     activeCard = document.querySelector('.work-card[data-work="' + slug + '"]')
@@ -282,7 +283,7 @@ export function initWorkModal() {
 
   cards.forEach(function (card) {
     const slug = card.getAttribute('data-work')
-    if (!slug || !PROJECTS[slug]) return
+    if (!slug || !getProject(slug)) return
 
     card.setAttribute('role', 'button')
     card.setAttribute('tabindex', '0')
