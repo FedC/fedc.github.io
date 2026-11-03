@@ -62,9 +62,24 @@
 				</header>
 				<div class="contact-panel js-reveal">
 					<form action="https://formspree.io/f/xpwzwrev" method="POST" id="contact-form">
+						<!-- Formspree honeypot: must stay empty. Avoid autofill-friendly labels (e.g. website). -->
 						<div class="contact-honeypot" aria-hidden="true">
-							<label for="contact-gotcha">Company website</label>
-							<input type="text" name="_gotcha" id="contact-gotcha" tabindex="-1" autocomplete="off" />
+							<label for="contact-gotcha">Fax</label>
+							<input
+								type="text"
+								name="_gotcha"
+								id="contact-gotcha"
+								value=""
+								tabindex="-1"
+								autocomplete="new-password"
+								autocorrect="off"
+								autocapitalize="off"
+								spellcheck="false"
+								readonly
+								data-lpignore="true"
+								data-1p-ignore="true"
+								data-form-type="other"
+							/>
 						</div>
 						<input type="hidden" name="_subject" value="OKCoded project inquiry" />
 
