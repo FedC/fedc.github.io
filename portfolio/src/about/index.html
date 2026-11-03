@@ -52,10 +52,20 @@
 	<main class="site-main about-page">
 		<section class="about-intro js-reveal" aria-labelledby="about-heading">
 			<div class="about-intro__media">
-				<!-- Swap the monogram for a portrait: <img class="about-intro__photo" src="../assets/federico.jpg" width="640" height="800" alt="Federico Commisso" /> -->
-				<div class="about-intro__portrait" aria-hidden="true">
-					<span class="about-intro__monogram">FC</span>
-				</div>
+				<picture>
+					<source type="image/webp" srcset="../assets/federico-480.webp 480w, ../assets/federico.webp 720w" sizes="(max-width: 859px) min(22rem, 70vw), min(22rem, 32vw)" />
+					<img
+						class="about-intro__photo"
+						src="../assets/federico.jpg"
+						srcset="../assets/federico-480.jpg 480w, ../assets/federico.jpg 720w"
+						sizes="(max-width: 859px) min(22rem, 70vw), min(22rem, 32vw)"
+						width="720"
+						height="720"
+						alt="Portrait of Federico Commisso"
+						decoding="async"
+						fetchpriority="low"
+					/>
+				</picture>
 			</div>
 			<div class="about-intro__copy">
 				<span class="about-intro__eyebrow">Meet the engineer</span>
