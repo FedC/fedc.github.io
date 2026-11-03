@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "parcel src/index.html --open",
+    "start": "parcel src/index.html src/services/index.html src/work/index.html src/about/index.html src/contact/index.html --open",
     "clean": "rm -rf dist",
-    "build:parcel": "parcel build src/index.html --no-source-maps --public-url ./",
+    "build:parcel": "parcel build src/index.html src/services/index.html src/work/index.html src/about/index.html src/contact/index.html --no-source-maps --public-url /",
     "build": "npm run clean && npm run build:parcel",
     "prepare-publish": "node scripts/prepare-publish.mjs",
     "build:publish": "npm run build && npm run prepare-publish",

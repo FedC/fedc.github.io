@@ -1,5 +1,6 @@
 import anime from 'animejs'
 import { prefersReducedMotion } from './motion'
+import { PROJECTS } from './data/projects'
 
 /** UTM params appended to outbound project URLs for referral analytics. */
 const REFERRAL_UTM = {
@@ -31,48 +32,18 @@ function siteHostname(siteUrl) {
   }
 }
 
-const PROJECTS = {
-  reviver: {
-    theme: 'reviver',
-    eyebrow: 'Headless commerce',
-    title: 'Reviver.com',
-    paragraphs: [
-      'Headless, route-level splitting, layout primitives tied to the CMS shape. Platform auth integration with commerce.',
-    ],
-    tags: ['Integration', 'Animation'],
-    siteUrl: 'https://reviver.com',
-  },
-  futiki: {
-    theme: 'futiki',
-    eyebrow: 'Consumer product',
-    title: 'Futiki.app',
-    paragraphs: [
-      'Optimistic client state, server reconciliation, and explicit handling.',
-    ],
-    tags: ['Product UI', 'Maps & state'],
-    siteUrl: 'https://futiki.app',
-  },
-  squeeze: {
-    theme: 'squeeze',
-    eyebrow: 'Insurance software',
-    title: 'Squeeze.com',
-    paragraphs: [
-      'Integrations sit between vendors, internal services, and third parties — Narrow HTTP contracts and defensive logic with partial responses.',
-      'Recovery, validation, and layout discipline for multi-step work.',
-    ],
-    tags: ['Embedded UX', 'Automation'],
-    siteUrl: 'https://squeeze.com',
-  },
-  myyellow: {
-    theme: 'myyellow',
-    eyebrow: 'Mortgage platform',
-    title: 'MyYellow.ai',
-    paragraphs: [
-      'Optimistic edits, idempotent handlers, retry-safe UI, clear copy, and document state aligned across sessions with realtime updates.',
-    ],
-    tags: ['Document', 'Realtime'],
-    siteUrl: 'https://myyellow.ai',
-  },
+/** Map schema → modal view model (preserves prior modal field names). */
+function projectForModal(slug) {
+  const p = PROJECTS[slug]
+  if (!p) return null
+  return {
+    theme: p.theme,
+    eyebrow: p.eyebrow,
+    title: p.title,
+    paragraphs: p.description,
+    tags: p.tags,
+    siteUrl: p.siteUrl,
+  }
 }
 
 export function initWorkModal() {
@@ -146,7 +117,7 @@ export function initWorkModal() {
   }
 
   function populate(slug) {
-    const project = PROJECTS[slug]
+    const project = projectForModal(slug)
     if (!project) return
 
     eyebrowEl.textContent = project.eyebrow

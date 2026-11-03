@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Contact | OKCoded</title>
+	<meta name="description" content="Contact OKCoded to discuss a website, product UI, SEO, analytics, automation, or ongoing maintenance project." />
+	<link rel="canonical" href="https://okcd.io/contact/" />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="OKCoded" />
+	<meta property="og:url" content="https://okcd.io/contact/" />
+	<meta property="og:title" content="Contact | OKCoded" />
+	<meta property="og:description" content="Say hello — short briefs welcome. Email hello@okcd.io or use the form." />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="Contact | OKCoded" />
+	<meta name="twitter:description" content="Say hello — short briefs welcome. Email hello@okcd.io or use the form." />
+	<meta name="theme-color" content="#000000" />
+	<link rel="manifest" href="https://okcd.io/site.webmanifest" />
+	<link rel="shortcut icon" href="https://okcd.io/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../styles/base.css" />
+	<link rel="stylesheet" type="text/css" href="../styles/shaders-on-scroll.sass" />
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "ContactPage",
+		"name": "Contact OKCoded",
+		"url": "https://okcd.io/contact/",
+		"mainEntity": {
+			"@type": "Organization",
+			"name": "OKCoded",
+			"url": "https://okcd.io/",
+			"email": "hello@okcd.io"
+		}
+	}
+	</script>
+</head>
+<body class="site-page">
+	<header class="frame">
+		<div class="frame__title-wrap">
+			<p class="frame__title"><a href="/" data-nav>Okcd.io</a></p>
+		</div>
+		<nav class="frame__links site-nav" aria-label="Primary">
+			<a href="/services/" data-nav>Services</a>
+			<a href="/work/" data-nav>Work</a>
+			<a href="/about/" data-nav>About</a>
+			<a href="/contact/" data-nav>Contact</a>
+		</nav>
+	</header>
+
+	<main class="site-main">
+		<section class="contact-section" id="contact" aria-labelledby="contact-heading">
+			<header class="page-hero js-reveal">
+				<span class="page-hero__label">Contact</span>
+				<h1 class="page-hero__title" id="contact-heading">Say hello</h1>
+				<p class="page-hero__lede">New product, hard UI problem, or a site that needs steadier care — drop a line. Short briefs beat long intros.</p>
+			</header>
+			<div class="contact-panel js-reveal">
+				<p class="contact-panel__alt">
+					Prefer email?
+					<a href="mailto:hello@okcd.io">hello@okcd.io</a>
+				</p>
+				<form action="https://formspree.io/f/xpwzwrev" method="POST" id="contact-form">
+					<div class="contact-honeypot" aria-hidden="true">
+						<label for="contact-gotcha">Company website</label>
+						<input type="text" name="_gotcha" id="contact-gotcha" tabindex="-1" autocomplete="off" />
+					</div>
+					<input type="hidden" name="_subject" value="OKCoded contact form" />
+					<div class="contact-field">
+						<label class="contact-field__label" for="email-input">
+							Email <span class="contact-field__req" aria-hidden="true">*</span>
+							<span class="visually-hidden"> (required)</span>
+						</label>
+						<input class="contact-field__control" type="email" name="email" id="email-input" required autocomplete="email" inputmode="email" spellcheck="false" aria-required="true" aria-describedby="form-response" />
+					</div>
+					<div class="contact-field">
+						<label class="contact-field__label" for="message-input">
+							Message <span class="contact-field__req" aria-hidden="true">*</span>
+							<span class="visually-hidden"> (required)</span>
+						</label>
+						<textarea class="contact-field__control contact-field__control--area" id="message-input" name="message" required rows="6" autocomplete="off" aria-required="true" aria-describedby="form-response"></textarea>
+					</div>
+					<button type="submit" class="contact-submit" id="contact-submit">
+						<span class="contact-submit__label">Send message</span>
+					</button>
+					<p id="form-response" class="contact-status" role="status" aria-live="polite" hidden></p>
+				</form>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<a class="site-footer__link" href="https://fedc.github.io/"><span id="footer-year">2026</span> &copy; Federico Commisso</a>
+	</footer>
+
+	<script type="module" src="../app/sitePage.js"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-KZHL6J943T"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){ dataLayer.push(arguments); }
+		gtag('js', new Date());
+		gtag('config', 'G-KZHL6J943T');
+	</script>
+</body>
+</html>

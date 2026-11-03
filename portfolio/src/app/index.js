@@ -6,6 +6,7 @@ import SmoothScroll from './SmoothScroll'
 import { initPlayground } from './playground'
 import { initContactForm } from './contactForm'
 import { initWorkModal } from './workModal'
+import { initSiteChrome } from './siteChrome'
 import {
   prefersReducedMotion,
   prefersLeanGpu,
@@ -373,6 +374,7 @@ class ScrollStage {
 new ScrollStage()
 
 document.addEventListener('DOMContentLoaded', function () {
+  initSiteChrome()
   initPlayground()
   initContactForm()
   initWorkModal()
