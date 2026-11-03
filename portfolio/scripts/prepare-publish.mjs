@@ -24,7 +24,7 @@ const distDir = join(root, 'dist')
 const staticDir = join(root, 'publish-static')
 const outDir = join(root, 'build-out')
 
-const PUBLIC_ROUTES = ['/', '/services/', '/work/', '/about/', '/contact/']
+const PUBLIC_ROUTES = ['/', '/services/', '/work/', '/insights/', '/about/', '/contact/']
 
 function fail(msg) {
   console.error(`prepare-publish: ${msg}`)
@@ -51,9 +51,19 @@ mkdirSync(outDir, { recursive: true })
 cpSync(distDir, outDir, { recursive: true })
 cpSync(staticDir, outDir, { recursive: true })
 
+const insightManifestPath = join(root, 'src/insights/.manifest.json')
+const insightArticles = existsSync(insightManifestPath)
+  ? JSON.parse(readFileSync(insightManifestPath, 'utf8')).articles || []
+  : []
+
+const sitemapRoutes = [
+  ...PUBLIC_ROUTES,
+  ...insightArticles.map((a) => a.path || `/insights/${a.slug}/`),
+]
+
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${PUBLIC_ROUTES.map((route) => `  <url>\n    <loc>https://okcd.io${route}</loc>\n  </url>`).join('\n')}
+${sitemapRoutes.map((route) => `  <url>\n    <loc>https://okcd.io${route}</loc>\n  </url>`).join('\n')}
 </urlset>
 `
 writeFileSync(join(outDir, 'sitemap.xml'), sitemap)
@@ -62,6 +72,7 @@ const required = [
   'index.html',
   'services/index.html',
   'work/index.html',
+  'insights/index.html',
   'about/index.html',
   'contact/index.html',
   'about.html',
@@ -86,6 +97,7 @@ const checks = {
   jsonld: html.includes('application/ld+json'),
   contact: html.includes('contact-form'),
   servicesNav: html.includes('/services/'),
+  insightsNav: html.includes('/insights/'),
 }
 
 for (const [k, ok] of Object.entries(checks)) {
