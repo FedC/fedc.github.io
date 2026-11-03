@@ -11,6 +11,7 @@ export const SERVICES_PLAN = {
     {
       id: 'web-development',
       title: 'Web Development',
+      benefit: 'A web presence that loads clean, reads clearly, and is easy to evolve.',
       summary:
         'Marketing sites, product interfaces, and custom web apps built for performance, clarity, and long-term maintenance.',
       examples: [
@@ -27,6 +28,7 @@ export const SERVICES_PLAN = {
     {
       id: 'mobile-applications',
       title: 'Mobile Applications',
+      benefit: 'Meet people on the devices they already live in.',
       summary:
         'Cross-platform mobile product work with Flutter, progressive web apps, and API-connected experiences.',
       examples: [
@@ -43,6 +45,7 @@ export const SERVICES_PLAN = {
     {
       id: 'backend-integrations',
       title: 'Backend & Integrations',
+      benefit: 'Make the interface real — with systems that hold up in production.',
       summary:
         'APIs, data models, auth, and third-party connections that make frontends useful in production.',
       examples: [
@@ -60,6 +63,7 @@ export const SERVICES_PLAN = {
     {
       id: 'growth-analytics',
       title: 'Growth & Analytics',
+      benefit: 'Get found, measure what matters, and trust the numbers.',
       summary:
         'Engineering-led SEO foundations, measurement, and performance work that supports discovery and conversion.',
       examples: [
@@ -77,6 +81,7 @@ export const SERVICES_PLAN = {
     {
       id: 'automation',
       title: 'Automation',
+      benefit: 'Replace repetitive busywork with durable workflows.',
       summary:
         'Practical workflow automation, internal tools, and system-to-system connections that reduce manual work.',
       examples: [
