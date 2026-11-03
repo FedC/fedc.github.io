@@ -543,14 +543,19 @@ $max-read: 42rem
     transform: none
 
 @media (prefers-reduced-motion: reduce)
-  .js-reveal
+  .js-reveal,
+  .js-animate-in
     opacity: 1 !important
+    visibility: visible !important
     transform: none !important
     transition: none !important
 
   .work-card,
   .distort-card,
-  .btn
+  .btn,
+  .magnetic-btn,
+  .tilt-card,
+  .chip-ripple
     transition: none !important
 
   .work-card:hover
