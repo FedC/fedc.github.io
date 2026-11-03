@@ -6,6 +6,7 @@ import { initContactForm } from './contactForm'
 import { initWorkModal } from './workModal'
 import { initReveals } from './reveals'
 import { prefersReducedMotion } from './motion'
+import { initAnalytics } from './analytics'
 
 document.documentElement.classList.remove('no-js')
 document.documentElement.classList.add('js')
@@ -15,6 +16,7 @@ initSiteChrome()
 initContactForm()
 initWorkModal()
 initReveals()
+initAnalytics()
 
 if (prefersReducedMotion()) {
   document.querySelectorAll('video[autoplay]').forEach(function (video) {

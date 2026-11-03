@@ -10,7 +10,9 @@
     "build": "npm run clean && npm run build:insights && npm run build:parcel",
     "prepare-publish": "node scripts/prepare-publish.mjs",
     "test:contact": "node scripts/check-contact-honeypot.mjs",
-    "build:publish": "npm run test:contact && npm run build && npm run prepare-publish",
+    "test:analytics": "node scripts/check-analytics.mjs",
+    "test": "npm run test:contact && npm run test:analytics",
+    "build:publish": "npm run test && npm run build && npm run prepare-publish",
     "copy-dist-to-root": "echo \"DEPRECATED: use GitHub Actions Pages deploy (npm run build:publish). Root copy kept only for emergency rollback.\" && cp -r dist/* ../"
   },
   "keywords": [],
