@@ -196,9 +196,8 @@ canvas.webgl
     .section__title
       padding-bottom: calc(min(9vw, 6rem))
 
-  &:nth-child(even)
-    background: rgba(0, 0, 0, 0.38)
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04)
+  // No alternating section fills — translucent bands sit over the fixed
+  // WebGL mesh and read as dark rectangles between content blocks.
 
   &__title
     text-align: left
