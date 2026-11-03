@@ -55,11 +55,13 @@ jobs:
           test -f build-out/sitemap.xml
           test -f build-out/site.webmanifest
           test -f build-out/404.html
+          test -f build-out/about.html
+          grep -qi 'noindex' build-out/about.html
+          grep -q 'https://okcd.io/' build-out/about.html
           test -n "$(find build-out -name '*.js' -type f | head -1)"
           test -n "$(find build-out -name '*.css' -type f | head -1)"
           test ! -e build-out/geltenpro.html
           test ! -e build-out/nutridentist.html
-          test ! -e build-out/about.html
           echo "Publish contents:"
           ls -la build-out
 

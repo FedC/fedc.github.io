@@ -2,10 +2,10 @@
 /**
  * Assemble portfolio/build-out for GitHub Pages from:
  *   1) Parcel dist/ (hashed HTML/CSS/JS/icons)
- *   2) publish-static/ (CNAME, SEO, PWA icons, 404)
+ *   2) publish-static/ (CNAME, SEO, PWA icons, 404, about redirect)
  *
- * Intentionally excludes repo-root legacy pages (about.html,
- * geltenpro.html, nutridentist.html) and unused media trees.
+ * Excludes prospect estimate pages and unused media trees.
+ * Publishes a minimal /about.html redirect (no legacy bundles).
  */
 import { cpSync, mkdirSync, rmSync, readdirSync, statSync, existsSync, readFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -33,6 +33,7 @@ cpSync(staticDir, outDir, { recursive: true })
 
 const required = [
   'index.html',
+  'about.html',
   'CNAME',
   'robots.txt',
   'sitemap.xml',
@@ -59,6 +60,20 @@ for (const [k, ok] of Object.entries(checks)) {
   if (!ok) fail(`index.html check failed: ${k}`)
 }
 
+const about = readFileSync(join(outDir, 'about.html'), 'utf8')
+const aboutChecks = {
+  noindex: /noindex/i.test(about),
+  canonicalHome: about.includes('rel="canonical"') && about.includes('https://okcd.io/'),
+  metaRefresh: /http-equiv=["']?refresh["']?/i.test(about) && about.includes('https://okcd.io/'),
+  fallbackLink: /href=["']https:\/\/okcd\.io\/["']/.test(about),
+  noLegacyCss: !/\.css/i.test(about),
+  noLegacyJsBundle: !(/src=["'][^"']*\.js["']/.test(about)),
+}
+
+for (const [k, ok] of Object.entries(aboutChecks)) {
+  if (!ok) fail(`about.html check failed: ${k}`)
+}
+
 // Ensure CSS/JS emitted by Parcel are present and referenced
 const assets = readdirSync(outDir).filter((f) => /\.(css|js)$/.test(f))
 if (!assets.some((f) => f.endsWith('.css'))) fail('no CSS in build-out')
@@ -67,7 +82,6 @@ if (!assets.some((f) => f.endsWith('.js'))) fail('no JS in build-out')
 const forbidden = [
   'geltenpro.html',
   'nutridentist.html',
-  'about.html',
   'node_modules',
   '.git',
 ]
@@ -85,4 +99,4 @@ const listing = readdirSync(outDir)
 console.log('prepare-publish: build-out ready')
 for (const line of listing) console.log(`  ${line}`)
 
-console.log('prepare-publish: checks ok', checks)
+console.log('prepare-publish: checks ok', { ...checks, about: aboutChecks })
