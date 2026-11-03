@@ -1,7 +1,10 @@
 /**
- * Formspree contact form — endpoint preserved; honeypot + loading/disabled UX.
- * Extra fields can be added to the form markup without changing submit wiring.
+ * Formspree project inquiry — endpoint preserved; honeypot + loading/disabled UX.
+ * Extra fields (e.g. project_type radios) submit via FormData automatically.
  */
+const IDLE_LABEL = 'Send project inquiry'
+const BUSY_LABEL = 'Sending…'
+
 export function initContactForm() {
   const form = document.getElementById('contact-form')
   const responseElement = document.getElementById('form-response')
@@ -13,7 +16,11 @@ export function initContactForm() {
   function setStatus(message, type) {
     responseElement.hidden = !message
     responseElement.textContent = message || ''
-    responseElement.classList.remove('contact-status--success', 'contact-status--error', 'contact-status--pending')
+    responseElement.classList.remove(
+      'contact-status--success',
+      'contact-status--error',
+      'contact-status--pending'
+    )
     if (type) responseElement.classList.add('contact-status--' + type)
   }
 
@@ -23,7 +30,7 @@ export function initContactForm() {
     submitBtn.disabled = busy
     submitBtn.setAttribute('aria-busy', busy ? 'true' : 'false')
     const label = submitBtn.querySelector('.contact-submit__label')
-    if (label) label.textContent = busy ? 'Sending…' : 'Send message'
+    if (label) label.textContent = busy ? BUSY_LABEL : IDLE_LABEL
   }
 
   form.addEventListener('submit', function (event) {
@@ -38,7 +45,7 @@ export function initContactForm() {
       return
     }
     if (message && !message.checkValidity()) {
-      setStatus('Please include a short message.', 'error')
+      setStatus('Please include a short project description.', 'error')
       message.focus()
       return
     }

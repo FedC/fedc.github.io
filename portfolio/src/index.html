@@ -261,68 +261,100 @@
 						</div>
 					</section>
 
-					<section class="section contact-section" id="contact" aria-labelledby="contact-heading">
-						<header class="section-heading js-reveal">
-							<span class="section-heading__label">Contact</span>
-							<h2 class="section-heading__title" id="contact-heading">Discuss a project</h2>
-							<p class="section-heading__desc">Website, mobile app, custom software, integration, or automation — short briefs are welcome.</p>
-						</header>
-						<div class="contact-panel js-reveal">
-							<p class="contact-panel__alt">
-								Prefer email?
-								<a href="mailto:hello@okcd.io">hello@okcd.io</a>
-							</p>
-							<form action="https://formspree.io/f/xpwzwrev" method="POST" id="contact-form">
-								<!-- Formspree honeypot: leave empty. Hidden from assistive tech. -->
-								<div class="contact-honeypot" aria-hidden="true">
-									<label for="contact-gotcha">Company website</label>
-									<input type="text" name="_gotcha" id="contact-gotcha" tabindex="-1" autocomplete="off" />
-								</div>
+					<section class="section contact-section contact-inquiry" id="contact" aria-labelledby="contact-heading">
+						<div class="contact-inquiry__layout">
+							<header class="contact-inquiry__intro js-reveal">
+								<span class="contact-inquiry__eyebrow">Start a project</span>
+								<h2 class="contact-inquiry__title" id="contact-heading">Have something in mind? Let’s build it.</h2>
+								<p class="contact-inquiry__lede">A website, mobile app, or something more complex. Tell me what you’re working on and I’ll help figure out the next step.</p>
+								<p class="contact-inquiry__alt">
+									Prefer email?
+									<a href="mailto:hello@okcd.io">hello@okcd.io</a>
+								</p>
+							</header>
+							<div class="contact-panel js-reveal">
+								<form action="https://formspree.io/f/xpwzwrev" method="POST" id="contact-form">
+									<!-- Formspree honeypot: leave empty. Hidden from assistive tech. -->
+									<div class="contact-honeypot" aria-hidden="true">
+										<label for="contact-gotcha">Company website</label>
+										<input type="text" name="_gotcha" id="contact-gotcha" tabindex="-1" autocomplete="off" />
+									</div>
 
-								<input type="hidden" name="_subject" value="OKCoded contact form" />
+									<input type="hidden" name="_subject" value="OKCoded project inquiry" />
 
-								<div class="contact-field">
-									<label class="contact-field__label" for="email-input">
-										Email <span class="contact-field__req" aria-hidden="true">*</span>
-										<span class="visually-hidden"> (required)</span>
-									</label>
-									<input
-										class="contact-field__control"
-										type="email"
-										name="email"
-										id="email-input"
-										required
-										autocomplete="email"
-										inputmode="email"
-										spellcheck="false"
-										aria-required="true"
-										aria-describedby="form-response"
-									/>
-								</div>
+									<fieldset class="contact-type">
+										<legend class="contact-field__label">What are you looking to build?</legend>
+										<div class="contact-type__chips">
+											<label class="contact-chip">
+												<input type="radio" name="project_type" value="Website" />
+												<span class="contact-chip__text">Website</span>
+											</label>
+											<label class="contact-chip">
+												<input type="radio" name="project_type" value="Web application" />
+												<span class="contact-chip__text">Web app</span>
+											</label>
+											<label class="contact-chip">
+												<input type="radio" name="project_type" value="Mobile application" />
+												<span class="contact-chip__text">Mobile app</span>
+											</label>
+											<label class="contact-chip">
+												<input type="radio" name="project_type" value="Automation / integration" />
+												<span class="contact-chip__text">Automation</span>
+											</label>
+											<label class="contact-chip">
+												<input type="radio" name="project_type" value="Not sure yet" />
+												<span class="contact-chip__text">Not sure yet</span>
+											</label>
+										</div>
+									</fieldset>
 
-								<div class="contact-field">
-									<label class="contact-field__label" for="message-input">
-										Message <span class="contact-field__req" aria-hidden="true">*</span>
-										<span class="visually-hidden"> (required)</span>
-									</label>
-									<textarea
-										class="contact-field__control contact-field__control--area"
-										id="message-input"
-										name="message"
-										required
-										rows="6"
-										autocomplete="off"
-										aria-required="true"
-										aria-describedby="form-response"
-									></textarea>
-								</div>
+									<div class="contact-field">
+										<label class="contact-field__label" for="email-input">
+											Your email <span class="contact-field__req" aria-hidden="true">*</span>
+											<span class="visually-hidden"> (required)</span>
+										</label>
+										<input
+											class="contact-field__control"
+											type="email"
+											name="email"
+											id="email-input"
+											required
+											autocomplete="email"
+											inputmode="email"
+											spellcheck="false"
+											placeholder="you@company.com"
+											aria-required="true"
+											aria-describedby="form-response"
+										/>
+									</div>
 
-								<button type="submit" class="contact-submit" id="contact-submit">
-									<span class="contact-submit__label">Send message</span>
-								</button>
+									<div class="contact-field">
+										<label class="contact-field__label" for="message-input">
+											Tell me a little about your project <span class="contact-field__req" aria-hidden="true">*</span>
+											<span class="visually-hidden"> (required)</span>
+										</label>
+										<textarea
+											class="contact-field__control contact-field__control--area"
+											id="message-input"
+											name="message"
+											required
+											rows="5"
+											autocomplete="off"
+											placeholder="What are you trying to build or improve?"
+											aria-required="true"
+											aria-describedby="form-response"
+										></textarea>
+									</div>
 
-								<p id="form-response" class="contact-status" role="status" aria-live="polite" hidden></p>
-							</form>
+									<button type="submit" class="contact-submit" id="contact-submit">
+										<span class="contact-submit__label">Send project inquiry</span>
+										<span class="contact-submit__arrow" aria-hidden="true">↗</span>
+									</button>
+
+									<p class="contact-inquiry__assurance">No commitment. Just a conversation about your project.</p>
+									<p id="form-response" class="contact-status" role="status" aria-live="polite" hidden></p>
+								</form>
+							</div>
 						</div>
 					</section>
 

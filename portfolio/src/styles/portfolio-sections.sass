@@ -49,20 +49,26 @@ $max-read: 42rem
 .site-nav
   display: flex
   flex-wrap: wrap
-  gap: 0.75rem 1.25rem
+  gap: 0.55rem 0.9rem
   justify-content: center
+  max-width: 100%
 
   @media (min-width: 53em)
+    gap: 0.75rem 1.25rem
     justify-content: flex-end
 
   a
     text-decoration: none
     border-bottom: 1px solid transparent
-    font-size: 0.75rem
-    letter-spacing: 0.14em
+    font-size: 0.7rem
+    letter-spacing: 0.12em
     text-transform: uppercase
     color: rgba(244, 246, 250, 0.86)
     transition: color 0.25s ease, border-color 0.25s ease
+
+    @media (min-width: 53em)
+      font-size: 0.75rem
+      letter-spacing: 0.14em
 
     &:hover,
     &:focus-visible
@@ -479,46 +485,68 @@ $max-read: 42rem
 .contact-section
   position: relative
   z-index: 2
-  max-width: min(56rem, calc(100vw - 4rem))
+  max-width: min(68rem, calc(100vw - 3rem))
   width: 100%
   margin: 0 auto
   isolation: isolate
   box-sizing: border-box
 
-  .section-heading
+  // Soft scrim so WebGL stays atmospheric behind the inquiry
+  &::before
+    content: ''
+    position: absolute
+    z-index: 0
+    inset: -8% -4%
+    pointer-events: none
+    background: radial-gradient(ellipse 70% 65% at 50% 45%, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.28) 55%, transparent 78%)
+
+.contact-inquiry
+  &__layout
     position: relative
     z-index: 1
-    text-align: center
-    margin-left: auto
-    margin-right: auto
-    max-width: 40rem
+    display: grid
+    gap: clamp(1.35rem, 3.5vw, 2.75rem)
+    align-items: start
+    width: 100%
+    min-width: 0
 
-  .section-heading__title
+    @media (min-width: 900px)
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr)
+      gap: clamp(2rem, 4vw, 3.5rem)
+      align-items: center
+
+  &__intro
+    max-width: 34rem
+    min-width: 0
+
+  &__eyebrow
+    display: block
+    margin: 0 0 0.85rem
+    font-size: 0.68rem
+    letter-spacing: 0.22em
+    text-transform: uppercase
+    color: rgba(244, 246, 250, 0.72)
+
+  &__title
+    margin: 0
+    font-size: clamp(1.7rem, 3.6vw, 2.65rem)
+    font-weight: 500
+    letter-spacing: -0.03em
+    line-height: 1.12
     color: var(--okcd-text)
 
-  .section-heading__desc
+  &__lede
+    margin: 1rem 0 0
+    font-size: clamp(1rem, 1.8vw, 1.12rem)
+    line-height: 1.55
     color: rgba(244, 246, 250, 0.86)
-
-.contact-panel
-  position: relative
-  z-index: 1
-  // Opaque enough without @supports (avoids Sass mixed-decls); blur softens mesh
-  background: rgba(10, 12, 22, 0.88)
-  border: 1px solid rgba(255, 255, 255, 0.2)
-  border-radius: $radius-lg
-  padding: clamp(1.35rem, 3vw, 2rem)
-  margin-top: 1.1rem
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.12)
-  // Single blur layer on the card only (not on nested form / inputs)
-  backdrop-filter: blur(18px) saturate(130%)
-  -webkit-backdrop-filter: blur(18px) saturate(130%)
+    max-width: 32rem
 
   &__alt
-    margin: 0 0 1.1rem
+    margin: 1.25rem 0 0
     font-size: 0.95rem
     line-height: 1.5
-    color: rgba(244, 246, 250, 0.9)
-    text-align: center
+    color: rgba(244, 246, 250, 0.86)
 
     a
       color: var(--okcd-accent)
@@ -533,12 +561,32 @@ $max-read: 42rem
         outline: 2px solid var(--okcd-focus)
         outline-offset: 3px
 
+  &__assurance
+    margin: 0.15rem 0 0
+    text-align: center
+    font-size: 0.84rem
+    line-height: 1.45
+    color: rgba(244, 246, 250, 0.62)
+
+.contact-panel
+  position: relative
+  z-index: 1
+  width: 100%
+  min-width: 0
+  // Solid panel for readability over mesh — avoid heavy glass blur
+  background: rgba(12, 14, 22, 0.96)
+  border: 1px solid rgba(255, 255, 255, 0.16)
+  border-radius: $radius-lg
+  padding: clamp(1.25rem, 2.8vw, 1.85rem)
+  margin: 0
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06)
+
   // Override legacy base.css `form` glass styles — no nested opaque shell
   form
     display: flex
     flex-direction: column
     align-items: stretch
-    gap: 1rem
+    gap: 1.05rem
     width: 100%
     min-width: 0
     max-width: none
@@ -557,6 +605,68 @@ $max-read: 42rem
       background: transparent
       border-color: transparent
       box-shadow: none
+
+.contact-type
+  margin: 0
+  padding: 0
+  border: 0
+  min-width: 0
+
+  legend
+    padding: 0
+    margin: 0 0 0.65rem
+
+  &__chips
+    display: flex
+    flex-wrap: wrap
+    gap: 0.5rem
+
+.contact-chip
+  position: relative
+  display: inline-flex
+  margin: 0
+  cursor: pointer
+
+  input
+    position: absolute
+    opacity: 0
+    width: 1px
+    height: 1px
+    margin: 0
+    pointer-events: none
+
+  &__text
+    display: inline-flex
+    align-items: center
+    justify-content: center
+    min-height: 2.5rem
+    padding: 0.45rem 0.9rem
+    border: 1px solid rgba(255, 255, 255, 0.22)
+    border-radius: 999px
+    background: rgba(6, 8, 16, 0.9)
+    color: rgba(244, 246, 250, 0.88)
+    font-size: 0.86rem
+    font-weight: 500
+    line-height: 1.2
+    white-space: nowrap
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease
+
+  &:hover .contact-chip__text
+    border-color: rgba(255, 255, 255, 0.4)
+    color: #fff
+
+  input:focus-visible + .contact-chip__text
+    outline: 2px solid var(--okcd-focus)
+    outline-offset: 3px
+
+  input:checked + .contact-chip__text
+    background: #f4f6fa
+    border-color: #f4f6fa
+    color: #0a0c12
+
+@media (prefers-reduced-motion: reduce)
+  .contact-chip__text
+    transition: none
 
 .contact-honeypot
   position: absolute
@@ -632,32 +742,39 @@ $max-read: 42rem
 button.contact-submit
   -webkit-appearance: none
   appearance: none
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  gap: 0.55rem
   width: 100%
-  margin-top: 0.25rem
-  min-height: 3.15rem
-  padding: 1em 1.5em
-  border: 1px solid rgba(120, 255, 230, 0.35)
+  margin-top: 0.15rem
+  min-height: 3.25rem
+  padding: 1em 1.35em
+  border: 1px solid rgba(46, 180, 170, 0.45)
   border-radius: 0.85rem
-  letter-spacing: 0.14em
-  font-size: 0.82rem
-  font-weight: 700
-  text-transform: uppercase
+  letter-spacing: 0.04em
+  font-size: 0.95rem
+  font-weight: 600
+  text-transform: none
   cursor: pointer
   color: #041416
-  background: linear-gradient(135deg, #0d9b96 0%, #2ee6d6 55%, #72c3e9 100%)
-  box-shadow: 0 0 24px rgba(46, 230, 214, 0.28), 0 12px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.35)
+  background: linear-gradient(135deg, #0f8f8a 0%, #1bb8ae 45%, #2a9fbf 100%)
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.22)
   transition: transform 0.2s ease, border-color 0.2s ease, filter 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease
+
+  &__arrow
+    font-size: 1.05em
+    line-height: 1
 
   &:hover:not(:disabled)
     transform: translateY(-1px)
-    border-color: rgba(160, 255, 240, 0.55)
-    filter: brightness(1.06)
-    background: linear-gradient(135deg, #12b0aa 0%, #5af0e2 55%, #8ad4f0 100%)
-    box-shadow: 0 0 32px rgba(46, 230, 214, 0.4), 0 14px 36px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4)
+    border-color: rgba(120, 230, 220, 0.55)
+    filter: brightness(1.05)
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.28)
 
   &:focus
     outline: none
-    box-shadow: 0 0 0 3px rgba(46, 230, 214, 0.45), 0 0 24px rgba(46, 230, 214, 0.28), 0 12px 32px rgba(0, 0, 0, 0.4)
+    box-shadow: 0 0 0 3px rgba(46, 230, 214, 0.4), 0 10px 28px rgba(0, 0, 0, 0.35)
 
   &:focus-visible
     outline: 2px solid #2ee6d6
@@ -700,44 +817,56 @@ button.contact-submit
     background: rgba(140, 40, 40, 0.26)
     border-color: rgba(255, 180, 180, 0.4)
 
-// Mobile: near full-width card, ~16px gutters, no nested horizontal squeeze
-@media (max-width: 767.98px)
+// Mobile / compact: full-width inquiry, tighter vertical rhythm
+@media (max-width: 899.98px)
   .section.contact-section
     max-width: none
     width: 100%
     margin: 0
-    padding: 4.5rem 1rem 5.5rem
+    padding: 3.5rem 1rem 4.75rem
     min-height: auto
 
-  .contact-section
-    .section-heading
-      margin-bottom: 0.85rem
+  .contact-section::before
+    inset: -4% 0
 
-    .section-heading__desc
-      margin-top: 0.65rem
-      font-size: 0.98rem
+  .contact-inquiry__layout
+    gap: 1.15rem
 
-  .contact-panel
+  .contact-inquiry__title
+    font-size: clamp(1.55rem, 7vw, 2rem)
+
+  .contact-inquiry__lede
     margin-top: 0.75rem
-    padding: 1.15rem 1rem
-    border-radius: 1.1rem
+    font-size: 0.98rem
 
-  .contact-panel__alt
-    margin-bottom: 0.9rem
+  .contact-inquiry__alt
+    margin-top: 0.95rem
     font-size: 0.9rem
 
+  .contact-panel
+    padding: 1.1rem 0.95rem
+    border-radius: 1.1rem
+
   .contact-panel form
-    gap: 0.85rem
+    gap: 0.9rem
+
+  .contact-type__chips
+    gap: 0.4rem
+
+  .contact-chip__text
+    min-height: 2.65rem
+    padding: 0.5rem 0.8rem
+    font-size: 0.84rem
 
   .contact-field__control
     font-size: 16px
     padding: 0.95em 0.9em
 
   .contact-field__control--area
-    min-height: 7.5rem
+    min-height: 7rem
 
   .contact-submit
-    min-height: 3.25rem
+    min-height: 3.35rem
 
 // Scroll reveal baseline
 .js-reveal
