@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Work | OKCoded</title>
+	<meta name="description" content="Featured OKCoded work — Reviver.com, a headless commerce storefront with careful frontend engineering and interaction design." />
+	<link rel="canonical" href="https://okcd.io/work/" />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="OKCoded" />
+	<meta property="og:url" content="https://okcd.io/work/" />
+	<meta property="og:title" content="Work | OKCoded" />
+	<meta property="og:description" content="Featured OKCoded work — Reviver.com, a headless commerce storefront with careful frontend engineering and interaction design." />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="Work | OKCoded" />
+	<meta name="twitter:description" content="Featured OKCoded work — Reviver.com, a headless commerce storefront with careful frontend engineering and interaction design." />
+	<meta name="theme-color" content="#000000" />
+	<link rel="manifest" href="https://okcd.io/site.webmanifest" />
+	<link rel="shortcut icon" href="https://okcd.io/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../styles/base.css" />
+	<link rel="stylesheet" type="text/css" href="../styles/shaders-on-scroll.sass" />
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "CollectionPage",
+		"name": "OKCoded Work",
+		"url": "https://okcd.io/work/",
+		"description": "Curated featured work from OKCoded.",
+		"isPartOf": { "@type": "WebSite", "name": "OKCoded", "url": "https://okcd.io/" },
+		"mainEntity": {
+			"@type": "CreativeWork",
+			"name": "Reviver.com",
+			"url": "https://reviver.com",
+			"description": "Headless commerce storefront with interactive frontend craft."
+		}
+	}
+	</script>
+</head>
+<body class="site-page">
+	<header class="frame">
+		<div class="frame__title-wrap">
+			<p class="frame__title"><a href="/" data-nav>Okcd.io</a></p>
+		</div>
+		<nav class="frame__links site-nav" aria-label="Primary">
+			<a href="/services/" data-nav>Services</a>
+			<a href="/work/" data-nav>Work</a>
+			<a href="/insights/" data-nav>Insights</a>
+			<a href="/about/" data-nav>About</a>
+			<a href="/contact/" data-nav>Contact</a>
+		</nav>
+	</header>
+
+	<main class="site-main">
+		<header class="page-hero js-reveal">
+			<span class="page-hero__label">Work</span>
+			<h1 class="page-hero__title">Featured project</h1>
+			<p class="page-hero__lede">A deliberate shortlist of shipped work. Additional case studies will be added when they are ready to represent the studio clearly.</p>
+		</header>
+
+		<div class="work-featured js-reveal">
+			<article class="work-card work-card--featured work-card--spotlight" data-work="reviver" tabindex="0" role="button" aria-expanded="false">
+				<p class="work-card__eyebrow">Headless commerce</p>
+				<h2 class="work-card__title">Reviver.com</h2>
+				<p class="work-card__desc">Storefront with a tactile, interactive frontend and a motion layer that stays out of the way — built for clarity under real catalog and traffic constraints.</p>
+				<div class="work-card__tags">
+					<span class="tag">Integration</span>
+					<span class="tag">Animation</span>
+					<span class="tag">Website development</span>
+				</div>
+			</article>
+		</div>
+
+		<section class="contact-cta js-reveal" aria-labelledby="work-cta-title">
+			<h2 class="contact-cta__title" id="work-cta-title">Building a product or digital system?</h2>
+			<p class="contact-cta__text">Tell me about the surface, the audience, and what “done” should feel like — website, app, or custom software.</p>
+			<a class="btn btn--primary" href="/contact/">Discuss your project</a>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<p class="site-footer__meta">
+			<a class="site-footer__link" href="https://fedc.github.io/"><span id="footer-year">2026</span> &copy; Federico Commisso</a>
+			<span class="site-footer__sep" aria-hidden="true">·</span>
+			<a class="site-footer__gem" href="/playground/">Playground</a>
+		</p>
+	</footer>
+
+	<div id="work-modal" class="work-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="work-modal-title">
+		<div class="work-modal__backdrop" data-work-modal-dismiss tabindex="-1" aria-hidden="true"></div>
+		<div class="work-modal__sheet">
+			<button type="button" class="work-modal__close" data-work-modal-dismiss aria-label="Close project details">&times;</button>
+			<div class="work-modal__art" aria-hidden="true">
+				<div class="work-modal__artboard"></div>
+			</div>
+			<div class="work-modal__inner">
+				<p class="wm-stagger work-modal__eyebrow"></p>
+				<h2 id="work-modal-title" class="wm-stagger work-modal__title"></h2>
+				<div class="work-modal__copy"></div>
+				<div class="work-modal__tags"></div>
+				<div class="work-modal__cta" id="work-modal-cta" hidden>
+					<a id="work-modal-external" class="btn btn--ghost work-modal__external" href="#" target="_blank" rel="noopener noreferrer"></a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="module" src="../app/sitePage.js"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-KZHL6J943T"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){ dataLayer.push(arguments); }
+		gtag('js', new Date());
+		gtag('config', 'G-KZHL6J943T');
+	</script>
+</body>
+</html>

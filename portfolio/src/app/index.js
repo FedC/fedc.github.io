@@ -3,9 +3,11 @@ import { gsap as GSAP } from 'gsap'
 
 import Animations from './Animations'
 import SmoothScroll from './SmoothScroll'
-import { initPlayground } from './playground'
 import { initContactForm } from './contactForm'
 import { initWorkModal } from './workModal'
+import { initSiteChrome } from './siteChrome'
+import { initReveals } from './reveals'
+import { initWorkCardSpotlight } from './playground'
 import {
   prefersReducedMotion,
   prefersLeanGpu,
@@ -373,9 +375,11 @@ class ScrollStage {
 new ScrollStage()
 
 document.addEventListener('DOMContentLoaded', function () {
-  initPlayground()
+  initSiteChrome()
   initContactForm()
   initWorkModal()
+  initWorkCardSpotlight()
+  initReveals()
 
   document.querySelectorAll('.page-link').forEach(function (link) {
     link.addEventListener('click', function (e) {

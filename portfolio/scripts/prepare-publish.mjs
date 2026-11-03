@@ -1,13 +1,21 @@
 #!/usr/bin/env node
 /**
  * Assemble portfolio/build-out for GitHub Pages from:
- *   1) Parcel dist/ (hashed HTML/CSS/JS/icons)
- *   2) publish-static/ (CNAME, SEO, PWA icons, 404, about redirect)
+ *   1) Parcel dist/ (multi-page HTML + hashed assets)
+ *   2) publish-static/ (CNAME, SEO, PWA icons, 404, legacy about.html redirect)
  *
- * Excludes prospect estimate pages and unused media trees.
- * Publishes a minimal /about.html redirect (no legacy bundles).
+ * Excludes prospect estimate pages. Generates sitemap for public routes.
  */
-import { cpSync, mkdirSync, rmSync, readdirSync, statSync, existsSync, readFileSync } from 'node:fs'
+import {
+  cpSync,
+  mkdirSync,
+  rmSync,
+  readdirSync,
+  statSync,
+  existsSync,
+  readFileSync,
+  writeFileSync,
+} from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -16,9 +24,21 @@ const distDir = join(root, 'dist')
 const staticDir = join(root, 'publish-static')
 const outDir = join(root, 'build-out')
 
+const PUBLIC_ROUTES = ['/', '/services/', '/work/', '/insights/', '/playground/', '/about/', '/contact/']
+
 function fail(msg) {
   console.error(`prepare-publish: ${msg}`)
   process.exit(1)
+}
+
+function walkFiles(dir, base = dir, acc = []) {
+  for (const name of readdirSync(dir)) {
+    const abs = join(dir, name)
+    const st = statSync(abs)
+    if (st.isDirectory()) walkFiles(abs, base, acc)
+    else acc.push(abs.slice(base.length + 1).replace(/\\/g, '/'))
+  }
+  return acc
 }
 
 if (!existsSync(distDir)) fail(`missing ${distDir} — run npm run build first`)
@@ -31,8 +51,53 @@ mkdirSync(outDir, { recursive: true })
 cpSync(distDir, outDir, { recursive: true })
 cpSync(staticDir, outDir, { recursive: true })
 
+const insightManifestPath = join(root, 'src/insights/.manifest.json')
+const insightArticles = existsSync(insightManifestPath)
+  ? JSON.parse(readFileSync(insightManifestPath, 'utf8')).articles || []
+  : []
+
+// Drop stale article dirs left by Parcel cache / interrupted serves when drafts
+// are unpublished or Markdown sources are removed.
+const insightsOutDir = join(outDir, 'insights')
+const allowedInsightSlugs = new Set(insightArticles.map((a) => a.slug))
+if (existsSync(insightsOutDir)) {
+  for (const name of readdirSync(insightsOutDir)) {
+    const abs = join(insightsOutDir, name)
+    if (!statSync(abs).isDirectory()) continue
+    if (!allowedInsightSlugs.has(name)) {
+      rmSync(abs, { recursive: true, force: true })
+      console.log(`prepare-publish: pruned stale insights article ${name}/`)
+    }
+  }
+}
+
+for (const article of insightArticles) {
+  const articleIndex = join(insightsOutDir, article.slug, 'index.html')
+  if (!existsSync(articleIndex)) {
+    fail(`published insight missing from build-out: insights/${article.slug}/index.html`)
+  }
+}
+
+const sitemapRoutes = [
+  ...PUBLIC_ROUTES,
+  ...insightArticles.map((a) => a.path || `/insights/${a.slug}/`),
+]
+
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapRoutes.map((route) => `  <url>\n    <loc>https://okcd.io${route}</loc>\n  </url>`).join('\n')}
+</urlset>
+`
+writeFileSync(join(outDir, 'sitemap.xml'), sitemap)
+
 const required = [
   'index.html',
+  'services/index.html',
+  'work/index.html',
+  'insights/index.html',
+  'playground/index.html',
+  'about/index.html',
+  'contact/index.html',
   'about.html',
   'CNAME',
   'robots.txt',
@@ -54,49 +119,40 @@ const checks = {
   canonical: /rel=['"]?canonical['"]?/.test(html) || html.includes('canonical'),
   jsonld: html.includes('application/ld+json'),
   contact: html.includes('contact-form'),
+  servicesNav: html.includes('/services/'),
+  insightsNav: html.includes('/insights/'),
 }
 
 for (const [k, ok] of Object.entries(checks)) {
   if (!ok) fail(`index.html check failed: ${k}`)
 }
 
-const about = readFileSync(join(outDir, 'about.html'), 'utf8')
+const aboutLegacy = readFileSync(join(outDir, 'about.html'), 'utf8')
 const aboutChecks = {
-  noindex: /noindex/i.test(about),
-  canonicalHome: about.includes('rel="canonical"') && about.includes('https://okcd.io/'),
-  metaRefresh: /http-equiv=["']?refresh["']?/i.test(about) && about.includes('https://okcd.io/'),
-  fallbackLink: /href=["']https:\/\/okcd\.io\/["']/.test(about),
-  noLegacyCss: !/\.css/i.test(about),
-  noLegacyJsBundle: !(/src=["'][^"']*\.js["']/.test(about)),
+  noindex: /noindex/i.test(aboutLegacy),
+  canonicalAbout: aboutLegacy.includes('https://okcd.io/about/'),
+  metaRefresh: /http-equiv=["']?refresh["']?/i.test(aboutLegacy),
+  noLegacyCss: !/\.css/i.test(aboutLegacy),
 }
 
 for (const [k, ok] of Object.entries(aboutChecks)) {
   if (!ok) fail(`about.html check failed: ${k}`)
 }
 
-// Ensure CSS/JS emitted by Parcel are present and referenced
-const assets = readdirSync(outDir).filter((f) => /\.(css|js)$/.test(f))
+const contactPage = readFileSync(join(outDir, 'contact/index.html'), 'utf8')
+if (!contactPage.includes('formspree.io/f/xpwzwrev')) fail('contact page missing Formspree')
+if (!contactPage.includes('G-KZHL6J943T')) fail('contact page missing GA4')
+
+const assets = walkFiles(outDir).filter((f) => /\.(css|js)$/.test(f))
 if (!assets.some((f) => f.endsWith('.css'))) fail('no CSS in build-out')
 if (!assets.some((f) => f.endsWith('.js'))) fail('no JS in build-out')
 
-const forbidden = [
-  'geltenpro.html',
-  'nutridentist.html',
-  'node_modules',
-  '.git',
-]
+const forbidden = ['geltenpro.html', 'nutridentist.html', 'node_modules', '.git', 'estimate']
 for (const name of forbidden) {
   if (existsSync(join(outDir, name))) fail(`forbidden path published: ${name}`)
 }
 
-const listing = readdirSync(outDir)
-  .map((f) => {
-    const s = statSync(join(outDir, f))
-    return `${s.isDirectory() ? 'd' : 'f'} ${f}`
-  })
-  .sort()
-
+const listing = walkFiles(outDir).sort()
 console.log('prepare-publish: build-out ready')
 for (const line of listing) console.log(`  ${line}`)
-
-console.log('prepare-publish: checks ok', { ...checks, about: aboutChecks })
+console.log('prepare-publish: checks ok', { ...checks, about: aboutChecks, routes: PUBLIC_ROUTES })

@@ -3,15 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "parcel src/index.html --open",
-    "clean": "rm -rf dist",
-    "build:parcel": "parcel build src/index.html --no-source-maps --public-url ./",
-    "build": "npm run clean && npm run build:parcel",
+    "build:insights": "node scripts/build-insights.mjs",
+    "start": "npm run build:insights && node scripts/run-parcel.mjs serve",
+    "clean": "rm -rf dist .parcel-cache",
+    "build:parcel": "node scripts/run-parcel.mjs build",
+    "build": "npm run clean && npm run build:insights && npm run build:parcel",
     "prepare-publish": "node scripts/prepare-publish.mjs",
     "build:publish": "npm run build && npm run prepare-publish",
     "copy-dist-to-root": "echo \"DEPRECATED: use GitHub Actions Pages deploy (npm run build:publish). Root copy kept only for emergency rollback.\" && cp -r dist/* ../"
   },
-
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -20,6 +20,8 @@
     "@parcel/transformer-glsl": "2.16.4",
     "@parcel/transformer-jsonld": "2.16.4",
     "@parcel/transformer-sass": "2.16.4",
+    "gray-matter": "^4.0.3",
+    "marked": "^15.0.12",
     "parcel": "2.16.4"
   },
   "dependencies": {

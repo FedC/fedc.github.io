@@ -3,3 +3,4 @@
 /.parcel-cache
 /dist
 /build-out
+/src/insights/.manifest.json

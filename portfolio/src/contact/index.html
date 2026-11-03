@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Contact | OKCoded</title>
+	<meta name="description" content="Start a project with OKCoded — websites, web apps, mobile applications, automation, and custom software. Short briefs welcome." />
+	<link rel="canonical" href="https://okcd.io/contact/" />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="OKCoded" />
+	<meta property="og:url" content="https://okcd.io/contact/" />
+	<meta property="og:title" content="Contact | OKCoded" />
+	<meta property="og:description" content="Have something in mind? Let's build it. Tell OKCoded what you're working on — website, app, or something more complex." />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="Contact | OKCoded" />
+	<meta name="twitter:description" content="Have something in mind? Let's build it. Tell OKCoded what you're working on — website, app, or something more complex." />
+	<meta name="theme-color" content="#000000" />
+	<link rel="manifest" href="https://okcd.io/site.webmanifest" />
+	<link rel="shortcut icon" href="https://okcd.io/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="../styles/base.css" />
+	<link rel="stylesheet" type="text/css" href="../styles/shaders-on-scroll.sass" />
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "ContactPage",
+		"name": "Contact OKCoded",
+		"url": "https://okcd.io/contact/",
+		"mainEntity": {
+			"@type": "Organization",
+			"name": "OKCoded",
+			"url": "https://okcd.io/",
+			"email": "hello@okcd.io"
+		}
+	}
+	</script>
+</head>
+<body class="site-page">
+	<header class="frame">
+		<div class="frame__title-wrap">
+			<p class="frame__title"><a href="/" data-nav>Okcd.io</a></p>
+		</div>
+		<nav class="frame__links site-nav" aria-label="Primary">
+			<a href="/services/" data-nav>Services</a>
+			<a href="/work/" data-nav>Work</a>
+			<a href="/insights/" data-nav>Insights</a>
+			<a href="/about/" data-nav>About</a>
+			<a href="/contact/" data-nav>Contact</a>
+		</nav>
+	</header>
+
+	<main class="site-main">
+		<section class="contact-section contact-inquiry" id="contact" aria-labelledby="contact-heading">
+			<div class="contact-inquiry__layout">
+				<header class="contact-inquiry__intro js-reveal">
+					<span class="contact-inquiry__eyebrow">Start a project</span>
+					<h1 class="contact-inquiry__title" id="contact-heading">Have something in mind? Let’s build it.</h1>
+					<p class="contact-inquiry__lede">A website, mobile app, or something more complex. Tell me what you’re working on and I’ll help figure out the next step.</p>
+					<p class="contact-inquiry__alt">
+						Prefer email?
+						<a href="mailto:hello@okcd.io">hello@okcd.io</a>
+					</p>
+				</header>
+				<div class="contact-panel js-reveal">
+					<form action="https://formspree.io/f/xpwzwrev" method="POST" id="contact-form">
+						<div class="contact-honeypot" aria-hidden="true">
+							<label for="contact-gotcha">Company website</label>
+							<input type="text" name="_gotcha" id="contact-gotcha" tabindex="-1" autocomplete="off" />
+						</div>
+						<input type="hidden" name="_subject" value="OKCoded project inquiry" />
+
+						<fieldset class="contact-type">
+							<legend class="contact-field__label">What are you looking to build?</legend>
+							<div class="contact-type__chips">
+								<label class="contact-chip">
+									<input type="radio" name="project_type" value="Website" />
+									<span class="contact-chip__text">Website</span>
+								</label>
+								<label class="contact-chip">
+									<input type="radio" name="project_type" value="Web application" />
+									<span class="contact-chip__text">Web app</span>
+								</label>
+								<label class="contact-chip">
+									<input type="radio" name="project_type" value="Mobile application" />
+									<span class="contact-chip__text">Mobile app</span>
+								</label>
+								<label class="contact-chip">
+									<input type="radio" name="project_type" value="Automation / integration" />
+									<span class="contact-chip__text">Automation</span>
+								</label>
+								<label class="contact-chip">
+									<input type="radio" name="project_type" value="Not sure yet" />
+									<span class="contact-chip__text">Not sure yet</span>
+								</label>
+							</div>
+						</fieldset>
+
+						<div class="contact-field">
+							<label class="contact-field__label" for="email-input">
+								Your email <span class="contact-field__req" aria-hidden="true">*</span>
+								<span class="visually-hidden"> (required)</span>
+							</label>
+							<input class="contact-field__control" type="email" name="email" id="email-input" required autocomplete="email" inputmode="email" spellcheck="false" placeholder="you@company.com" aria-required="true" aria-describedby="form-response" />
+						</div>
+
+						<div class="contact-field">
+							<label class="contact-field__label" for="message-input">
+								Tell me a little about your project <span class="contact-field__req" aria-hidden="true">*</span>
+								<span class="visually-hidden"> (required)</span>
+							</label>
+							<textarea class="contact-field__control contact-field__control--area" id="message-input" name="message" required rows="5" autocomplete="off" placeholder="What are you trying to build or improve?" aria-required="true" aria-describedby="form-response"></textarea>
+						</div>
+
+						<button type="submit" class="contact-submit" id="contact-submit">
+							<span class="contact-submit__label">Send project inquiry</span>
+							<span class="contact-submit__arrow" aria-hidden="true">↗</span>
+						</button>
+
+						<p class="contact-inquiry__assurance">I’ll personally review your inquiry and get back to you.</p>
+						<p id="form-response" class="contact-status" role="status" aria-live="polite" hidden></p>
+					</form>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer class="site-footer">
+		<p class="site-footer__meta">
+			<a class="site-footer__link" href="https://fedc.github.io/"><span id="footer-year">2026</span> &copy; Federico Commisso</a>
+			<span class="site-footer__sep" aria-hidden="true">·</span>
+			<a class="site-footer__gem" href="/playground/">Playground</a>
+		</p>
+	</footer>
+
+	<script type="module" src="../app/sitePage.js"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-KZHL6J943T"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){ dataLayer.push(arguments); }
+		gtag('js', new Date());
+		gtag('config', 'G-KZHL6J943T');
+	</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-import { prefersReducedMotion, onReducedMotionChange } from './motion'
+import { prefersReducedMotion } from './motion'
 
 function initMagneticButtons() {
   if (prefersReducedMotion()) return
@@ -78,7 +78,7 @@ function initGlowZones() {
   })
 }
 
-function initWorkCardSpotlight() {
+export function initWorkCardSpotlight() {
   if (window.matchMedia('(hover: none)').matches) return
 
   document.querySelectorAll('.work-card--spotlight').forEach(function (card) {
@@ -111,50 +111,10 @@ function initChipRipple() {
   })
 }
 
-function revealAll() {
-  document.querySelectorAll('.js-reveal').forEach(function (el) {
-    el.classList.add('is-visible')
-  })
-}
-
-function initScrollReveal() {
-  if (prefersReducedMotion()) {
-    revealAll()
-    return
-  }
-
-  const els = document.querySelectorAll('.js-reveal')
-  if (!els.length || !('IntersectionObserver' in window)) {
-    revealAll()
-    return
-  }
-
-  const io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible')
-          io.unobserve(entry.target)
-        }
-      })
-    },
-    { root: null, rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
-  )
-
-  els.forEach(function (el) {
-    io.observe(el)
-  })
-}
-
 export function initPlayground() {
   initMagneticButtons()
   initTiltCards()
   initGlowZones()
   initWorkCardSpotlight()
   initChipRipple()
-  initScrollReveal()
-
-  onReducedMotionChange(function (reduced) {
-    if (reduced) revealAll()
-  })
 }
