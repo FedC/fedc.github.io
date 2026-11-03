@@ -1,14 +1,27 @@
 // Portfolio layout: hero, work, playground, about, contact
 // Complements shaders-on-scroll — dark glass, mesh-friendly surfaces
 
-$glass: rgba(1, 44, 52, 0.71)
-$glass-border: rgba(255, 255, 255, 0.08)
-$glass-strong: rgba(255, 255, 255, 0.07)
-$muted: rgba(255, 255, 255, 0.55)
+// Shared tokens (also exposed as CSS vars for future agency pages)
+$glass: rgba(6, 10, 18, 0.78)
+$glass-border: rgba(255, 255, 255, 0.14)
+$glass-strong: rgba(255, 255, 255, 0.1)
+$muted: rgba(244, 246, 250, 0.78)
 $accent: rgb(114, 195, 233)
+$text: #f4f6fa
 $radius-lg: 1.25rem
 $radius-md: 0.75rem
 $max-read: 42rem
+
+:root
+  --okcd-text: #{$text}
+  --okcd-text-muted: #{$muted}
+  --okcd-accent: #{$accent}
+  --okcd-surface: rgba(8, 10, 16, 0.92)
+  --okcd-surface-raised: rgba(14, 16, 24, 0.96)
+  --okcd-border: #{$glass-border}
+  --okcd-focus: #{$accent}
+  --okcd-success: #9be7a8
+  --okcd-error: #ffb4b4
 
 @mixin glass-panel
   background: $glass
@@ -16,6 +29,17 @@ $max-read: 42rem
   border-radius: $radius-lg
   backdrop-filter: blur(12px)
   -webkit-backdrop-filter: blur(12px)
+
+.visually-hidden
+  position: absolute
+  width: 1px
+  height: 1px
+  padding: 0
+  margin: -1px
+  overflow: hidden
+  clip: rect(0, 0, 0, 0)
+  white-space: nowrap
+  border: 0
 
 .site-nav
   display: flex
@@ -32,7 +56,7 @@ $max-read: 42rem
     font-size: 0.75rem
     letter-spacing: 0.14em
     text-transform: uppercase
-    color: rgba(255, 255, 255, 0.75)
+    color: rgba(244, 246, 250, 0.86)
     transition: color 0.25s ease, border-color 0.25s ease
 
     &:hover,
@@ -80,7 +104,7 @@ $max-read: 42rem
   &__lede
     font-size: clamp(1.05rem, 2.2vw, 1.35rem)
     line-height: 1.55
-    color: rgba(255, 255, 255, 0.78)
+    color: var(--okcd-text-muted)
     max-width: none
     margin: 0
 
@@ -118,7 +142,7 @@ $max-read: 42rem
     margin-top: 1rem
     font-size: 1.05rem
     line-height: 1.55
-    color: rgba(255, 255, 255, 0.65)
+    color: var(--okcd-text-muted)
     max-width: 36rem
 
 .btn
@@ -200,7 +224,7 @@ $max-read: 42rem
   &__desc
     font-size: 0.95rem
     line-height: 1.5
-    color: rgba(255, 255, 255, 0.62)
+    color: var(--okcd-text-muted)
 
   &__tags
     display: flex
@@ -240,9 +264,9 @@ $max-read: 42rem
   text-transform: uppercase
   padding: 0.28rem 0.55rem
   border-radius: 999px
-  border: 1px solid rgba(255, 255, 255, 0.12)
-  color: rgba(255, 255, 255, 0.65)
-  background: rgba(0, 0, 0, 0.2)
+  border: 1px solid rgba(255, 255, 255, 0.16)
+  color: rgba(244, 246, 250, 0.78)
+  background: rgba(0, 0, 0, 0.28)
 
 .playground-grid
   display: grid
@@ -271,7 +295,7 @@ $max-read: 42rem
 
   &__note
     font-size: 0.8rem
-    color: rgba(255, 255, 255, 0.55)
+    color: var(--okcd-text-muted)
     text-align: center
     line-height: 1.4
     margin: 0
@@ -389,7 +413,7 @@ $max-read: 42rem
 .about-copy
   font-size: 1.05rem
   line-height: 1.65
-  color: rgba(255, 255, 255, 0.72)
+  color: var(--okcd-text-muted)
   max-width: 38rem
 
   p + p
@@ -420,10 +444,9 @@ $max-read: 42rem
     margin: 0
     font-size: 0.92rem
     line-height: 1.55
-    color: rgba(255, 255, 255, 0.76)
+    color: var(--okcd-text-muted)
 
 .contact-section
-  // Wide enough to feel intentional on large viewports; still respects section padding
   max-width: min(52rem, calc(100vw - 2.5rem))
   width: 100%
   margin: 0 auto
@@ -437,100 +460,189 @@ $max-read: 42rem
     margin-right: auto
     max-width: 40rem
 
+  .section-heading__title
+    color: var(--okcd-text)
+
 .contact-panel
-  // Solid-enough stack so the wireframe mesh doesn’t fight the fields
-  background: rgba(6, 8, 14, 0.82)
-  border: 1px solid rgba(255, 255, 255, 0.12)
+  position: relative
+  z-index: 1
+  background: var(--okcd-surface)
+  border: 1px solid rgba(255, 255, 255, 0.18)
   border-radius: $radius-lg
   backdrop-filter: blur(28px)
   -webkit-backdrop-filter: blur(28px)
-  padding: clamp(2rem, 5vw, 3rem)
-  margin-top: 2rem
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.06)
+  padding: clamp(1.5rem, 4vw, 2.25rem)
+  margin-top: 1.25rem
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08)
+
+  &__alt
+    margin: 0 0 1.25rem
+    font-size: 0.95rem
+    line-height: 1.5
+    color: var(--okcd-text-muted)
+    text-align: center
+
+    a
+      color: var(--okcd-accent)
+      text-decoration: underline
+      text-underline-offset: 0.18em
+
+      &:hover,
+      &:focus-visible
+        color: #fff
+
+      &:focus-visible
+        outline: 2px solid var(--okcd-focus)
+        outline-offset: 3px
 
   form
     display: flex
     flex-direction: column
     align-items: stretch
+    gap: 1.15rem
     width: 100%
     min-width: 0
     margin: 0
     max-width: none
-    padding: clamp(1.85rem, 4vw, 2.85rem)
+    padding: clamp(1.35rem, 3.5vw, 2rem)
     border-radius: 1rem
-    background: rgba(14, 16, 24, 0.94)
-    border: 1px solid rgba(255, 255, 255, 0.14)
+    background: var(--okcd-surface-raised)
+    border: 1px solid rgba(255, 255, 255, 0.16)
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05)
     backdrop-filter: blur(18px)
     -webkit-backdrop-filter: blur(18px)
 
     &:hover
       transform: none
-      // keep legible — no “lift” that exposes more mesh
-      background: rgba(14, 16, 24, 0.96)
-      border-color: rgba(255, 255, 255, 0.18)
+      background: var(--okcd-surface-raised)
+      border-color: rgba(255, 255, 255, 0.2)
 
-  .input.input--haruki
-    display: block
-    width: 100%
-    min-width: 0
-    flex: 0 0 auto
+.contact-honeypot
+  position: absolute
+  left: -10000px
+  top: auto
+  width: 1px
+  height: 1px
+  overflow: hidden
 
-  .input--haruki
-    margin: 1.35em 0
+.contact-field
+  display: flex
+  flex-direction: column
+  gap: 0.45rem
+  min-width: 0
 
-    &:first-of-type
-      margin-top: 0.25em
+  &__label
+    font-size: 0.82rem
+    font-weight: 600
+    letter-spacing: 0.04em
+    color: rgba(244, 246, 250, 0.92)
 
-  .input__field--haruki
-    display: block
+  &__req
+    color: var(--okcd-accent)
+    margin-left: 0.15em
+
+  &__control
     box-sizing: border-box
     width: 100%
     min-width: 0
-    padding: 1.15em 1.05em
+    margin: 0
+    padding: 0.95em 1em
     font-size: 1.05rem
     font-weight: 500
     font-family: inherit
-    background: rgba(252, 252, 254, 0.1)
-    color: #0a0a10
-    border-width: 1px
-    border-color: rgba(255, 255, 255, 0.5)
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset
-
-  .input__field--haruki:focus,
-  .input__field--haruki:hover
-    background: rgba(252, 252, 254, 0.2)
-    color: #fff
-
-  textarea.input__field--haruki,
-  #message-input.input__field--haruki
-    min-height: 11.5rem
-    height: auto
-    max-height: 28rem
-    line-height: 1.55
-    resize: vertical
-
-  .input__label--haruki
-    position: absolute
-    left: 1em
-    top: 1.15em
-    right: auto
-    z-index: 2
-    color: rgba(252, 252, 254, 1)
-    font-weight: 600
-
-  .input__field--haruki:focus + .input__label--haruki,
-  .input__field.input--filled + .input__label--haruki
-    color: #1a1a24
-    background: rgba(255, 255, 255, 0.95)
-
-  button[type='submit']
-    width: 100%
-    margin-top: 1.35rem
-    padding: 1.05em 1.5em
+    line-height: 1.4
+    color: var(--okcd-text)
+    background: rgba(255, 255, 255, 0.06)
+    border: 1.5px solid rgba(255, 255, 255, 0.28)
     border-radius: 0.85rem
-    letter-spacing: 0.14em
-    font-size: 0.82rem
+    -webkit-appearance: none
+    appearance: none
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease
+
+    &::placeholder
+      color: rgba(244, 246, 250, 0.45)
+
+    &:hover
+      border-color: rgba(255, 255, 255, 0.42)
+      background: rgba(255, 255, 255, 0.08)
+
+    &:focus
+      outline: none
+      border-color: var(--okcd-accent)
+      background: rgba(255, 255, 255, 0.1)
+      box-shadow: 0 0 0 3px rgba(114, 195, 233, 0.28)
+
+    &:focus-visible
+      outline: none
+
+  &__control--area
+    min-height: 10.5rem
+    max-height: 28rem
+    resize: vertical
+    line-height: 1.55
+
+.contact-submit
+  width: 100%
+  margin-top: 0.35rem
+  min-height: 3.1rem
+  padding: 1em 1.5em
+  border: 1px solid rgba(255, 255, 255, 0.22)
+  border-radius: 0.85rem
+  letter-spacing: 0.14em
+  font-size: 0.82rem
+  font-weight: 700
+  text-transform: uppercase
+  cursor: pointer
+  color: #fff
+  background: linear-gradient(135deg, rgba(255, 105, 180, 0.55), rgba(114, 195, 233, 0.45))
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35)
+  transition: transform 0.2s ease, border-color 0.2s ease, filter 0.2s ease, opacity 0.2s ease
+
+  &:hover:not(:disabled)
+    transform: translateY(-1px)
+    border-color: rgba(255, 255, 255, 0.4)
+    filter: brightness(1.06)
+
+  &:focus-visible
+    outline: 2px solid var(--okcd-focus)
+    outline-offset: 3px
+
+  &:disabled
+    cursor: wait
+    opacity: 0.72
+    transform: none
+
+.contact-status
+  margin: 0.25rem 0 0
+  padding: 0.85rem 1rem
+  border-radius: 0.75rem
+  font-size: 0.95rem
+  font-weight: 500
+  line-height: 1.45
+  text-align: center
+  border: 1px solid transparent
+
+  &[hidden]
+    display: none !important
+
+  &--pending
+    color: var(--okcd-text)
+    background: rgba(255, 255, 255, 0.06)
+    border-color: rgba(255, 255, 255, 0.14)
+
+  &--success
+    color: var(--okcd-success)
+    background: rgba(60, 140, 80, 0.18)
+    border-color: rgba(155, 231, 168, 0.35)
+
+  &--error
+    color: var(--okcd-error)
+    background: rgba(140, 40, 40, 0.22)
+    border-color: rgba(255, 180, 180, 0.35)
+
+@media (max-width: 420px)
+  .contact-field__control
+    font-size: 16px
 
 // Scroll reveal baseline
 .js-reveal
