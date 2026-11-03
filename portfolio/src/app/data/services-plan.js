@@ -23,7 +23,7 @@ export const SERVICES_PLAN = {
         'Website redesigns and modernization',
       ],
       value:
-        'Ship a web presence that loads cleanly, is easy to evolve, and supports real business outcomes — not just a launch day screenshot.',
+        'Ship a web presence that loads cleanly, is easy to evolve, and supports real business needs.',
     },
     {
       id: 'mobile-applications',
@@ -75,7 +75,7 @@ export const SERVICES_PLAN = {
         'Marketing technology integrations',
       ],
       value:
-        'Growth support as a technical layer — search readiness, trustworthy tracking, and faster pages — not the whole identity of the studio.',
+        'Growth support as a technical layer — search readiness, trustworthy tracking, and faster pages.',
     },
     {
       id: 'automation',

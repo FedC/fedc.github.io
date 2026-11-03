@@ -75,7 +75,7 @@ export function initContactForm() {
     })
   }
 
-  // User engagement only (input/change) — not programmatic focus.
+  // User engagement only (input/change)
   form.addEventListener('input', function (event) {
     const t = event.target
     if (!t || !t.name) return
