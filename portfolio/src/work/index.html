@@ -4,16 +4,16 @@
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Work | OKCoded</title>
-	<meta name="description" content="Featured OKCoded work — Reviver.com, a headless commerce storefront with careful frontend engineering and interaction design." />
+	<meta name="description" content="Selected OKCoded engineering work — Reviver RPLATE headless commerce platform connecting storytelling, Shopify, identity, and AWS." />
 	<link rel="canonical" href="https://okcd.io/work/" />
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content="OKCoded" />
 	<meta property="og:url" content="https://okcd.io/work/" />
 	<meta property="og:title" content="Work | OKCoded" />
-	<meta property="og:description" content="Featured OKCoded work — Reviver.com, a headless commerce storefront with careful frontend engineering and interaction design." />
-	<meta name="twitter:card" content="summary" />
+	<meta property="og:description" content="Selected OKCoded engineering work — Reviver RPLATE headless commerce platform connecting storytelling, Shopify, identity, and AWS." />
+	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content="Work | OKCoded" />
-	<meta name="twitter:description" content="Featured OKCoded work — Reviver.com, a headless commerce storefront with careful frontend engineering and interaction design." />
+	<meta name="twitter:description" content="Selected OKCoded engineering work — Reviver RPLATE headless commerce platform connecting storytelling, Shopify, identity, and AWS." />
 	<meta name="theme-color" content="#000000" />
 	<link rel="manifest" href="https://okcd.io/site.webmanifest" />
 	<link rel="shortcut icon" href="https://okcd.io/favicon.ico">
@@ -25,13 +25,13 @@
 		"@type": "CollectionPage",
 		"name": "OKCoded Work",
 		"url": "https://okcd.io/work/",
-		"description": "Curated featured work from OKCoded.",
+		"description": "Selected engineering work from OKCoded.",
 		"isPartOf": { "@type": "WebSite", "name": "OKCoded", "url": "https://okcd.io/" },
 		"mainEntity": {
 			"@type": "CreativeWork",
-			"name": "Reviver.com",
-			"url": "https://reviver.com",
-			"description": "Headless commerce storefront with interactive frontend craft."
+			"name": "Reviver — RPLATE Headless Commerce Platform",
+			"url": "https://okcd.io/work/reviver/",
+			"description": "Production headless storefront connecting product storytelling, Shopify commerce, platform identity, and AWS-backed integrations."
 		}
 	}
 	</script>
@@ -50,25 +50,47 @@
 		</nav>
 	</header>
 
-	<main class="site-main">
+	<main class="site-main site-main--work">
 		<header class="page-hero js-reveal">
-			<span class="page-hero__label">Work</span>
-			<h1 class="page-hero__title">Featured project</h1>
-			<p class="page-hero__lede">A deliberate shortlist of shipped work. Additional case studies will be added when they are ready to represent the studio clearly.</p>
+			<span class="page-hero__label">Selected work</span>
+			<h1 class="page-hero__title">Engineering that ships and stays running</h1>
+			<p class="page-hero__lede">A deliberate shortlist of production software. Additional case studies will appear when they are ready to represent the practice clearly.</p>
 		</header>
 
-		<div class="work-featured js-reveal">
-			<article class="work-card work-card--featured work-card--spotlight" data-work="reviver" tabindex="0" role="button" aria-expanded="false">
-				<p class="work-card__eyebrow">Headless commerce</p>
-				<h2 class="work-card__title">Reviver.com</h2>
-				<p class="work-card__desc">Storefront with a tactile, interactive frontend and a motion layer that stays out of the way — built for clarity under real catalog and traffic constraints.</p>
-				<div class="work-card__tags">
-					<span class="tag">Integration</span>
-					<span class="tag">Animation</span>
-					<span class="tag">Website development</span>
+		<article class="work-feature js-reveal" aria-labelledby="work-reviver-title">
+			<figure class="work-feature__media">
+				<video
+					class="work-feature__video"
+					autoplay
+					muted
+					loop
+					playsinline
+					poster="../assets/work/reviver/hero-poster.jpg"
+					aria-label="Reviver RPLATE product hero — digital license plate displaying Hello World"
+				>
+					<source src="../assets/work/reviver/hero.webm" type="video/webm" />
+					<source src="../assets/work/reviver/hero.mp4" type="video/mp4" />
+				</video>
+				<figcaption class="work-feature__caption">Reviver RPLATE — frame-sequence product hero</figcaption>
+			</figure>
+
+			<div class="work-feature__body">
+				<p class="work-feature__eyebrow">Full-stack engineering · Headless commerce · Systems integration</p>
+				<h2 class="work-feature__title" id="work-reviver-title">Reviver</h2>
+				<p class="work-feature__summary">A production headless storefront connecting premium RPLATE storytelling, Shopify commerce, existing platform identity, and AWS-backed integrations.</p>
+				<ul class="work-feature__stack" aria-label="Technology highlights">
+					<li>Next.js 15</li>
+					<li>Shopify</li>
+					<li>AWS Amplify Gen 2</li>
+					<li>TypeScript</li>
+					<li>GSAP</li>
+				</ul>
+				<div class="work-feature__actions">
+					<a class="btn btn--primary" href="/work/reviver/">Explore case study</a>
+					<a class="btn btn--ghost" href="https://reviver.com/?utm_source=okcd_portfolio&amp;utm_medium=referral&amp;utm_campaign=portfolio_selected_work&amp;utm_content=reviver" target="_blank" rel="noopener noreferrer">Visit live website<span class="visually-hidden"> (opens in a new tab)</span></a>
 				</div>
-			</article>
-		</div>
+			</div>
+		</article>
 
 		<section class="contact-cta js-reveal" aria-labelledby="work-cta-title">
 			<h2 class="contact-cta__title" id="work-cta-title">Building a product or digital system?</h2>
@@ -84,25 +106,6 @@
 			<a class="site-footer__gem" href="/playground/">Playground</a>
 		</p>
 	</footer>
-
-	<div id="work-modal" class="work-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="work-modal-title">
-		<div class="work-modal__backdrop" data-work-modal-dismiss tabindex="-1" aria-hidden="true"></div>
-		<div class="work-modal__sheet">
-			<button type="button" class="work-modal__close" data-work-modal-dismiss aria-label="Close project details">&times;</button>
-			<div class="work-modal__art" aria-hidden="true">
-				<div class="work-modal__artboard"></div>
-			</div>
-			<div class="work-modal__inner">
-				<p class="wm-stagger work-modal__eyebrow"></p>
-				<h2 id="work-modal-title" class="wm-stagger work-modal__title"></h2>
-				<div class="work-modal__copy"></div>
-				<div class="work-modal__tags"></div>
-				<div class="work-modal__cta" id="work-modal-cta" hidden>
-					<a id="work-modal-external" class="btn btn--ghost work-modal__external" href="#" target="_blank" rel="noopener noreferrer"></a>
-				</div>
-			</div>
-		</div>
-	</div>
 
 	<script type="module" src="../app/sitePage.js"></script>
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-KZHL6J943T"></script>

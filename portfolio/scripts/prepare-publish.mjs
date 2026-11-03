@@ -24,7 +24,16 @@ const distDir = join(root, 'dist')
 const staticDir = join(root, 'publish-static')
 const outDir = join(root, 'build-out')
 
-const PUBLIC_ROUTES = ['/', '/services/', '/work/', '/insights/', '/playground/', '/about/', '/contact/']
+const PUBLIC_ROUTES = [
+  '/',
+  '/services/',
+  '/work/',
+  '/work/reviver/',
+  '/insights/',
+  '/playground/',
+  '/about/',
+  '/contact/',
+]
 
 function fail(msg) {
   console.error(`prepare-publish: ${msg}`)
@@ -94,6 +103,7 @@ const required = [
   'index.html',
   'services/index.html',
   'work/index.html',
+  'work/reviver/index.html',
   'insights/index.html',
   'playground/index.html',
   'about/index.html',
@@ -107,7 +117,6 @@ const required = [
   'android-chrome-192x192.png',
   'android-chrome-512x512.png',
 ]
-
 for (const name of required) {
   if (!existsSync(join(outDir, name))) fail(`required publish file missing: ${name}`)
 }
