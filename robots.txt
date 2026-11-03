@@ -1,5 +1,8 @@
-# www.robotstxt.org/
+# https://okcd.io/robots.txt
+# Allow crawling so noindex (and other) directives on individual pages can be read.
+# Do not rely on robots.txt to keep files confidential.
 
-# Allow crawling of all content
 User-agent: *
-Disallow:
+Allow: /
+
+Sitemap: https://okcd.io/sitemap.xml
