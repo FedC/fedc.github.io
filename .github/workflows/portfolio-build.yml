@@ -15,6 +15,11 @@ on:
       - '.github/workflows/portfolio-build.yml'
   workflow_dispatch:
 
+# Least privilege: read source; write artifacts only. No pages/deployments scopes.
+permissions:
+  contents: read
+  actions: write
+
 concurrency:
   group: portfolio-build-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
