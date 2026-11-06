@@ -11,7 +11,8 @@
     "prepare-publish": "node scripts/prepare-publish.mjs",
     "test:contact": "node scripts/check-contact-honeypot.mjs",
     "test:analytics": "node scripts/check-analytics.mjs",
-    "test": "npm run test:contact && npm run test:analytics",
+    "test:resilience": "node --test scripts/site-resilience.test.mjs",
+    "test": "npm run test:contact && npm run test:analytics && npm run test:resilience",
     "build:publish": "npm run test && npm run build && npm run prepare-publish",
     "copy-dist-to-root": "echo \"DEPRECATED: use GitHub Actions Pages deploy (npm run build:publish). Root copy kept only for emergency rollback.\" && cp -r dist/* ../"
   },

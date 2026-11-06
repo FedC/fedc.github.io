@@ -20,6 +20,7 @@ const BUSY_LABEL = 'Sending…'
 const HONEYPOT_NAME = '_gotcha'
 const AUTOFILL_CLEAR_MS = [0, 50, 250, 1000]
 const FORM_TYPE = 'project_inquiry'
+const REQUEST_TIMEOUT_MS = 30000
 
 export function getHoneypotInput(form) {
   return form.querySelector('input[name="' + HONEYPOT_NAME + '"]')
@@ -152,6 +153,7 @@ export function initContactForm() {
     setStatus('Sending…', 'pending')
 
     xhr.open('POST', form.action, true)
+    xhr.timeout = REQUEST_TIMEOUT_MS
     xhr.setRequestHeader('Accept', 'application/json')
 
     xhr.onload = function () {
@@ -226,6 +228,18 @@ export function initContactForm() {
       })
       setStatus(
         'Network error — check your connection, or email hello@okcd.io directly.',
+        'error'
+      )
+    }
+
+    xhr.ontimeout = function () {
+      setSubmitting(false)
+      trackEvent('contact_form_error', {
+        form_location: formLocation,
+        error_type: 'timeout',
+      })
+      setStatus(
+        'The request timed out. Please try again or email hello@okcd.io directly.',
         'error'
       )
     }
