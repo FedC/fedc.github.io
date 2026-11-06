@@ -373,8 +373,6 @@ class ScrollStage {
   }
 }
 
-new ScrollStage()
-
 document.addEventListener('DOMContentLoaded', function () {
   initSiteChrome()
   initContactForm()
@@ -398,3 +396,26 @@ document.addEventListener('DOMContentLoaded', function () {
     })
   })
 })
+
+// Decorative WebGL must never prevent the core page helpers from starting.
+try {
+  new ScrollStage()
+} catch (error) {
+  console.warn('WebGL stage initialization failed:', error)
+  document.body.classList.remove('loading')
+  document.body.style.height = ''
+  // The fixed stage normally relies on SmoothScroll to expose the full page.
+  document.querySelectorAll('.scroll__stage, .scroll__content').forEach(function (el) {
+    el.style.position = 'relative'
+    el.style.height = 'auto'
+    el.style.transform = ''
+  })
+  document.querySelectorAll('.js-animate-in').forEach(function (el) {
+    el.style.opacity = ''
+    el.style.visibility = ''
+    el.style.transform = ''
+  })
+  document.querySelectorAll('.js-reveal').forEach(function (el) {
+    el.classList.add('is-visible')
+  })
+}
