@@ -227,6 +227,8 @@ function writeArticle(article) {
   })
 
   const assetPrefix = '../../'
+  // Long article bodies must remain readable without a reveal observer callback.
+  // Only animate the bounded heading, not the entire article.
   const html = `${head({
     title: `${article.title} | OKCoded Insights`,
     description: article.description,
@@ -238,8 +240,8 @@ function writeArticle(article) {
 <body class="site-page">
 	${chrome('/insights/')}
 	<main class="site-main insights-article">
-		<article class="js-reveal">
-			<header class="page-hero">
+		<article>
+			<header class="page-hero js-reveal">
 				<span class="page-hero__label">${escapeHtml(article.category)}</span>
 				<h1 class="page-hero__title">${escapeHtml(article.title)}</h1>
 				<p class="page-hero__lede">${escapeHtml(article.description)}</p>
