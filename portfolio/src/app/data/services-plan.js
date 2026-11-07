@@ -38,7 +38,7 @@ export const SERVICES_PLAN = {
         'API-connected mobile applications (REST, GraphQL, etc.)',
       ],
       value:
-        'Extend a product beyond the browser when the workflow needs native reach — presented as a real capability, not a padded client portfolio.',
+        'The right approach depends on what the app needs to do, which devices it supports, and how it connects to your existing systems.',
       note: 'capability',
     },
     {
@@ -57,7 +57,7 @@ export const SERVICES_PLAN = {
         'Custom business logic',
       ],
       value:
-        'End-to-end delivery: the interface and the systems behind it, owned together so features actually ship.',
+        'Connect your application to the accounts, data, and services it needs to work.',
     },
     {
       id: 'growth-analytics',
@@ -75,7 +75,7 @@ export const SERVICES_PLAN = {
         'Marketing technology integrations',
       ],
       value:
-        'Growth support as a technical layer — search readiness, trustworthy tracking, and faster pages.',
+        'See where visitors come from, what they do on your site, and where they run into problems.',
     },
     {
       id: 'automation',
@@ -93,7 +93,7 @@ export const SERVICES_PLAN = {
         'Operational efficiency solutions',
       ],
       value:
-        'Solve operational bottlenecks with durable tools and integrations — useful automation, not AI theater.',
+        'Reduce manual data entry, connect tools that do not talk to each other, and make routine tasks easier to manage.',
     },
   ],
 }
