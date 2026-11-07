@@ -169,7 +169,7 @@ export function initContactForm() {
           if (projectType) leadParams.project_type = projectType
           trackEvent('generate_lead', leadParams)
         }
-        setStatus("Thanks for reaching out. I'll get back to you soon.", 'success')
+        setStatus('Thanks for reaching out. OKCoded will be in touch soon.', 'success')
         form.reset()
         resetHoneypot(form)
         return
