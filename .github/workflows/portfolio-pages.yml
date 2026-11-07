@@ -47,6 +47,11 @@ jobs:
       - name: Build publish artifact
         run: npm run build:publish
 
+      - name: Verify build output stays untracked and source stays unchanged
+        run: |
+          test -z "$(git ls-files -- dist build-out .parcel-cache)"
+          git diff --exit-code
+
       - name: Verify publish artifact
         run: |
           test -f build-out/index.html
