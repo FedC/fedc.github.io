@@ -2,7 +2,7 @@
  * INTERNAL planning baselines for a future /estimate/ builder (Phase 2B+).
  * Not rendered on public pages. Not guaranteed quotes.
  *
- * UX references (Git only, not published): geltenpro.html, nutridentist.html
+ * Historical UX references (Git history only, not published): geltenpro.html, nutridentist.html
  */
 export const ESTIMATE_PLAN = {
   route: '/estimate/',
