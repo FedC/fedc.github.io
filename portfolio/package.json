@@ -12,7 +12,8 @@
     "test:contact": "node scripts/check-contact-honeypot.mjs",
     "test:analytics": "node scripts/check-analytics.mjs",
     "test:resilience": "node --test scripts/site-resilience.test.mjs",
-    "test": "npm run test:contact && npm run test:analytics && npm run test:resilience",
+    "test:insights": "node --test scripts/insights-visibility.test.mjs",
+    "test": "npm run test:contact && npm run test:analytics && npm run test:resilience && npm run test:insights",
     "build:publish": "npm run test && npm run build && npm run prepare-publish"
   },
   "keywords": [],

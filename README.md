@@ -32,7 +32,7 @@ npm test
 npm run build:publish
 ```
 
-`build:publish` runs the existing contact, analytics, and resilience checks; cleans the Parcel output/cache; regenerates Insights pages; builds all page entry points; and assembles the publish artifact. The optional jsdom portion of the contact check skips when jsdom is not installed.
+`build:publish` runs the contact, analytics, resilience, and Insights visibility checks; cleans the Parcel output/cache; regenerates Insights pages; builds all page entry points; and assembles the publish artifact. The optional jsdom portion of the contact check skips when jsdom is not installed.
 
 Generated directories are local-only and gitignored:
 
