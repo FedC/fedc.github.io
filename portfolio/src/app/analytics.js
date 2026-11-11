@@ -62,6 +62,7 @@ export function sanitizeProjectType(raw) {
 
 export function resolveFormLocation(pathname) {
   const path = pathname || (typeof window !== 'undefined' ? window.location.pathname : '')
+  if (/\/services\/web-development\/?/.test(path)) return 'web_development'
   if (/\/contact\/?/.test(path)) return 'contact'
   return 'home'
 }

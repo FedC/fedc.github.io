@@ -1,7 +1,8 @@
 /**
  * OKCoded service architecture (Phase 2B).
  * Five primary capabilities — page copy should stay aligned with this plan.
- * Dedicated /services/<slug>/ routes can be added later using these slugs.
+ * Dedicated route: /services/web-development/
+ * Other /services/<slug>/ routes wait until there is enough unique content.
  */
 export const SERVICES_PLAN = {
   tagline: 'Web, Mobile & Digital Solutions',
