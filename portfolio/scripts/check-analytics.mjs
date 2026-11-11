@@ -86,6 +86,9 @@ if (mod.sanitizeProjectType('please call me at 555') !== undefined) {
 }
 if (mod.resolveFormLocation('/contact/') !== 'contact') fail('resolveFormLocation contact')
 if (mod.resolveFormLocation('/') !== 'home') fail('resolveFormLocation home')
+if (mod.resolveFormLocation('/services/web-development/') !== 'web_development') {
+  fail('resolveFormLocation web development')
+}
 
 mod.__resetAnalyticsForTests()
 mod.initCaseStudyView('/work/reviver/')

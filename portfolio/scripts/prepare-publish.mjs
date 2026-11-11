@@ -27,6 +27,7 @@ const outDir = join(root, 'build-out')
 const PUBLIC_ROUTES = [
   '/',
   '/services/',
+  '/services/web-development/',
   '/work/',
   '/work/reviver/',
   '/insights/',
@@ -102,6 +103,7 @@ writeFileSync(join(outDir, 'sitemap.xml'), sitemap)
 const required = [
   'index.html',
   'services/index.html',
+  'services/web-development/index.html',
   'work/index.html',
   'work/reviver/index.html',
   'insights/index.html',
